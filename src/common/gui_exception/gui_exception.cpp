@@ -1,26 +1,15 @@
-#include <gui_exception/gui_exception.hpp>
-#include <gui_exception/gui_exception_report_dialog.hpp>
+#include "gui_exception.hpp"
 using namespace tms::common;
 using namespace std;
 
-string GUIException::Message() {
+void GUIException::Init(std::string message, std::string prev_message) {
   ostringstream ret;
-  if (message_.size() > 0) {
-    ret << message_;
-    if (std_exception_ || gui_exception_) {
-      ret << std::endl;
+  if (message.size() > 0) {
+    ret << message;
+    if (prev_message.size() > 0) {
+      ret << endl << "==" << endl;
     }
   }
-  if (std_exception_) {
-    ret << std_exception_->what();
-  }
-  if (gui_exception_) {
-    ret << gui_exception_->Message();
-  }
-  return ret.str();
-}
-
-void GUIException::Report() {
-  GuiExceptionReportDialog dlg(Message());
-  dlg.ShowModal();
+  ret << prev_message;
+  message_ = ret.str();
 }

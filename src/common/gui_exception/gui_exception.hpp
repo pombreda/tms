@@ -8,42 +8,59 @@
 #include <string>
 #include <exception>
 #include <sstream>
+#include <memory>
+
+#ifdef TMS_GUI
+#include <gui_exception/gui_exception_report_dialog.hpp>
+#else
+#include <iostream>
+#endif
+
 
 namespace tms {
-  namespace common {
+namespace common {
 
-    //-----------------------------------------------------------------------------
-    // Class definition: GuiException
-    //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// Class definition: GuiException
+//-----------------------------------------------------------------------------
 
-    class GUIException {
-    public: 
-      explicit GUIException(std::string message) :
-	message_(message),
-	std_exception_(0),
-	gui_exception_(0)
-      {
-      }
-      
-      explicit GUIException(const std::exception &std_exception, std::string message = "") :
-	message_(message),
-	std_exception_(new std::exception(std_exception)),
-	gui_exception_(0)
-      {
-      }
-      explicit GUIException(const GUIException &gui_exception, std::string message) :
-	message_(message),
-	std_exception_(0),
-	gui_exception_(new GUIException(gui_exception))
-      {
-      }
-      void Report();
-      std::string Message();
-    private:
-      std::string message_;
-      std::exception* std_exception_;
-      GUIException* gui_exception_;
-    };
+class GUIException : public std::exception {
+ public: 
+  explicit GUIException(std::string message) {
+    Init(message, "");
   }
+  
+  explicit GUIException(const std::exception *std_exception, std::string message = "") throw () {
+    Init(message, std_exception->what());
+  }   
+  
+  GUIException(const GUIException *gui_exception, std::string message) throw () {
+    Init(message, gui_exception->message());
+  }
+   
+  virtual const char* what() const throw () {
+    return "GUIException. To obtain full exception message use ::Message()";
+  }
+
+  virtual void Report() const {
+#ifdef TMS_GUI
+    GuiExceptionReportDialog dlg(message());
+    dlg.ShowModal();
+#else
+    std::cerr << message() << std::endl;
+#endif
+  }
+
+  virtual std::string message() const throw ()
+  {
+    return message_;
+  }
+  virtual ~GUIException() throw () {}
+ protected:
+  std::string message_;
+ private:
+  void Init(std::string message, std::string prev_message);
+};
+}
 }
 #endif // _GUI_EXCEPTION_HPP_

@@ -1,0 +1,2 @@
+01:42:54: ValueError: Invalid mode ('wtb') 
+01:42:54: Error writing file: c:\users\adavydow\appdata\local\temp\xrced-zfnb6v

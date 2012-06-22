@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 // For compilers that support precompilation, includes "wx/wx.h".
+#define TMS_GUI
 #include "wx/wxprec.h"
  
 #ifdef __BORLANDC__
