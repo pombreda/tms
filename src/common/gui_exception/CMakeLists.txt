@@ -1,4 +1,7 @@
-set (exception_src guiexception.cpp)
-add_library (tms_exception STATIC ${exception_src})
-add_dependencies(tms_exception fltk-1.3)
+set (exception_src gui_exception.cpp gui_exception_report_dialog.cpp)
+add_library (tms_gui_exception SHARED ${exception_src})
+message("${wxms}")
+
+add_dependencies(tms_gui_exception wxWidgets-2.8)
+target_link_libraries(tms_gui_exception ${wxmsw})
 

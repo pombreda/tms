@@ -1,8 +1,21 @@
+#ifndef _GUI_EXCEPTION_HPP_
+#define _GUI_EXCEPTION_HPP_
+
+//-----------------------------------------------------------------------------
+// Headers
+//-----------------------------------------------------------------------------
+
 #include <string>
 #include <exception>
 #include <sstream>
+
 namespace tms {
   namespace common {
+
+    //-----------------------------------------------------------------------------
+    // Class definition: GuiException
+    //-----------------------------------------------------------------------------
+
     class GUIException {
     public: 
       explicit GUIException(std::string message) :
@@ -33,3 +46,4 @@ namespace tms {
     };
   }
 }
+#endif // _GUI_EXCEPTION_HPP_

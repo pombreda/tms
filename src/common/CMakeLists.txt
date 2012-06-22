@@ -1,1 +1,1 @@
-add_subdirectory(exception)
+add_subdirectory(gui_exception)

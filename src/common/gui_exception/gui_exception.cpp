@@ -1,7 +1,5 @@
-#include <exception/guiexception.hpp>
-#include <FL/Fl.H>
-#include <FL/Fl_Window.H>
-#include <FL/fl_ask.H>
+#include <gui_exception/gui_exception.hpp>
+#include <gui_exception/gui_exception_report_dialog.hpp>
 using namespace tms::common;
 using namespace std;
 
@@ -23,5 +21,6 @@ string GUIException::Message() {
 }
 
 void GUIException::Report() {
-  fl_input("Error occured:", Message().c_str());
+  GuiExceptionReportDialog dlg(Message());
+  dlg.ShowModal();
 }

@@ -1,34 +1,59 @@
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32 -mwindows")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -mwindows")
+
 add_executable (exception_exe main)
 set_target_properties (exception_exe PROPERTIES OUTPUT_NAME exception)
 
-set(root ${CMAKE_SOURCE_DIR})
+add_dependencies(exception_exe wxWidgets-2.8)
+set(dlls  ${wxmsw} tms_gui_exception)
+target_link_libraries(exception_exe ${dlls})
 
-add_library(fltk STATIC IMPORTED)
-set_property(TARGET fltk PROPERTY 
-  IMPORTED_LOCATION ${root}/ext/lib/libfltk.a )
+foreach(dll ${dlls})
+  get_target_property(path ${dll} LOCATION)
+  add_custom_command(
+   TARGET exception_exe
+   POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy ${path} ${CMAKE_CURRENT_BINARY_DIR}
+   )
+endforeach()
 
-add_library(fltk_forms UNKNOWN IMPORTED)
-set_property(TARGET fltk_forms PROPERTY 
-  IMPORTED_LOCATION ${root}/ext/lib/libfltk_forms.a )
+add_custom_command(
+  TARGET exception_exe
+  POST_BUILD
+  COMMAND mkdir
+  ARGS ${CMAKE_CURRENT_BINARY_DIR}/xrc -p
+  )
 
-add_library(fltk_images UNKNOWN IMPORTED)
-set_property(TARGET fltk_images PROPERTY 
-  IMPORTED_LOCATION ${root}/ext/lib/libfltk_images.a )
+add_custom_command(
+  TARGET exception_exe
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy ${root}/xrc/common/gui_exception/gui_exception_report_dialog.xrc ${CMAKE_CURRENT_BINARY_DIR}/xrc
+  )
 
-add_library(fltk_gl UNKNOWN IMPORTED)
-set_property(TARGET fltk_gl PROPERTY 
-  IMPORTED_LOCATION ${root}/ext/lib/libfltk_gl.a )
+add_custom_command(
+  TARGET exception_exe
+  POST_BUILD
+  COMMAND mkdir
+  ARGS ${CMAKE_CURRENT_BINARY_DIR}/img -p
+  )
 
-add_dependencies(fltk EP_fltk-1.3)
-add_dependencies(fltk_forms EP_fltk-1.3)
-add_dependencies(fltk_images EP_fltk-1.3)
-add_dependencies(fltk_gl EP_fltk-1.3)
+add_custom_command(
+  TARGET exception_exe
+  POST_BUILD
+  COMMAND mkdir
+  ARGS ${CMAKE_CURRENT_BINARY_DIR}/img/icons -p
+  )
 
+add_custom_command(
+  TARGET exception_exe
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy ${root}/img/icons/messagebox_warning.png  ${CMAKE_CURRENT_BINARY_DIR}/img/icons/messagebox_warning.png 
+  )
 
-target_link_libraries (exception_exe tms_exception fltk_forms fltk_images fltk_gl fltk)
-if (WIN32)
- target_link_libraries (exception_exe rpcrt4 oleaut32 ole32 uuid gdi32 shell32 comctl32 comdlg32 ctl3d32 advapi32 wsock32 winmm winspool)
+if(WIN32)
+  target_link_libraries (exception_exe rpcrt4 oleaut32 ole32 uuid gdi32 shell32 comctl32 comdlg32 ctl3d32 advapi32 wsock32 winmm winspool)
 endif(WIN32)
-if (UNIX)
+
+if(UNIX)
   target_link_libraries (exception_exe Xext X11 fontconfig Xft Xinerama)
 endif(UNIX)
