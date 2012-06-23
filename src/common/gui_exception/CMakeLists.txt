@@ -5,4 +5,3 @@ find_package(wxWidgets COMPONENTS base core xrc REQUIRED)
 include( "${wxWidgets_USE_FILE}" )
 
 target_link_libraries(tms_gui_exception ${wxWidgets_LIBRARIES})
-

@@ -42,6 +42,7 @@ GuiExceptionReportDialog::GuiExceptionReportDialog(wxWindow* parent)
 
 GuiExceptionReportDialog::GuiExceptionReportDialog(string message, wxWindow* parent)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("gui_exception_report_dialog"));
-    XRCCTRL(*this, "exception_text_", wxTextCtrl)->SetValue(wxString(message.c_str(), wxConvUTF8));
+  wxXmlResource::Get()->Load(_T("xrc/common/gui_exception/gui_exception_report_dialog.xrc"));
+  wxXmlResource::Get()->LoadDialog(this, parent, _T("gui_exception_report_dialog"));
+  XRCCTRL(*this, "exception_text_", wxTextCtrl)->SetValue(wxString(message.c_str(), wxConvUTF8));
 }

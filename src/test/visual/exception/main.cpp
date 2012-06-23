@@ -80,7 +80,6 @@ bool ExceptionTest::OnInit()
     return false;
   wxImage::AddHandler( new wxPNGHandler );
   wxXmlResource::Get()->InitAllHandlers();
-  wxXmlResource::Get()->Load(_T("xrc/gui_exception_report_dialog.xrc"));
   // create the main application window
   MyFrame *frame = new MyFrame(_T("TestApp"));
   frame->Show(true);

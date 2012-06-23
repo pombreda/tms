@@ -1,4 +1,4 @@
-add_library (tms_protocol SHARED 
+add_library (tms_protocol SHARED
   request.cpp
   crypto.cpp
   )
