@@ -11,3 +11,4 @@ config.txt
 *#*
 *.bat
 *.sh
+lib
