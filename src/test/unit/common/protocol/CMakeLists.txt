@@ -5,6 +5,7 @@ set(test_sources
 set(test test_protocol)
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+include( "${Boost_USE_FILE}" )
 
 add_executable(${test} ${test_sources})
 
