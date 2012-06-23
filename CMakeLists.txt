@@ -18,8 +18,6 @@ include(ExternalProject)
 add_definitions(-g -fsigned-char -freg-struct-return -Wall -m32)
 include_directories(src/common ext/include)
 project (TMS CXX)
-set(root ${CMAKE_SOURCE_DIR})
-string(REPLACE "C:" "/c" nix_root ${root})
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
