@@ -9,6 +9,7 @@
 #include <protocol/crypto.hpp>
 #include <setup.hpp>
 #include <sstream>
+#include <memory>
 #include <boost/test/unit_test.hpp>
  
 using namespace std;
@@ -79,7 +80,7 @@ BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeSimple, Fixture)
   ostringstream sout(ostringstream::binary);
   request_simple.Serialize(sout);
   istringstream sin(sout.str(), istringstream::binary);
-  Request *req = Request::Deserialize(sin);
+  auto_ptr<Request> req(Request::Deserialize(sin));
   BOOST_CHECK_EQUAL(
       req->user(), 
       string(user_simple)
@@ -94,12 +95,40 @@ BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeSimple, Fixture)
                     );    
 }
 
+BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeLittle, Fixture)
+{
+  vector<string> users;
+  users.push_back(string(1, '\0'));
+  users.push_back(string(1, '\\'));
+  users.push_back(string(1, '\0') + string(1, '\\'));
+  users.push_back(string(1, '\\') + string(1, '\0'));
+  users.push_back(string(2, '\0'));
+  users.push_back(string(2, '\\'));
+  users.push_back(string(2, '\0') + string(2, '\\'));
+  users.push_back(string(2, '\\') + string(2, '\0'));
+  users.push_back(string(5, '\0'));
+  users.push_back(string(5, '\\'));
+
+  for (size_t pos = 0; pos < users.size(); ++pos) {
+      Request request(users[pos], "qwerty");
+      ostringstream sout(ostringstream::binary);
+      request.Serialize(sout);
+      istringstream sin(sout.str(), istringstream::binary);
+      auto_ptr<Request> req(Request::Deserialize(sin));
+      BOOST_CHECK_EQUAL(
+          req->user(), 
+          users[pos]
+                        );
+  }  
+}
+
+
 BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeHard, Fixture)
 {
   ostringstream sout(ostringstream::binary);
   request_hard.Serialize(sout);
   istringstream sin(sout.str(), istringstream::binary);
-  Request *req = Request::Deserialize(sin);
+  auto_ptr<Request> req(Request::Deserialize(sin));
   BOOST_CHECK_EQUAL(
       req->user(), 
       string(user_hard)
