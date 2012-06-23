@@ -1,5 +1,7 @@
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32 -mwindows")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -mwindows")
+if(WIN32)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mwindows")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
+endif(WIN32)
 
 add_executable (exception_exe main)
 set_target_properties (exception_exe PROPERTIES OUTPUT_NAME exception)
