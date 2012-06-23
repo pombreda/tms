@@ -3,7 +3,10 @@ CMakeCache.txt
 Makefile
 /ext
 /bin
+Testing
+log
 config.txt
 *.cmake
 *~
 *#*
+*.bat

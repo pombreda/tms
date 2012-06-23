@@ -1,1 +1,2 @@
 add_subdirectory(gui_exception)
+add_subdirectory(protocol)
