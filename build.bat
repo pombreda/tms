@@ -1,1 +1,0 @@
-echo "make" | sh
