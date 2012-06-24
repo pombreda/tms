@@ -11,15 +11,22 @@
 #include <setup.hpp>
 #include <istream>
 #include <ostream>
+#include <boost/serialization/access.hpp>
 
 namespace tms {
 namespace common {
 
 //------------------------------------------------------------
+// Unique ids for different requests
+//------------------------------------------------------------
+
+enum RequestID {
+  kRequest
+};
+
+//------------------------------------------------------------
 // Class definition: Request
 // Base class for all server requests
-// Serialization format: fields splited by "\\\0" and 
-// class ended by "\\\0""
 //------------------------------------------------------------
 
 class Request {
@@ -30,39 +37,51 @@ class Request {
         version_(kVersion) {
   }
   
-  void Serialize(std::ostream &sout);  
-  static Request* Deserialize(std::istream &sin);
+  //------------------------------------------------------------
+  // Unique ID
+  //------------------------------------------------------------
+
+  virtual int RequestID() {
+    return kRequest;
+  }
+  
+  //------------------------------------------------------------
+  // Getters
+  //------------------------------------------------------------
 
   std::string user() {
     return user_;
   }
+  
   std::string password_hash() {
     return password_hash_;
   }
+
   int version() {
     return version_;
   }
-
+  
+  Request() {} // for serialization only  
   virtual ~Request(){}
-
-  virtual int SerializationID() {
-    return kRequest;
-  }
-  static std::string Mask(const std::string &str);
- protected:
-  static std::string Unmask(const std::string &str);
-  virtual std::string ReadPart(std::istream &sin);
-  // id has bean already read from the stream. 
-  // To be called from Deserialize().  
-  virtual void Load(std::istream &sin); 
-  // id has bean already read from the stream. 
-  // To be called from Deserialize().  
-  virtual void Save(std::ostream &sout); 
-
+ 
  private:
-  // To be called from Deserialize().
-  Request() {}
-  ////////////
+
+  //------------------------------------------------------------
+  // Serialization
+  //------------------------------------------------------------
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & user_;
+    ar & password_hash_;
+    ar & version_;
+  }
+
+  //------------------------------------------------------------
+  // Data
+  //------------------------------------------------------------
+
   std::string user_;
   std::string password_hash_;
   int version_;

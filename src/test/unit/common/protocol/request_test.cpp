@@ -10,6 +10,8 @@
 #include <setup.hpp>
 #include <sstream>
 #include <memory>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 #include <boost/test/unit_test.hpp>
  
 using namespace std;
@@ -78,19 +80,23 @@ BOOST_FIXTURE_TEST_CASE(testVersion, Fixture)
 BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeSimple, Fixture)
 {
   ostringstream sout(ostringstream::binary);
-  request_simple.Serialize(sout);
+  boost::archive::binary_oarchive oa(sout);
+  oa << request_simple;
   istringstream sin(sout.str(), istringstream::binary);
-  auto_ptr<Request> req(Request::Deserialize(sin));
+  boost::archive::binary_iarchive ia(sin);
+  Request req;
+  ia >> req;
+  
   BOOST_CHECK_EQUAL(
-      req->user(), 
+      req.user(), 
       string(user_simple)
                     );
   BOOST_CHECK_EQUAL(
-      req->password_hash(), 
+      req.password_hash(), 
       sha256(password_simple)
                     );  
   BOOST_CHECK_EQUAL(
-      req->version(), 
+      req.version(), 
       kVersion
                     );    
 }
@@ -98,25 +104,25 @@ BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeSimple, Fixture)
 BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeLittle, Fixture)
 {
   vector<string> users;
-  users.push_back(string(1, '\0'));
-  users.push_back(string(1, '\\'));
-  users.push_back(string(1, '\0') + string(1, '\\'));
-  users.push_back(string(1, '\\') + string(1, '\0'));
-  users.push_back(string(2, '\0'));
-  users.push_back(string(2, '\\'));
-  users.push_back(string(2, '\0') + string(2, '\\'));
-  users.push_back(string(2, '\\') + string(2, '\0'));
-  users.push_back(string(5, '\0'));
-  users.push_back(string(5, '\\'));
+
+  for (size_t c = 0; c < 256; ++c) {
+    users.push_back(string(1, (char) c));
+    users.push_back(string(2, (char) c));
+    users.push_back(string(2, (char) c) + string(2, (char) (c + 1)));
+  }
 
   for (size_t pos = 0; pos < users.size(); ++pos) {
       Request request(users[pos], "qwerty");
       ostringstream sout(ostringstream::binary);
-      request.Serialize(sout);
+      boost::archive::binary_oarchive oa(sout);
+      oa << request;
       istringstream sin(sout.str(), istringstream::binary);
-      auto_ptr<Request> req(Request::Deserialize(sin));
+      boost::archive::binary_iarchive ia(sin);
+      Request req;
+      ia >> req;
+     
       BOOST_CHECK_EQUAL(
-          req->user(), 
+          req.user(), 
           users[pos]
                         );
   }  
@@ -126,19 +132,24 @@ BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeLittle, Fixture)
 BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeHard, Fixture)
 {
   ostringstream sout(ostringstream::binary);
-  request_hard.Serialize(sout);
+  boost::archive::binary_oarchive oa(sout);
+  oa << request_hard;
+
   istringstream sin(sout.str(), istringstream::binary);
-  auto_ptr<Request> req(Request::Deserialize(sin));
+  boost::archive::binary_iarchive ia(sin);
+  Request req;
+  ia >> req;
+
   BOOST_CHECK_EQUAL(
-      req->user(), 
+      req.user(), 
       string(user_hard)
                     );
   BOOST_CHECK_EQUAL(
-      req->password_hash(), 
+      req.password_hash(), 
       sha256(password_hard)
                     );  
   BOOST_CHECK_EQUAL(
-      req->version(), 
+      req.version(), 
       kVersion
                     );    
 }
