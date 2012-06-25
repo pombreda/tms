@@ -1,2 +1,3 @@
 add_subdirectory(gui_exception)
+add_subdirectory(contraption)
 add_subdirectory(protocol)

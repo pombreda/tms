@@ -1,5 +1,5 @@
-#ifndef _REQUEST_HPP_
-#define _REQUEST_HPP_
+#ifndef _RESPONSE_HPP_
+#define _RESPONSE_HPP_
 
 //------------------------------------------------------------
 // Headers
@@ -7,6 +7,7 @@
 
 #include <string>
 #include <protocol/crypto.hpp>
+#include <protocol/serialization_id.hpp>
 #include <setup.hpp>
 #include <istream>
 #include <ostream>
@@ -21,12 +22,21 @@ namespace common {
 // Unique ids for different requests
 //------------------------------------------------------------
 
-namespace RequestID {
-enum RequestID {
-  kRequest,
+namespace ResponseID {
+enum ResponseID {
+  kResponse,
   kIncorrect
 };
-const size_t kAuthentication = kRequest;
+}
+
+namespace ResponseStatus {
+enum ResponseStatus {
+  kOk,
+  kAuthenticationError,
+  kIncorrectVersion,
+  kServerError,
+  kIncorrect
+};
 }
 
 //------------------------------------------------------------
@@ -34,40 +44,30 @@ const size_t kAuthentication = kRequest;
 // Base class for all server requests
 //------------------------------------------------------------
 
-class Request {
+class Response {
  public:
-  Request(std::string user, std::string password) 
-      : user_(user),
-        password_hash_(sha256(password)),
-        version_(kVersion) {
+  Response(size_t status) 
+      : status_(status) {
   }
   
   //------------------------------------------------------------
   // Unique ID
   //------------------------------------------------------------
 
-  virtual size_t RequestID() {
-    return RequestID::kRequest;
+  virtual size_t ResponseID() {
+    return ResponseID::kResponse;
   }
   
   //------------------------------------------------------------
   // Getters
   //------------------------------------------------------------
 
-  std::string user() {
-    return user_;
-  }
-  
-  std::string password_hash() {
-    return password_hash_;
+  size_t status() {
+    return status_;
   }
 
-  int version() {
-    return version_;
-  }
-  
-  Request() {} // for serialization only  
-  virtual ~Request(){}
+  Response() {} // for serialization only  
+  virtual ~Response(){}
  
  private:
 
@@ -78,28 +78,22 @@ class Request {
 
   template<class Archive>
   void save(Archive &ar, const unsigned int version) const {
-    ar & user_;
-    ar & password_hash_;
-    ar & version_;
+    ar & status_;
   }
 
   template<class Archive>
   void load(Archive &ar, const unsigned int version) {
-    ar & user_;
-    ar & password_hash_;
-    ar & version_;
+    ar & status_;
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()
-  
+
   //------------------------------------------------------------
   // Data
   //------------------------------------------------------------
-
-  std::string user_;
-  std::string password_hash_;
-  int version_;
+  size_t status_;
 };
 }
 }
-#endif // _REQUEST_HPP_
+
+#endif // _RESPONSE_HPP_
