@@ -22,6 +22,7 @@ class Fixture {
     }
   };
   Fixture() :
+      dummy(),
       from_message("Exception Occured."),
       from_exception(&dummy),
       from_exception_message(&dummy, "Exception was thrown."),
@@ -33,6 +34,7 @@ class Fixture {
   GUIException from_exception;
   GUIException from_exception_message;
   GUIException from_gui_exception;
+  virtual ~Fixture(){}
 };
 
 //------------------------------------------------------------

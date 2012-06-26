@@ -3,51 +3,53 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
-#include<string>
-#include<map>
-#include<contraption/field.hpp>
-
-typedef size_t FieldID;
+#include <string>
+#include <map>
+#include <contraption/field.hpp>
 
 namespace tms {
 namespace common {
 namespace contraption {
 
+typedef size_t FieldID;
+
 //------------------------------------------------------------
-// Model class. 
+// Model class.
 //------------------------------------------------------------
 // ToDo - stl container interface?
-// ToDO - move implementation
+// ToDo - move implementation
 class Model {
  public:
-  size_t GetFieldNumber() {
-    return fields_.size();
-  }
+  size_t GetFieldNumber() const
+      throw();
   
-  Field* GetField(FieldID field_id) {    
-    if (id > GetFieldNumber()) {
-      //oops
-    }
-    return fields_[field_id];
-  }
+  FieldType* GetField(FieldID field_id, ContraptionID id) const 
+      throw(FieldExcepton, ModelBackendException);
 
-  Field* GetField(const std::string &field_name) {    
-    return GetField(GetFieldID(field));
-  }
+  FieldType* GetField(const std::string &field_name, 
+                      ContraptionID id) const
+      throw(FieldExcepton, ModelBackendException);
 
-  FieldID GetFieldID(const std::string &field_name) {
-    std::map::const_iterator it = fields_by_name_.find(field);
-    if (it == fields_by_name_.end()) {
-      //oops
-    }
-    return *it;
-  }
-  
- protected:
-  void AddField(Field *field);
- private:
-  std::vector< std::auto_ptr<Field*> > fields_; 
+  bool FieldType* IsPrivate(FieldID field_id) const
+      throw(FieldExcepton);
+
+  FieldID GetFieldID(const std::string &field_name) const
+      throw(FieldExcepton);
+
+  void Save(Contraption *contraption) const
+      throw(ModelBackendException);
+
+  Model(const std::vector< Field* > &fields, 
+        const ModelBackend *backend) : 
+      fields_(fields.size()),
+      backend_(backend)
+      throw();
+
+ protected:  
+  Model():fields_(0), fields_by_name_() {}
+  std::vector< boost::shared_ptr<Field> > fields_; 
   std::map<std::string, FieldID> fields_by_name_;
+  boost::shared_ptr< ModelBackend > backend_;
 }
 }
 }

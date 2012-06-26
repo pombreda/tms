@@ -25,6 +25,7 @@ class Fixture {
   }
   string simple_string;
   string simple_string_sha256;
+  virtual ~Fixture(){}
 };
 
 //------------------------------------------------------------

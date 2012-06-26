@@ -66,7 +66,7 @@ class Response {
     return status_;
   }
 
-  Response() {} // for serialization only  
+  Response() : status_(ResponseID::kIncorrect) {} // for serialization only  
   virtual ~Response(){}
  
  private:
@@ -79,11 +79,13 @@ class Response {
   template<class Archive>
   void save(Archive &ar, const unsigned int version) const {
     ar & status_;
+    version = version;
   }
 
   template<class Archive>
   void load(Archive &ar, const unsigned int version) {
     ar & status_;
+    version = version;
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

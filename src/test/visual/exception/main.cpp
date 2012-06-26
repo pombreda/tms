@@ -88,7 +88,7 @@ bool ExceptionTest::OnInit()
     // application would exit immediately.
   try {
     throw GUIException("Libraty intr.dll was not found");
-  } catch (GUIException e) {
+  } catch (const GUIException &e) {
     e.Report();
     return false;
   }

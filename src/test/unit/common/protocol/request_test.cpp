@@ -45,6 +45,7 @@ class Fixture {
   string user_hard;
   string password_hard;
   Request request_hard;
+  virtual ~Fixture(){}
 };
 
 //------------------------------------------------------------
@@ -106,9 +107,9 @@ BOOST_FIXTURE_TEST_CASE(testSerializeDeserializeLittle, Fixture)
   vector<string> users;
 
   for (size_t c = 0; c < 256; ++c) {
-    users.push_back(string(1, (char) c));
-    users.push_back(string(2, (char) c));
-    users.push_back(string(2, (char) c) + string(2, (char) (c + 1)));
+    users.push_back(string(1, static_cast<char>(c)));
+    users.push_back(string(2, static_cast<char>(c)));
+    users.push_back(string(2, static_cast<char>(c)) + string(2, static_cast<char>(c + 1)));
   }
 
   for (size_t pos = 0; pos < users.size(); ++pos) {

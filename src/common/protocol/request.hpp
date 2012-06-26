@@ -65,8 +65,8 @@ class Request {
   int version() {
     return version_;
   }
-  
-  Request() {} // for serialization only  
+      
+  Request() : user_(), password_hash_(), version_() {} // for serialization only  
   virtual ~Request(){}
  
  private:
@@ -81,6 +81,7 @@ class Request {
     ar & user_;
     ar & password_hash_;
     ar & version_;
+    version = version;
   }
 
   template<class Archive>
@@ -88,6 +89,7 @@ class Request {
     ar & user_;
     ar & password_hash_;
     ar & version_;
+    version = version;
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

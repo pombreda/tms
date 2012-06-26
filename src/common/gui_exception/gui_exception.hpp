@@ -26,15 +26,17 @@ namespace common {
 
 class GUIException : public std::exception {
  public: 
-  explicit GUIException(const std::string &message) {
+  explicit GUIException(const std::string &message) throw () : message_(""){
     Init(message, "");
   }
   
-  explicit GUIException(const std::exception *std_exception, const std::string &message = "") throw () {
+  explicit GUIException(const std::exception *std_exception, const std::string &message = "") throw () 
+      : message_("") {
     Init(message, std_exception->what());
   }   
   
-  GUIException(const GUIException *gui_exception, const std::string &message) throw () {
+  GUIException(const GUIException *gui_exception, const std::string &message) throw () 
+      : message_("") {
     Init(message, gui_exception->message());
   }
    

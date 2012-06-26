@@ -11,9 +11,9 @@ cmake_minimum_required(VERSION 2.6)
 
 include(ExternalProject)
 
-add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -m32)
+add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -Wextra -Weffc++ -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Wconversion -Wsign-conversion -Winit-self -Wunreachable-code -pedantic -m32)
 
-include_directories(src/common ext/include)
+include_directories(src/common)
 project (TMS CXX)
 
 set(Boost_USE_STATIC_LIBS OFF)

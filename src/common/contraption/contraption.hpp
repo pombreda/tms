@@ -5,80 +5,74 @@
 // Headers
 //------------------------------------------------------------
 
+// std
 #include <string>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <common/contraption/model.hpp>
 #include <typeinfo>
+// boost
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/shared_ptr.hpp>
+// common
+#include <contraption/model.hpp>
+#include <contraption/field_type.hpp>
 
 namespace tms {
 namespace common {
 namespace contraption {
 //------------------------------------------------------------
 // Contraption class. This is an abstract class. Contraption
-// represents an object from real world.
+// represents an object from real world - model instances.
 //------------------------------------------------------------
-typedef size_t ContraptionID; //private?
+typedef size_t ContraptionID;
 
 class Contraption {
  public:
-  // GetField can throw a runtime exception if out type does not
-  // correspond to field type. It'll be greate to find a way
-  // to throw static_exception here, but this looks 
-  // impossible.
-  template<class T>
-  void GetField(FieldID field_id, T &out) const;
-
-  template<class T>
-  void GetField(const std::string &field, T &out) const;
-
-  // SetField can throw a runtime exception if value type does not
-  // correspond to field type. It'll be greate to find a way
-  // to throw static_exception here, but this looks 
-  // impossible.
-  template<class T>
-  void SetField(FieldID field_id, const T &value);
-
-  template<class T>
-  void SetField(const std::string &field, const T &value);
-
-  FieldType* GetType(FieldID field_id);
-  FieldType* GetType(const std::string &field);
-
-  size_t GetFieldNumber();
-
-  FieldID GetFieldID(const std::string &field);
-  std::string GetFieldName(FieldID field_id);
+  FieldType* GetField(FieldID field_id) const 
+      throw(FieldExcepton, ModelBackendException);
   
-  void Save();
-  void Refresh();
-
-  Contraption(const Contraption &other);
-  Contraption(const Model* model);
-  Contraption(const Model* model, ContraptionID id);
-  Contraption(); //for serialization
-
-  virtual ~Contraption();
+  FieldType* GetField(const std::string &field) const
+      throw(FieldExcepton, ModelBackendException);
   
-  static const ContraptionID kNewID;
+  // Field setters only change contraption object.
+  // To save changes there is a Save() method.
+  void SetField(FieldID field_id, const FieldType* value)
+      throw(FieldExcepton);
 
-  ContraptionID id() {
-    return id_;
-  }
+  void SetField(const std::string &field, const FieldType* value)
+      throw(FieldExcepton);
+  
+  size_t GetFieldNumber() const
+      throw();
 
-  Model* model() {
-    return model_;
-  }
+  FieldID GetFieldID(const std::string &field)
+      throw();
+  std::string GetFieldName(FieldID field_id) const
+      throw(FieldExcepton);
+  
+  void Save() const
+      throw(ModelBackendException);
+  void Refresh()
+      throw(ModelBackendException);
+  
+  void Swap(Contraption &other)
+      throw();
+  Contraption& operator=(const Contraption &other)
+      throw();
+  Contraption(const Contraption &other)
+       throw();
+  Contraption(shared_ptr<const Model> model)
+      throw(ContraptionException);
 
+  static const ContraptionID kNewID; // for Model class
+  
+  friend class ContraptionAccessor;
  private:
-  void FreeValues();
-  void InitValues();
-  // ToDo union for built_int types
-  vector<void*> values_;
-  Model *model_;
-  ContraptionID id_; //zero is a special value
+  void InitValues()
+      throw();
+  std::vector< boost::shared_ptr<FieldType> > values_;
+  boost::shared_ptr<const Model> model_;
+  ContraptionID id_;
 };
 
-#include "contraption_impl.hpp"
 }
 }
 }

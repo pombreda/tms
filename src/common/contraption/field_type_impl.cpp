@@ -18,7 +18,7 @@ FieldTypeID GetFieldTypeID();
 #define TMS_FIELD_TYPE_CALC_SLIBID(libid)                               \
   /**Macro body**/                                                      \
   (                                                                     \
-      ((FieldTypeID)(libid)) << 8                                       \
+      static_cast<FieldTypeID>(libid) << 8                              \
   )                                                                     \
   /**Macro end**/
 
@@ -27,10 +27,10 @@ FieldTypeID GetFieldTypeID();
   (                                                                     \
     TMS_FIELD_TYPE_CALC_SLIBID(libid) |                                 \
     (                                                                   \
-        ((FieldTypeID)(id))                                             \
+        static_cast<FieldTypeID>(id)                                    \
         &                                                               \
         (                                                               \
-            ((FieldTypeID)(-1)) >> 8                                    \
+            static_cast<FieldTypeID>(-1) >> 8                           \
         )                                                               \
     )                                                                   \
   )                                                                     \
@@ -104,17 +104,17 @@ template<class T>
 FieldTypeT<T>::FieldTypeT() : id_(GetFieldTypeID<T>()) {}
 
 template<class T>
-void* FieldTypeT<T>::Duplicate(const void *object) {
+void* FieldTypeT<T>::Duplicate(const void *object) const {
   return static_cast<void *>(new T(*static_cast<const T *>(object)));
 }
 
 template<class T>
-void FieldTypeT<T>::Free(void *object) {
+void FieldTypeT<T>::Free(void *object) const {
   delete static_cast<T *>(object);
 }
 
 template<class T>
-void* FieldTypeT<T>::New() {
+void* FieldTypeT<T>::New() const {
   return static_cast<void *>(new T());
 }
 

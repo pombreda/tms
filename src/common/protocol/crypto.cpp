@@ -16,7 +16,7 @@ string tms::common::sha256(const string &str) {
   stringstream ret;
   for (int i = 0; i < SHA256_DIGEST_LENGTH; i++)
   {
-    ret << hex << setw(2) << setfill('0') << (int) hash[i];
+    ret << hex << setw(2) << setfill('0') << static_cast<int>(hash[i]);
   }
   return ret.str();
 }
