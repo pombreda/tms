@@ -1,56 +1,58 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
-#include "contraption.hpp"
 #include <sstream>
+#include <contraption/field_type.hpp>
+#include <contraption/field.hpp>
+#include "contraption.hpp"
 
 using namespace std;
-using namespace tmd::common::contraption;
+using namespace tms::common::contraption;
 
-Contraption::kNewID = 0;
+const ContraptionID Contraption::kNewID = 0;
 
-FieldType* Contraption::GetField(size_t field_id) const
-      throw(FieldExcepton, ModelBackendException) {
+FieldType* Contraption::GetFieldValue(size_t field_id)
+      throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
     msg << "Incorrect field_id in GetField: " << field_id << ".";
-    throw FieldExcepton(msg.str());
+    throw FieldException(msg.str());
   }
   if (!values_[field_id]) {
-    values_[field_id].reset(model_->GetField(field_id, this));
+    values_[field_id].reset(model_->GetFieldValue(field_id, this));
   }
   return values_[field_id].get()->Duplicate();
 }
 
-FieldType* Contraption::GetField(const std::string &field) const
-    throw(FieldExcepton, ModelBackendException) {
-  return GetField(GetFieldID(field), this);
+FieldType* Contraption::GetFieldValue(const std::string &field)
+    throw(FieldException, ModelBackendException) {
+  return GetFieldValue(GetFieldID(field));
 }
 
-void Contraption::SetField(size_t field_id, const FieldType *value)
-    throw(FieldExcepton) {
+void Contraption::SetFieldValue(size_t field_id, const FieldType *value)
+    throw(FieldException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
     msg << "Incorrect field_id in SetField: " << field_id << ".";
-    throw FieldExcepton(msg.str());
+    throw FieldException(msg.str());
   }
   return values_[field_id].reset(value->Duplicate());
 }
 
-void SetField(const std::string &field, const FieldType *value)
-    throw(FieldExcepton) {
-  SetField(GetFieldID(field), value);
+void Contraption::SetFieldValue(const std::string &field, const FieldType *value)
+    throw(FieldException) {
+  SetFieldValue(GetFieldID(field), value);
 }
 
-void Contraption::Save() const
+void Contraption::Save()
     throw(ModelBackendException) {
-  model_->Save(this, id_);
+  model_->Save(this);
 }
 
 void Contraption::Refresh()
     throw(ModelBackendException) {
-  FreeValues();
-  InitValues();
+  vector< boost::shared_ptr<FieldType> >(GetFieldNumber(), 
+                                         boost::shared_ptr<FieldType>()).swap(values_);
 }
 
 size_t Contraption::GetFieldNumber() const
@@ -63,44 +65,41 @@ FieldID Contraption::GetFieldID(const string &field) const
   return model_->GetFieldID(field);
 }
 
-std::string GetFieldName(FieldID field_id) const
-    throw(FieldExcepton) {
-  return model_->GetFieldName(field_id);
-}
-
-void Contraption::InitValues() 
-    throw() {
-  values_.assign(boost::shared_array<FieldType>(), GetFieldNumber());
+string Contraption::GetFieldName(FieldID field_id) const
+    throw(FieldException) {
+  return model_->GetField(field_id)->name();
 }
 
 void Contraption::Swap(Contraption &other)
-    throw(FieldExcepton) {
-  swap(values_, other->values_);
-  swap(model_, other->model_);
-  swap(id_, model_->id);
+    throw() {
+  swap(values_, other.values_);
+  swap(model_, other.model_);
+  swap(id_, other.id_);
 }
 
 Contraption& Contraption::operator=(const Contraption &other)
-    throw(FieldExcepton) {
+    throw() {
   Contraption(other).Swap(*this);
+  return *this;
 }
 
-Contraption::Contraption(const Contraption &other) {
-  model_ = other.model;
-  id_ = other.id;
-  InitValues();
+Contraption::Contraption(const Contraption &other) 
+    throw() :
+    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
+    model_(other.model_),
+    id_(other.id_) {
   for (size_t field_id = 0, end = GetFieldNumber();
        field_id < end; ++field_id) {
     if (other.values_[field_id]) {
-      values_[field_id].reset(GetType(field_id)->Duplicate(other.values_[field_id]));
+      values_[field_id].reset(other.values_[field_id]->Duplicate());
     }
   }
 }
 
-Contraption::Contraption(shared_ptr<const Model> model) 
-{
-  model_ = model;
-  id_ = kNewID;
-  InitValues();
+Contraption::Contraption(boost::shared_ptr<const Model> model) 
+    throw():
+    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
+    model_(model),
+    id_(kNewID) {
 }
 

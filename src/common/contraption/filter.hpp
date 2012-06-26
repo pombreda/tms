@@ -3,8 +3,8 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
-#include <common/contraption/model.hpp>
-#include <common/contraption/selecto.hpp>
+#include <contraption/model.hpp>
+#include <contraption/selector.hpp>
 namespace tms {
 namespace common {
 namespace contraption {
@@ -14,7 +14,9 @@ namespace contraption {
 // model filtering.
 //------------------------------------------------------------
 class Filter {
+ public:
   virtual Selector* Apply(Model *model);
+  virtual ~Filter() {}
 };
 }
 }

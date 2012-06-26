@@ -13,7 +13,12 @@
 #include <boost/shared_ptr.hpp>
 // common
 #include <contraption/model.hpp>
-#include <contraption/field_type.hpp>
+#include <contraption/field_type_fwd.hpp>
+#include <contraption/field_fwd.hpp>
+#include <contraption/field_exception.hpp>
+#include <contraption/model_backend_exception.hpp>
+#include <contraption/contraption_accessor_fwd.hpp>
+#include "contraption_fwd.hpp"
 
 namespace tms {
 namespace common {
@@ -22,33 +27,32 @@ namespace contraption {
 // Contraption class. This is an abstract class. Contraption
 // represents an object from real world - model instances.
 //------------------------------------------------------------
-typedef size_t ContraptionID;
-
 class Contraption {
  public:
-  FieldType* GetField(FieldID field_id) const 
-      throw(FieldExcepton, ModelBackendException);
+  FieldType* GetFieldValue(FieldID field_id)
+      throw(FieldException, ModelBackendException);
   
-  FieldType* GetField(const std::string &field) const
-      throw(FieldExcepton, ModelBackendException);
+  FieldType* GetFieldValue(const std::string &field)
+      throw(FieldException, ModelBackendException);
   
   // Field setters only change contraption object.
   // To save changes there is a Save() method.
-  void SetField(FieldID field_id, const FieldType* value)
-      throw(FieldExcepton);
+  void SetFieldValue(FieldID field_id, const FieldType* value)
+      throw(FieldException);
 
-  void SetField(const std::string &field, const FieldType* value)
-      throw(FieldExcepton);
+  void SetFieldValue(const std::string &field, const FieldType* value)
+      throw(FieldException);
   
   size_t GetFieldNumber() const
       throw();
 
-  FieldID GetFieldID(const std::string &field)
+  FieldID GetFieldID(const std::string &field) const
       throw();
+
   std::string GetFieldName(FieldID field_id) const
-      throw(FieldExcepton);
+      throw(FieldException);
   
-  void Save() const
+  void Save()
       throw(ModelBackendException);
   void Refresh()
       throw(ModelBackendException);
@@ -59,15 +63,13 @@ class Contraption {
       throw();
   Contraption(const Contraption &other)
        throw();
-  Contraption(shared_ptr<const Model> model)
-      throw(ContraptionException);
+  Contraption(boost::shared_ptr<const Model> model)
+      throw();
 
   static const ContraptionID kNewID; // for Model class
   
   friend class ContraptionAccessor;
  private:
-  void InitValues()
-      throw();
   std::vector< boost::shared_ptr<FieldType> > values_;
   boost::shared_ptr<const Model> model_;
   ContraptionID id_;

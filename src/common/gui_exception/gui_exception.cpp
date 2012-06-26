@@ -3,7 +3,7 @@ using namespace tms::common;
 using namespace std;
 
 void GUIException::Init(const std::string &message, const std::string &prev_message) {
-  ostringstream ret;
+ostringstream ret;
   if (message.size() > 0) {
     ret << message;
     if (prev_message.size() > 0) {

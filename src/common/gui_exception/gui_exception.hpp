@@ -26,7 +26,8 @@ namespace common {
 
 class GUIException : public std::exception {
  public: 
-  explicit GUIException(const std::string &message) throw () : message_(""){
+  explicit GUIException(const std::string &message) throw () :
+      message_("") {
     Init(message, "");
   }
   

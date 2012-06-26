@@ -3,8 +3,10 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
-#include <common/contraption/model.hpp>
-#include <common/contraption/selecto.hpp>
+#include <vector>
+#include <contraption/model_fwd.hpp>
+#include <contraption/contraption_fwd.hpp>
+
 namespace tms {
 namespace common {
 namespace contraption {
@@ -13,7 +15,9 @@ namespace contraption {
 // Selector class. Selects =)
 //------------------------------------------------------------
 class Selector {
-  virtual vector<Contraption*> Apply(Model *model);
+ public:
+  virtual std::vector<Contraption*> Apply(Model *model);
+  virtual ~Selector() {}
 };
 }
 }

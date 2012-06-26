@@ -24,6 +24,7 @@ class Field {
   virtual bool is_private() const { return is_private_; }
   friend class SimpleField;
   friend class DependantField;
+  virtual ~Field() {}
  private:
   Field(const std::string &name, bool is_private = false) : 
       name_(name),
@@ -32,22 +33,34 @@ class Field {
   bool is_private_;
 };
 
-template<class T>
-class SimpleField {  
+class SimpleField : public Field {  
  public:
-  FieldT(const std::string &name, bool is_private_ = false) : 
+  SimpleField(const std::string &name, bool is_private_ = false) : 
       Field(name, is_private_), 
       backend_name_(name) {}
 
-  FieldT(const std::string &name, const std::string &backend_name_,
+  SimpleField(const std::string &name, const std::string &backend_name_,
          bool is_private_ = false) : 
       Field(name, is_private_), 
-      backend_name_(backend_name_name) {}
-  
-  virtual FieldType* type() const {return type_.get()}
-  virtual ~FieldT() {}
+      backend_name_(backend_name_) {}
+  virtual ~SimpleField() {}
  private:
   std::string backend_name_;  
+};
+
+template<class T>
+class SimpleFieldT : public Field {  
+ public:
+  SimpleFieldT(const std::string &name, bool is_private_ = false) : 
+      SimpleField(name, is_private_) {}
+
+  SimpleFieldT(const std::string &name, const std::string &backend_name_,
+         bool is_private_ = false) : 
+      Field(name, is_private_, backend_name_) {}
+  
+  virtual ~SimpleFieldT() {}
+ private:
+
 };
 
 }
