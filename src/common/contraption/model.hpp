@@ -41,7 +41,7 @@ class Model {
                            Contraption *contraption) const
       throw(FieldException, ModelBackendException);
 
-  Field* GetField(FieldID field_id) const
+  const Field* GetField(FieldID field_id) const
       throw(FieldException);
 
   FieldID GetFieldID(const std::string &field_name) const

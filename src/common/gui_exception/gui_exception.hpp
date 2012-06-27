@@ -42,7 +42,7 @@ class GUIException : public std::exception {
   }
    
   virtual const char* what() const throw () {
-    return "GUIException. To obtain full exception message use ::Message()";
+    return message().c_str();
   }
 
   virtual void Report() const {

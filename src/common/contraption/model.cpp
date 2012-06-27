@@ -14,7 +14,7 @@ size_t Model::GetFieldNumber() const
 FieldType* Model::GetFieldValue(FieldID field_id,
                                 Contraption *contraption) const
     throw(FieldException, ModelBackendException) {
-  if (field_id > GetFieldNumber()) {
+  if (field_id >= GetFieldNumber()) {
     ostringstream msg;
     msg << "Incorrect field_id in GetField: "
         << field_id;
@@ -30,8 +30,14 @@ FieldType* Model::GetFieldValue(
   return GetFieldValue(GetFieldID(field_name), contraption);
 }
 
-Field* Model::GetField(FieldID field_id) const
+const Field* Model::GetField(FieldID field_id) const
     throw(FieldException) {
+  if (field_id >= GetFieldNumber()) {
+    ostringstream msg;
+    msg << "Incorrect field_id in GetField: "
+        << field_id;
+    throw FieldException(msg.str());
+  }
   return fields_[field_id].get();
 }
 

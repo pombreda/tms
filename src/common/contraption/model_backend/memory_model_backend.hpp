@@ -28,20 +28,16 @@ class MemoryModelBackend : public ModelBackend {
       throw(ModelBackendException);      
   virtual void Save(Contraption *contraption)
       throw(ModelBackendException);
-  std::map<std::string, int> &int_fields()
+  std::map<ContraptionID, std::map<std::string, int> >& int_fields()
       throw() {return int_fields_;}
-  std::map<std::string, std::string> &string_fields()
+  std::map<ContraptionID, std::map<std::string, std::string> >& string_fields()
       throw() {return string_fields_;}
   MemoryModelBackend() : 
       int_fields_(),
       string_fields_() {}
-  MemoryModelBackend(std::map<std::string, int> int_fields,
-                     std::map<std::string, std::string> string_fields) : 
-      int_fields_(int_fields),
-      string_fields_(string_fields) {}
  private:
-  std::map<std::string, int> int_fields_;
-  std::map<std::string, std::string> string_fields_;
+  std::map<ContraptionID, std::map<std::string, int> > int_fields_;
+  std::map<ContraptionID, std::map<std::string, std::string> > string_fields_;
 };
 
 }

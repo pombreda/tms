@@ -15,7 +15,8 @@ FieldType* Contraption::GetFieldValue(size_t field_id)
       throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
-    msg << "Incorrect field_id in GetField: " << field_id << ".";
+    msg << "Incorrect field_id in Contraption::GetField: '" 
+        << field_id << "'.";
     throw FieldException(msg.str());
   }
   if (!values_[field_id]) {
@@ -31,15 +32,36 @@ FieldType* Contraption::GetFieldValue(const std::string &field)
 
 void Contraption::SetFieldValue(size_t field_id, const FieldType *value)
     throw(FieldException) {
-  if (field_id >= GetFieldNumber()) {
-    ostringstream msg;
-    msg << "Incorrect field_id in SetField: " << field_id << ".";
-    throw FieldException(msg.str());
-  }
-  return values_[field_id].reset(value->Duplicate());
+  return SetFieldValue(field_id, *value);
 }
 
-void Contraption::SetFieldValue(const std::string &field, const FieldType *value)
+void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
+    throw(FieldException) {
+  if (field_id >= GetFieldNumber()) {
+    ostringstream msg;
+    msg << "Incorrect field_id in Contraption::SetField: '" 
+        << field_id << "'.";
+    throw FieldException(msg.str());
+  }
+  if (model_->GetField(field_id)->CheckType(&value)) {
+    return values_[field_id].reset(value.Duplicate());
+  } else {
+    ostringstream msg;
+    msg << "Incorrect field type in Contraption::SetField - field: '"
+        << GetFieldName(field_id) << "' of type: '"
+        << typeid(model_->GetField(field_id)).name()
+        << "' can not accept value of type '"
+        << typeid(value).name() << "'.";
+    throw FieldException(msg.str());
+  }
+}
+
+void Contraption::SetFieldValue(const string &field, const FieldType& value)
+    throw(FieldException) {
+  SetFieldValue(GetFieldID(field), value);
+}  
+
+void Contraption::SetFieldValue(const string &field, const FieldType *value)
     throw(FieldException) {
   SetFieldValue(GetFieldID(field), value);
 }
@@ -61,7 +83,7 @@ size_t Contraption::GetFieldNumber() const
 }
 
 FieldID Contraption::GetFieldID(const string &field) const
-    throw() {
+    throw(FieldException) {
   return model_->GetFieldID(field);
 }
 

@@ -36,18 +36,24 @@ class Contraption {
       throw(FieldException, ModelBackendException);
   
   // Field setters only change contraption object.
-  // To save changes there is a Save() method.
+  // To save changes there is a Save() method.  
   void SetFieldValue(FieldID field_id, const FieldType* value)
       throw(FieldException);
 
   void SetFieldValue(const std::string &field, const FieldType* value)
       throw(FieldException);
+
+  void SetFieldValue(FieldID field_id, const FieldType& value)
+      throw(FieldException);
+
+  void SetFieldValue(const std::string &field, const FieldType& value)
+      throw(FieldException);  
   
   size_t GetFieldNumber() const
       throw();
 
   FieldID GetFieldID(const std::string &field) const
-      throw();
+      throw(FieldException);
 
   std::string GetFieldName(FieldID field_id) const
       throw(FieldException);
