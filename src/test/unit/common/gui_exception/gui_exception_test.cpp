@@ -17,6 +17,7 @@ using namespace tms::common;
 class Fixture {
  public:
   class DummyException : public exception {
+   public:
     virtual const char *what() const throw() {
       return "DummyException.";
     }

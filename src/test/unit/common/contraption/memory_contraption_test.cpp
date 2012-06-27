@@ -38,6 +38,10 @@ class Fixture {
     vector<Field*> ret;
     ret.push_back(new SimpleFieldT<string>("name"));
     ret.push_back(new SimpleFieldT<int>("age"));
+    ret.push_back(new SimpleFieldT<int>("password", true));
+    ret.push_back(new SimpleFieldT<string>("Surname", 
+                                           "surname", 
+                                           true));
     return ret;
   }
 
@@ -186,7 +190,7 @@ BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
   BOOST_CHECK(dynamic_cast<const SimpleFieldT<int>*>(
       test_model->GetField(1)));
   BOOST_CHECK_THROW(
-      test_model->GetField(2), 
+      test_model->GetField(4), 
       FieldException);
 }
 
@@ -353,7 +357,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
       test_contraption->SetFieldValue(1, value.get()), 
       FieldException);
   BOOST_CHECK_THROW(
-      test_contraption->SetFieldValue(2, 
+      test_contraption->SetFieldValue(4, 
                                       FieldTypeT<int>(17)), 
       FieldException);
   BOOST_CHECK_THROW(
@@ -448,7 +452,7 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
                     string("Dummy"));
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
   BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 1);
-  BOOST_CHECK_THROW(test_contraption->GetFieldValue(2),
+  BOOST_CHECK_THROW(test_contraption->GetFieldValue(4),
                     FieldException);
 }
 
@@ -459,9 +463,19 @@ BOOST_FIXTURE_TEST_CASE(testGetFieldIDName, Fixture) {
       test_contraption->GetFieldID("name")), "name");
   BOOST_CHECK_EQUAL(test_contraption->GetFieldName(
       test_contraption->GetFieldID("age")), "age");
-  BOOST_CHECK_THROW(test_contraption->GetFieldName(2),
+  BOOST_CHECK_THROW(test_contraption->GetFieldName(4),
                     FieldException);
   BOOST_CHECK_THROW(test_contraption->GetFieldID("surname"),
+                    FieldException);
+}
+
+BOOST_FIXTURE_TEST_CASE(testPrivate, Fixture) {
+  boost::scoped_ptr<Contraption> test_contraption(
+      new Contraption(model()));
+  BOOST_CHECK_THROW(test_contraption->GetFieldValue("password"),
+                    FieldException);
+  BOOST_CHECK_THROW(test_contraption->SetFieldValue("password",
+                                                    FieldTypeT<int>(1)),
                     FieldException);
 }
 BOOST_AUTO_TEST_SUITE_END()

@@ -15,7 +15,13 @@ FieldType* Contraption::GetFieldValue(size_t field_id)
       throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
-    msg << "Incorrect field_id in Contraption::GetField: '" 
+    msg << "Incorrect field_id in Contraption::GetFieldValue: '" 
+        << field_id << "'.";
+    throw FieldException(msg.str());
+  }
+  if (IsFieldPrivate(field_id)) {
+    ostringstream msg;
+    msg << "Trying to access private field in Contraption::GetFieldValue: '" 
         << field_id << "'.";
     throw FieldException(msg.str());
   }
@@ -39,7 +45,13 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
     throw(FieldException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
-    msg << "Incorrect field_id in Contraption::SetField: '" 
+    msg << "Incorrect field_id in Contraption::SetFieldValue: '" 
+        << field_id << "'.";
+    throw FieldException(msg.str());
+  }
+  if (IsFieldPrivate(field_id)) {
+    ostringstream msg;
+    msg << "Trying to access private field in Contraption::SetFieldValue: '" 
         << field_id << "'.";
     throw FieldException(msg.str());
   }
@@ -47,7 +59,7 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
     return values_[field_id].reset(value.Duplicate());
   } else {
     ostringstream msg;
-    msg << "Incorrect field type in Contraption::SetField - field: '"
+    msg << "Incorrect field type in Contraption::SetFieldValue - field: '"
         << GetFieldName(field_id) << "' of type: '"
         << typeid(model_->GetField(field_id)).name()
         << "' can not accept value of type '"
@@ -80,6 +92,16 @@ void Contraption::Refresh()
 size_t Contraption::GetFieldNumber() const
     throw() {
   return model_->GetFieldNumber();
+}
+
+bool Contraption::IsFieldPrivate(FieldID field_id) const
+    throw(FieldException) {
+  return model_->GetField(field_id)->is_private();
+}
+
+bool Contraption::IsFieldPrivate(const string &field) const
+    throw(FieldException) {
+  return IsFieldPrivate(GetFieldID(field));
 }
 
 FieldID Contraption::GetFieldID(const string &field) const

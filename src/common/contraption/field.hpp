@@ -84,7 +84,7 @@ class SimpleFieldT : virtual public SimpleField,
          bool is_private_ = false)
       throw(FieldException) : 
       Field(name, is_private_),
-      SimpleField(name, is_private_, backend_name_),
+      SimpleField(name, backend_name_, is_private_),
       FieldT<T>(name, is_private_){}
   
   virtual ~SimpleFieldT() {}

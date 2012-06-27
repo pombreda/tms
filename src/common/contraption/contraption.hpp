@@ -55,6 +55,12 @@ class Contraption {
   FieldID GetFieldID(const std::string &field) const
       throw(FieldException);
 
+  bool IsFieldPrivate(const std::string &field) const
+      throw(FieldException);
+  
+  bool IsFieldPrivate(FieldID field_id) const
+      throw(FieldException);
+
   std::string GetFieldName(FieldID field_id) const
       throw(FieldException);
   
