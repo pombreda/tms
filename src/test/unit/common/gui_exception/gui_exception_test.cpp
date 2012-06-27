@@ -47,19 +47,19 @@ BOOST_FIXTURE_TEST_CASE(testWhat, Fixture)
 {
   BOOST_CHECK_EQUAL(
       string(from_message.what()), 
-      string("GUIException. To obtain full exception message use ::Message()")
+      string("Exception Occured.")
                     );
   BOOST_CHECK_EQUAL(
       string(from_exception.what()), 
-      string("GUIException. To obtain full exception message use ::Message()")
+      string("DummyException.")
                     );
   BOOST_CHECK_EQUAL(
       string(from_exception_message.what()), 
-      string("GUIException. To obtain full exception message use ::Message()")
+      string("Exception was thrown.\n==\nDummyException.")
                     );
   BOOST_CHECK_EQUAL(
       string(from_gui_exception.what()), 
-      string("GUIException. To obtain full exception message use ::Message()")
+      string("GUIException was thrown.\n==\nException Occured.")
                     );
 }
 

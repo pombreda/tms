@@ -403,6 +403,9 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetString, Fixture) {
                     string("Dummy"));
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
   BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 1);
+
+  BOOST_CHECK_THROW(test_contraption->GetFieldValue("surname"),
+                    FieldException);
 }
 
 BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
@@ -445,7 +448,20 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
                     string("Dummy"));
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
   BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 1);
+  BOOST_CHECK_THROW(test_contraption->GetFieldValue(2),
+                    FieldException);
 }
 
-
+BOOST_FIXTURE_TEST_CASE(testGetFieldIDName, Fixture) {
+  boost::scoped_ptr<Contraption> test_contraption(
+      new Contraption(model()));
+  BOOST_CHECK_EQUAL(test_contraption->GetFieldName(
+      test_contraption->GetFieldID("name")), "name");
+  BOOST_CHECK_EQUAL(test_contraption->GetFieldName(
+      test_contraption->GetFieldID("age")), "age");
+  BOOST_CHECK_THROW(test_contraption->GetFieldName(2),
+                    FieldException);
+  BOOST_CHECK_THROW(test_contraption->GetFieldID("surname"),
+                    FieldException);
+}
 BOOST_AUTO_TEST_SUITE_END()
