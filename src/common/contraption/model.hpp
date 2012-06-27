@@ -52,13 +52,15 @@ class Model {
 
   Model(const std::vector< Field* > &fields, 
         ModelBackend *backend)
-      throw();
+      throw(FieldException);
   
   Model(const std::vector< Field* > &fields, 
         boost::shared_ptr<ModelBackend> backend)
-      throw();
+      throw(FieldException);
 
  private:  
+  void InitFields(const std::vector< Field* > &fields)
+      throw(FieldException);
   Model() : 
       fields_(0), 
       fields_by_name_(), 

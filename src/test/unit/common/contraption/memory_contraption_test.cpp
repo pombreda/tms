@@ -130,6 +130,15 @@ BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
                                                   new MemoryModelBackend()));
     BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), test_fields.size());
   }
+  {
+    vector<Field*> test_fields;
+    test_fields.push_back(new SimpleFieldT<string>("name"));
+    test_fields.push_back(new SimpleFieldT<string>("name"));
+    test_fields.push_back(new SimpleFieldT<int>("age"));
+    BOOST_CHECK_THROW(
+        Model(test_fields, new MemoryModelBackend()), 
+        FieldException);
+  }
 }
 
 BOOST_FIXTURE_TEST_CASE(testContraptionConstructor, Fixture) {

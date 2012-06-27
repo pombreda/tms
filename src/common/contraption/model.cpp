@@ -55,22 +55,34 @@ void Model::Save(Contraption *contraption) const
 
 Model::Model(const vector<Field*> &fields, 
              ModelBackend *backend)
-    throw() : 
-    fields_(fields.size()),
+    throw(FieldException) : 
+    fields_(),
     fields_by_name_(),
     backend_(backend) {
-  for (size_t pos = 0, end = fields.size(); pos < end; ++pos) {
-    fields_[pos].reset(fields[pos]);
-  }
+  InitFields(fields);
 }
 
 Model::Model(const vector<Field*> &fields, 
              boost::shared_ptr<ModelBackend> backend)
-    throw() : 
+    throw(FieldException) : 
     fields_(fields.size()),
     fields_by_name_(),
     backend_(backend) {
-  for (size_t pos = 0, end = fields.size(); pos < end; ++pos) {
-    fields_[pos].reset(fields[pos]);
+  InitFields(fields);
+}
+
+void Model::InitFields(const std::vector< Field* > &fields)
+    throw(FieldException) {
+  size_t size = fields.size();
+  for (size_t field_id = 0; field_id < size; ++field_id) {
+    Field *field = fields[field_id];
+    fields_.push_back(boost::shared_ptr<Field>(field));
+    if (fields_by_name_.count(field->name()) > 0) {
+      ostringstream msg;
+      msg << "Duplicate field name in InitFields: "
+          << field->name();
+      throw FieldException(msg.str());    
+    }
+    fields_by_name_[field->name()] = field_id;
   }
 }
