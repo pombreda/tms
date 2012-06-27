@@ -15,6 +15,7 @@
 #include <contraption/model_backend.hpp>
 #include <contraption/model_backend/memory_model_backend.hpp>
 #include <contraption/field.hpp>
+#include <contraption/field/simple_field.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/contraption_accessor.hpp>
  
@@ -40,13 +41,13 @@ class Fixture {
     ret.push_back(new SimpleFieldT<int>("age"));
     ret.push_back(new SimpleFieldT<int>("password", true));
     ret.push_back(new SimpleFieldT<string>("Surname", 
-                                           "surname", 
-                                           true));
+                                           "surname"));
+
     return ret;
   }
 
-  boost::shared_ptr<Model> model() {
-    return boost::shared_ptr<Model>(new Model(fields(), 
+  boost::intrusive_ptr<Model> model() {
+    return boost::intrusive_ptr<Model>(new Model(fields(), 
                                               backend()));    
   }
   virtual ~Fixture() {}
@@ -157,7 +158,7 @@ BOOST_FIXTURE_TEST_CASE(testContraptionConstructor, Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testGetFieldID, Fixture) {
-  boost::shared_ptr<Model> test_model = model();
+  boost::intrusive_ptr<Model> test_model = model();
   BOOST_CHECK_EQUAL(test_model->GetFieldID("name"), 0);
   BOOST_CHECK_EQUAL(test_model->GetFieldID("age"), 1);
   BOOST_CHECK_THROW(
@@ -180,7 +181,7 @@ BOOST_FIXTURE_TEST_CASE(testGetFieldID, Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
-  boost::shared_ptr<Model> test_model = model();
+  boost::intrusive_ptr<Model> test_model = model();
   BOOST_CHECK_EQUAL(test_model->GetField(0)->name(),
                     "name");
   BOOST_CHECK_EQUAL(test_model->GetField(1)->name(),
@@ -196,7 +197,7 @@ BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
   MemoryModelBackend* test_backend = backend();
-  boost::shared_ptr<Model> test_model(
+  boost::intrusive_ptr<Model> test_model(
       new Model(fields(), test_backend));    
   boost::scoped_ptr<Contraption> test_contraption(
       new Contraption(test_model));
@@ -205,7 +206,6 @@ BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
   boost::scoped_ptr<FieldType> value(
       new FieldTypeT<string>("Dummy"));
   test_contraption->SetFieldValue("name", value.get());
-
   value.reset(new FieldTypeT<int>(12));
   test_contraption->SetFieldValue("age", value.get());
   
@@ -278,13 +278,11 @@ BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
       test_contraption->SetFieldValue("surname", 
                                       FieldTypeT<int>(17)), 
       FieldException);
-
-
 }
 
 BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
   MemoryModelBackend* test_backend = backend();
-  boost::shared_ptr<Model> test_model(
+  boost::intrusive_ptr<Model> test_model(
       new Model(fields(), test_backend));    
   boost::scoped_ptr<Contraption> test_contraption(
       new Contraption(test_model));
@@ -369,7 +367,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testRefreshGetString, Fixture) {
   MemoryModelBackend* test_backend = backend();
-  boost::shared_ptr<Model> test_model(
+  boost::intrusive_ptr<Model> test_model(
       new Model(fields(), test_backend));    
   boost::scoped_ptr<Contraption> test_contraption(
       new Contraption(test_model));
@@ -389,10 +387,8 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetString, Fixture) {
       test_contraption->GetFieldValue("age"))->data();
   string name = dynamic_cast<FieldTypeT<string>*>(
       test_contraption->GetFieldValue("name"))->data();
-  
   BOOST_CHECK_EQUAL(age, 12);
   BOOST_CHECK_EQUAL(name, string("Dummy"));
-  
   test_contraption->Refresh();
   age = dynamic_cast<FieldTypeT<int>*>(
       test_contraption->GetFieldValue("age"))->data();
@@ -414,7 +410,7 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetString, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
   MemoryModelBackend* test_backend = backend();
-  boost::shared_ptr<Model> test_model(
+  boost::intrusive_ptr<Model> test_model(
       new Model(fields(), test_backend));    
   boost::scoped_ptr<Contraption> test_contraption(
       new Contraption(test_model));
@@ -477,5 +473,21 @@ BOOST_FIXTURE_TEST_CASE(testPrivate, Fixture) {
   BOOST_CHECK_THROW(test_contraption->SetFieldValue("password",
                                                     FieldTypeT<int>(1)),
                     FieldException);
+}
+
+BOOST_FIXTURE_TEST_CASE(testBackend, Fixture) {
+  MemoryModelBackend* test_backend = backend();
+  boost::intrusive_ptr<Model> test_model(
+      new Model(fields(), test_backend));    
+  boost::scoped_ptr<Contraption> test_contraption(
+      new Contraption(test_model));
+  ContraptionAccessor accessor(test_contraption.get());
+  test_contraption->SetFieldValue("Surname", FieldTypeT<string>("Dummy"));
+  test_contraption->Save();
+  BOOST_CHECK_EQUAL(test_backend->string_fields()[accessor.id()]["surname"], 
+                    string("Dummy"));
+  BOOST_CHECK_EQUAL(test_backend->string_fields()[accessor.id()].count("Surname"), 
+                    0);
+
 }
 BOOST_AUTO_TEST_SUITE_END()

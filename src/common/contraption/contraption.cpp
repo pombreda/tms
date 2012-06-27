@@ -22,13 +22,13 @@ FieldType* Contraption::GetFieldValue(size_t field_id)
   if (IsFieldPrivate(field_id)) {
     ostringstream msg;
     msg << "Trying to access private field in Contraption::GetFieldValue: '" 
-        << field_id << "'.";
+        << GetFieldName(field_id) << "'.";
     throw FieldException(msg.str());
   }
-  if (!values_[field_id]) {
-    values_[field_id].reset(model_->GetFieldValue(field_id, this));
-  }
-  return values_[field_id].get()->Duplicate();
+  //  if (!values_[field_id]) {
+    model_->GetFieldValue(field_id, this, id_);
+    //  }
+    return values_[(int)field_id]->Duplicate();
 }
 
 FieldType* Contraption::GetFieldValue(const std::string &field)
@@ -52,11 +52,11 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
   if (IsFieldPrivate(field_id)) {
     ostringstream msg;
     msg << "Trying to access private field in Contraption::SetFieldValue: '" 
-        << field_id << "'.";
+        << GetFieldName(field_id) << "'.";
     throw FieldException(msg.str());
   }
   if (model_->GetField(field_id)->CheckType(&value)) {
-    return values_[field_id].reset(value.Duplicate());
+    return values_[(int)field_id].reset(value.Duplicate());
   } else {
     ostringstream msg;
     msg << "Incorrect field type in Contraption::SetFieldValue - field: '"
@@ -80,13 +80,12 @@ void Contraption::SetFieldValue(const string &field, const FieldType *value)
 
 void Contraption::Save()
     throw(ModelBackendException) {
-  model_->Save(this);
+  model_->Save(this, id_);
 }
 
 void Contraption::Refresh()
-    throw(ModelBackendException) {
-  vector< boost::shared_ptr<FieldType> >(GetFieldNumber(), 
-                                         boost::shared_ptr<FieldType>()).swap(values_);
+    throw() {
+  values_.reset(new boost::scoped_ptr<FieldType>[GetFieldNumber()]);
 }
 
 size_t Contraption::GetFieldNumber() const
@@ -130,20 +129,20 @@ Contraption& Contraption::operator=(const Contraption &other)
 Contraption::Contraption(const Contraption &other) 
     throw() :
     model_(other.model_),
-    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
+    values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(other.id_) {
   for (size_t field_id = 0, end = GetFieldNumber();
        field_id < end; ++field_id) {
-    if (other.values_[field_id]) {
-      values_[field_id].reset(other.values_[field_id]->Duplicate());
+    if (other.values_[(int)field_id]) {
+      values_[(int)field_id].reset(other.values_[(int)field_id]->Duplicate());
     }
   }
 }
 
-Contraption::Contraption(boost::shared_ptr<const Model> model) 
+Contraption::Contraption(boost::intrusive_ptr<Model> model) 
     throw():
     model_(model),
-    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
+    values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(kNewID) {
 }
 

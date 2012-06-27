@@ -11,6 +11,9 @@
 // boost
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
+#include <boost/scoped_array.hpp>
+#include <boost/scoped_ptr.hpp>
 // common
 #include <contraption/model.hpp>
 #include <contraption/field_type_fwd.hpp>
@@ -67,7 +70,7 @@ class Contraption {
   void Save()
       throw(ModelBackendException);
   void Refresh()
-      throw(ModelBackendException);
+      throw();
   
   void Swap(Contraption &other)
       throw();
@@ -75,15 +78,17 @@ class Contraption {
       throw();
   Contraption(const Contraption &other)
       throw();
-  Contraption(boost::shared_ptr<const Model> model)
+  Contraption(boost::intrusive_ptr<Model> model)
       throw();
-
+  
   static const ContraptionID kNewID; // for Model class
   
   friend class ContraptionAccessor;
+  template<typename T>
+  friend class SimpleFieldT;
  private:
-  boost::shared_ptr<const Model> model_;
-  std::vector< boost::shared_ptr<FieldType> > values_;
+  boost::intrusive_ptr<Model> model_;
+  boost::scoped_array<boost::scoped_ptr<FieldType> > values_;
   ContraptionID id_;
 };
 

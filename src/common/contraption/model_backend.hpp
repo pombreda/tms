@@ -4,11 +4,13 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
+// stl
+#include <vector>
 // common
-#include <contraption/model_fwd.hpp>
-#include <contraption/field_type_fwd.hpp>
-#include <contraption/contraption_fwd.hpp>
 #include <contraption/model_backend_exception.hpp>
+#include <contraption/record.hpp>
+#include <contraption/contraption_fwd.hpp>
+#include <contraption/selector.hpp>
 
 namespace tms {
 namespace common {
@@ -19,11 +21,16 @@ namespace contraption {
 //------------------------------------------------------------
 class ModelBackend {
  public:
-  virtual FieldType* GetField(FieldID field_id,
-                              Contraption *contraption)
+  virtual void ReadRecords(
+      std::vector<Record*> records,
+      ContraptionID id)
       throw(ModelBackendException) = 0;
-  virtual void Save(Contraption *contraption)
+  virtual void WriteRecords(
+      std::vector<Record*> records,
+      ContraptionID &id)
       throw(ModelBackendException) = 0;
+  virtual std::auto_ptr<std::vector<ContraptionID> > Select(const Selector &selector) {}
+
   virtual ~ModelBackend() {}
 };
 

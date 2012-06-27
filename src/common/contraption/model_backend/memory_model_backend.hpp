@@ -23,11 +23,16 @@ namespace contraption {
 //------------------------------------------------------------
 class MemoryModelBackend : public ModelBackend {
  public:
-  virtual FieldType* GetField(FieldID field_id, 
-                              Contraption *contraption)
+  virtual void ReadRecords(
+      std::vector<Record*> records,
+      ContraptionID id)
       throw(ModelBackendException);      
-  virtual void Save(Contraption *contraption)
-      throw(ModelBackendException);
+
+  virtual void WriteRecords(
+      std::vector<Record*> records,
+      ContraptionID &id)
+      throw(ModelBackendException);      
+
   std::map<ContraptionID, std::map<std::string, int> >& int_fields()
       throw() {return int_fields_;}
   std::map<ContraptionID, std::map<std::string, std::string> >& string_fields()

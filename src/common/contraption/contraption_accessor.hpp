@@ -11,9 +11,9 @@ class ContraptionAccessor {
   ContraptionAccessor(Contraption *contraption) 
       throw() :
       contraption_(contraption) { }
-  std::vector< boost::shared_ptr<FieldType> >& values() const
+  boost::scoped_array<boost::scoped_ptr<FieldType> > &values() const
       throw() { return contraption_->values_; }
-  boost::shared_ptr<const Model>& model() const
+  boost::intrusive_ptr<Model>& model() const
       throw() { return contraption_->model_; }
   ContraptionID& id() const
       throw() { return contraption_->id_; }

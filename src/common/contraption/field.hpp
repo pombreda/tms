@@ -3,12 +3,15 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
+// std
 #include <string>
 #include <memory>
+// common
 #include <contraption/model.hpp>
 #include <contraption/filter.hpp>
 #include <contraption/selector.hpp>
-
+#include <contraption/record.hpp>
+#include <contraption/contraption_fwd.hpp>
 
 namespace tms {
 namespace common {
@@ -23,6 +26,14 @@ class Field {
  public:
   virtual std::string name() const { return name_; }
   virtual bool is_private() const { return is_private_; }
+  virtual void Initialize(Model *model) {model = model;}
+  virtual void GetReadRecords(Contraption *contraption, 
+                              std::vector<Record*> &out
+                              ) const = 0;
+  virtual void GetWriteRecords(Contraption *contraption, 
+                               std::vector<Record*> &out
+                               ) const = 0;
+
   virtual bool CheckType(const FieldType *type) const = 0;
   friend class SimpleField;
   friend class DependantField;
@@ -32,14 +43,18 @@ class Field {
       name_(name),
       is_private_(is_private) {
     if (name.size() == 0) {
-      throw FieldException("Field cannot be constructed from empty name");
+      throw FieldException("Field cannot be constructed from empty name.");
     }
   }
  private:
-  std::string name_;  
-  bool is_private_;
+  const std::string name_;  
+  const bool is_private_;
 };
 
+//------------------------------------------------------------
+// FieldT class. All non-abstract fiels classes must inherit 
+// this class.
+//------------------------------------------------------------
 template<class T>
 class FieldT : virtual public Field {  
  public:
@@ -50,44 +65,6 @@ class FieldT : virtual public Field {
     return dynamic_cast<const FieldTypeT<T>*>(type);
   }
   virtual ~FieldT() {}
-};
-
-
-class SimpleField : virtual public Field {  
- public:
-  SimpleField(const std::string &name, bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_), 
-      backend_name_(name) {}
-
-  SimpleField(const std::string &name, const std::string &backend_name_,
-         bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_), 
-      backend_name_(backend_name_) {}
-  virtual ~SimpleField() {}
- private:
-  std::string backend_name_;  
-};
-
-template<class T>
-class SimpleFieldT : virtual public SimpleField,
-                     virtual public FieldT<T> {  
- public:
-  SimpleFieldT(const std::string &name, bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_),
-      SimpleField(name, is_private_),
-      FieldT<T>(name, is_private_) {}
-
-  SimpleFieldT(const std::string &name, const std::string &backend_name_,
-         bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_),
-      SimpleField(name, backend_name_, is_private_),
-      FieldT<T>(name, is_private_){}
-  
-  virtual ~SimpleFieldT() {}
 };
 
 }

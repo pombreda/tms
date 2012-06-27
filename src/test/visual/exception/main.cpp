@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include <gui_exception/gui_exception.hpp>
+#include <gui_exception/gui_exception_report.hpp>
 #include <wx/xrc/xmlres.h>
 
 using namespace tms::common;
@@ -89,7 +90,7 @@ bool ExceptionTest::OnInit()
   try {
     throw GUIException("Libraty intr.dll was not found");
   } catch (const GUIException &e) {
-    e.Report();
+    Report(e);
     return false;
   }
   return true;

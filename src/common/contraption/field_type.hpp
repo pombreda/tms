@@ -9,6 +9,7 @@
 #include <boost/concept/assert.hpp>
 #include <boost/concept_check.hpp>
 // 
+#include <contraption/field_fwd.hpp>
 #include "field_type_fwd.hpp"
 
 namespace tms {
@@ -40,6 +41,7 @@ class FieldTypeT : public FieldType {
   T data() const { return data_; }
   void set_data(const T & data) {data_ = data;}
   virtual FieldTypeT<T>* Duplicate() const { return new FieldTypeT<T>(data_); } 
+  friend class SimpleFieldT<T>;
  private:
   T data_;
 };

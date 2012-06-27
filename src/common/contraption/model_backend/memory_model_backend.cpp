@@ -4,43 +4,39 @@
 #include <exception>
 #include <algorithm>
 // common
-#include <contraption/field.hpp>
-#include <contraption/field_type.hpp>
-#include <contraption/contraption_accessor.hpp>
+#include <contraption/record.hpp>
+#include <contraption/contraption.hpp> // for kNewID only
 //
 #include "memory_model_backend.hpp"
 
 using namespace tms::common::contraption;
 using namespace std;
 
-FieldType* MemoryModelBackend::GetField(FieldID field_id, 
-                                        Contraption *contraption)
+void MemoryModelBackend::ReadRecords(
+    std::vector<Record*> records,
+    ContraptionID id)
     throw(ModelBackendException) {
   try {
-    ContraptionAccessor accessor(contraption);
-    const Model *model = accessor.model().get();
-    const ContraptionID id = accessor.id();
-    const Field *field = model->GetField(field_id);
-    const SimpleField *simple_field = dynamic_cast<const SimpleField*>(field);
-    if (simple_field) {
-      const SimpleFieldT<int> *int_field = 
-          dynamic_cast<const SimpleFieldT<int>*>(simple_field);
-      if (int_field) {
-        int value = int_fields_[id][field->name()];
-        return new FieldTypeT<int>(value);
-      } 
-      const SimpleFieldT<string> *string_field = 
-          dynamic_cast<const SimpleFieldT<string>*>(simple_field);
-      if (string_field) {
-        string value = string_fields_[id][field->name()];
-        return new FieldTypeT<string>(value);
-      } 
-    } 
-    ostringstream msg;
-    msg << "Unknown FieldType: '" << typeid(*field).name()
-        << "' for field: '" << contraption->GetFieldName(field_id) 
-        << "' in MemoryModelBackend::GetField.";
-    throw ModelBackendException(msg.str());
+    for (size_t pos = 0, end = records.size(); pos < end; ++pos) {
+      {
+        RecordT<int> *record = dynamic_cast<RecordT<int>*>(records[pos]);
+        if (record) {
+          *record->data = int_fields_[id][record->field];
+          continue;
+        }
+      }
+      {
+        RecordT<string> *record = dynamic_cast<RecordT<string>*>(records[pos]);
+        if (record) {
+          *record->data = string_fields_[id][record->field];
+          continue;
+        }
+      }
+      ostringstream msg;
+      msg << "Unknown Record type: '" << typeid(*records[pos]).name()
+          << "' in MemoryModelBackend::ReadRecords.";
+      throw ModelBackendException(msg.str());
+    }
   }catch (const ModelBackendException &e) {
     throw e;
   } catch (const exception &e) {
@@ -50,50 +46,40 @@ FieldType* MemoryModelBackend::GetField(FieldID field_id,
   }
 }
 
-void MemoryModelBackend::Save(Contraption *contraption)
+
+void MemoryModelBackend::WriteRecords(
+    std::vector<Record*> records,
+    ContraptionID &id)
     throw(ModelBackendException) {
-  ContraptionAccessor accessor(contraption);
-  try {
-    const Model *model = accessor.model().get();
-    ContraptionID &id = accessor.id();
-    if (id == Contraption::kNewID) {
-      if (int_fields_.size() > 0) {
-        id = int_fields_.rbegin()->first;
-      }
-      ++id;
-      int_fields_[id]["#_id__#"] = (int)id;
+  if (id == Contraption::kNewID) {
+    if (int_fields_.size() > 0) {
+      id = int_fields_.rbegin()->first;
     }
-    for (size_t field_id = 0, end = model->GetFieldNumber(); 
-         field_id < end; ++field_id) {
-      const Field *field = model->GetField(field_id);
-      const FieldType *value = accessor.values()[field_id].get();
-      if (!value) {
-        continue;
+    ++id;
+    int_fields_[id]["#_id__#"] = (int)id;
+  }
+  try {
+    for (size_t pos = 0, end = records.size(); pos < end; ++pos) {
+      {
+        RecordT<int> *record = dynamic_cast<RecordT<int>*>(records[pos]);
+        if (record) {
+          int_fields_[id][record->field] = *record->data;
+          continue;
+        }
       }
-      const SimpleField *simple_field = dynamic_cast<const SimpleField*>(field);
-      if (simple_field) {
-        const SimpleFieldT<int> *int_field = 
-            dynamic_cast<const SimpleFieldT<int>*>(simple_field);
-        if (int_field) {
-          int_fields_[id][field->name()] = 
-              dynamic_cast<const FieldTypeT<int>*>(value)->data();
+      {
+        RecordT<string> *record = dynamic_cast<RecordT<string>*>(records[pos]);
+        if (record) {
+          string_fields_[id][record->field] = *record->data;
           continue;
-        } 
-        const SimpleFieldT<string> *string_field = 
-            dynamic_cast<const SimpleFieldT<string>*>(simple_field);
-        if (string_field) {
-          string_fields_[id][field->name()] = 
-              dynamic_cast<const FieldTypeT<string>*>(value)->data();
-          continue;
-        } 
+        }
       }
       ostringstream msg;
-      msg << "Unknown FieldType: '" << typeid(*value).name()
-          << "' for field: '" << contraption->GetFieldName(field_id) 
-          << "' in MemoryModelBackend::Save.";
+      msg << "Unknown Record type: '" << typeid(*records[pos]).name()
+          << "' in MemoryModelBackend::WriteRecords.";
       throw ModelBackendException(msg.str());
     }
-  } catch (const ModelBackendException &e) {
+  }catch (const ModelBackendException &e) {
     throw e;
   } catch (const exception &e) {
     throw ModelBackendException(&e);
@@ -101,3 +87,4 @@ void MemoryModelBackend::Save(Contraption *contraption)
     throw ModelBackendException("Nonstandart exception");
   }
 }
+

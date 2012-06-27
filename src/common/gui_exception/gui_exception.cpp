@@ -13,3 +13,4 @@ ostringstream ret;
   ret << prev_message;
   message_ = ret.str();
 }
+

@@ -3,8 +3,9 @@ add_subdirectory(model_backend)
 add_library (tms_contraption SHARED
   model.cpp  
   contraption.cpp
+  contraption_array.cpp
   )
 
-#find_package(Boost COMPONENTS serialization REQUIRED)
+find_package(Boost COMPONENTS signals REQUIRED)
 
-target_link_libraries(tms_contraption tms_exception)
+target_link_libraries(tms_contraption tms_exception ${Boost_LIBRARIES})

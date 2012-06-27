@@ -10,13 +10,6 @@
 #include <sstream>
 #include <memory>
 
-#ifdef TMS_GUI
-#include <gui_exception/gui_exception_report_dialog.hpp>
-#else
-#include <iostream>
-#endif
-
-
 namespace tms {
 namespace common {
 
@@ -43,15 +36,6 @@ class GUIException : public std::exception {
    
   virtual const char* what() const throw () {
     return message().c_str();
-  }
-
-  virtual void Report() const {
-#ifdef TMS_GUI
-    GuiExceptionReportDialog dlg(message());
-    dlg.ShowModal();
-#else
-    std::cerr << message() << std::endl;
-#endif
   }
 
   virtual std::string message() const throw ()

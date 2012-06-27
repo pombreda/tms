@@ -1,6 +1,11 @@
 #include <contraption/contraption.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/field.hpp>
+#include <contraption/contraption_array.hpp>
+#include <contraption/contraption_accessor.hpp>
+#include <contraption/selector.hpp>
+#include <contraption/selector/all_selector.hpp>
+#include <boost/mem_fn.hpp>
 #include "model.hpp"
 
 using namespace tms::common::contraption;
@@ -11,8 +16,9 @@ size_t Model::GetFieldNumber() const
   return fields_.size();
 }
 
-FieldType* Model::GetFieldValue(FieldID field_id,
-                                Contraption *contraption) const
+void Model::GetFieldValue(FieldID field_id,
+                          Contraption *contraption,
+                          ContraptionID id) const
     throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
@@ -20,14 +26,31 @@ FieldType* Model::GetFieldValue(FieldID field_id,
         << field_id << "'.";
     throw FieldException(msg.str());
   }
-  return backend_->GetField(field_id, contraption);
+  Field *field = fields_[field_id].get();
+  vector<Record*> out(0);
+  const GUIException *ex = 0;
+  try {
+    field->GetReadRecords(contraption, out);
+    backend_->ReadRecords(out, id);
+  } catch (const FieldException &e) {
+    ex = &e;
+  } catch (const ModelBackendException &e) {
+    ex = &e;
+  }
+  for (size_t pos = 0, end = out.size(); pos < end; ++pos) {
+    delete out[pos];
+  }
+  if (ex) {
+    throw *ex;
+  }
 }
 
-FieldType* Model::GetFieldValue(
+void Model::GetFieldValue(
     const std::string &field_name,
-    Contraption *contraption) const
+    Contraption *contraption,
+    ContraptionID id) const
     throw(FieldException, ModelBackendException) {
-  return GetFieldValue(GetFieldID(field_name), contraption);
+  GetFieldValue(GetFieldID(field_name), contraption, id);
 }
 
 const Field* Model::GetField(FieldID field_id) const
@@ -54,14 +77,58 @@ FieldID Model::GetFieldID(const std::string &field_name) const
   return it->second;
 }
 
-void Model::Save(Contraption *contraption) const
+void Model::Save(Contraption *contraption, ContraptionID &id) const
     throw(ModelBackendException) {
-  backend_->Save(contraption);
+  vector<Record*> out(0);
+  const GUIException *ex = 0;
+  try {
+    for (FieldID field_id = 0, end = fields_.size();
+         field_id < end; ++field_id) {
+      fields_[field_id]->GetWriteRecords(contraption, out);
+    }
+    backend_->WriteRecords(out, id);
+  } catch (const FieldException &e) {
+    ex = &e;
+  } catch (const ModelBackendException &e) {
+    ex = &e;
+  }
+  for (size_t pos = 0, end = out.size(); pos < end; ++pos) {
+    delete out[pos];
+  }
+  if (ex) {
+    throw *ex;
+  }
+}
+
+void Model::SaveHandle(ContraptionArray& array)
+    throw(ModelBackendException) {
+  for (size_t pos = 0, end = array.size(); pos < end; ++pos) {
+    if (ContraptionAccessor(&array[pos]).model().get() != this) {
+      throw(ModelBackendException(
+          "Contraption was created from wrong model in ConrraptionArray::Save."));
+    }
+    array[pos].Save();
+  }
+}
+
+ContraptionArray Model::GetContraptions() const 
+    throw(ModelBackendException) {
+  auto_ptr< vector<ContraptionID> > ids = backend_->Select(AllSelector());
+  /* vector<Contraption> contraptions;
+  for (size_t pos = 0, end = ids->size(); pos < end; ++pos) {
+    contraptions.push_back(Contraption(this));
+    ContraptionAccessor accessor(contraption).id() = (*ids)[pos];
+  }
+  std::auto_ptr<boost::signal<void (std::vector<Contraption>&)> > saver(
+      new boost::signal<void (std::vector<Contraption>&)>());
+  saver->connect(boost::mem_fn(SaveHandle));
+  return ContraptionArray(saver, contraptions);*/
 }
 
 Model::Model(const vector<Field*> &fields, 
              ModelBackend *backend)
     throw(FieldException) : 
+    ptr_count_(0),
     fields_(),
     fields_by_name_(),
     backend_(backend) {
@@ -71,6 +138,7 @@ Model::Model(const vector<Field*> &fields,
 Model::Model(const vector<Field*> &fields, 
              boost::shared_ptr<ModelBackend> backend)
     throw(FieldException) : 
+    ptr_count_(0),
     fields_(fields.size()),
     fields_by_name_(),
     backend_(backend) {
@@ -90,5 +158,8 @@ void Model::InitFields(const std::vector< Field* > &fields)
       throw FieldException(msg.str());    
     }
     fields_by_name_[field->name()] = field_id;
+  }
+  for (size_t field_id = 0; field_id < size; ++field_id) {
+    fields_[field_id]->Initialize(this);
   }
 }
