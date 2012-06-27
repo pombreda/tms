@@ -53,8 +53,20 @@ void Model::Save(Contraption *contraption) const
   backend_->Save(contraption);
 }
 
-Model::Model(const std::vector<Field*> &fields, 
-             ModelBackend *backend) throw() : 
+Model::Model(const vector<Field*> &fields, 
+             ModelBackend *backend)
+    throw() : 
+    fields_(fields.size()),
+    fields_by_name_(),
+    backend_(backend) {
+  for (size_t pos = 0, end = fields.size(); pos < end; ++pos) {
+    fields_[pos].reset(fields[pos]);
+  }
+}
+
+Model::Model(const vector<Field*> &fields, 
+             boost::shared_ptr<ModelBackend> backend)
+    throw() : 
     fields_(fields.size()),
     fields_by_name_(),
     backend_(backend) {

@@ -26,21 +26,28 @@ class Field {
   friend class DependantField;
   virtual ~Field() {}
  private:
-  Field(const std::string &name, bool is_private = false) : 
+  Field(const std::string &name, bool is_private = false) 
+      throw(FieldException) : 
       name_(name),
-      is_private_(is_private) {}
+      is_private_(is_private) {
+    if (name.size() == 0) {
+      throw FieldException("Field cannot be constructed from empty name");
+    }
+  }
   std::string name_;  
   bool is_private_;
 };
 
 class SimpleField : public Field {  
  public:
-  SimpleField(const std::string &name, bool is_private_ = false) : 
+  SimpleField(const std::string &name, bool is_private_ = false)
+      throw(FieldException) : 
       Field(name, is_private_), 
       backend_name_(name) {}
 
   SimpleField(const std::string &name, const std::string &backend_name_,
-         bool is_private_ = false) : 
+         bool is_private_ = false)
+      throw(FieldException) : 
       Field(name, is_private_), 
       backend_name_(backend_name_) {}
   virtual ~SimpleField() {}
@@ -49,18 +56,18 @@ class SimpleField : public Field {
 };
 
 template<class T>
-class SimpleFieldT : public Field {  
+class SimpleFieldT : public SimpleField {  
  public:
-  SimpleFieldT(const std::string &name, bool is_private_ = false) : 
+  SimpleFieldT(const std::string &name, bool is_private_ = false)
+      throw(FieldException) : 
       SimpleField(name, is_private_) {}
 
   SimpleFieldT(const std::string &name, const std::string &backend_name_,
-         bool is_private_ = false) : 
+         bool is_private_ = false)
+      throw(FieldException) : 
       Field(name, is_private_, backend_name_) {}
   
   virtual ~SimpleFieldT() {}
- private:
-
 };
 
 }

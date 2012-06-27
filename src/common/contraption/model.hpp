@@ -46,15 +46,19 @@ class Model {
 
   FieldID GetFieldID(const std::string &field_name) const
       throw(FieldException);
-
+  
   void Save(Contraption *contraption) const
       throw(ModelBackendException);
 
   Model(const std::vector< Field* > &fields, 
         ModelBackend *backend)
       throw();
+  
+  Model(const std::vector< Field* > &fields, 
+        boost::shared_ptr<ModelBackend> backend)
+      throw();
 
- protected:  
+ private:  
   Model() : 
       fields_(0), 
       fields_by_name_(), 

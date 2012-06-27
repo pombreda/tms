@@ -62,7 +62,7 @@ class Contraption {
   Contraption& operator=(const Contraption &other)
       throw();
   Contraption(const Contraption &other)
-       throw();
+      throw();
   Contraption(boost::shared_ptr<const Model> model)
       throw();
 
@@ -70,8 +70,8 @@ class Contraption {
   
   friend class ContraptionAccessor;
  private:
-  std::vector< boost::shared_ptr<FieldType> > values_;
   boost::shared_ptr<const Model> model_;
+  std::vector< boost::shared_ptr<FieldType> > values_;
   ContraptionID id_;
 };
 

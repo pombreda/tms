@@ -85,8 +85,8 @@ Contraption& Contraption::operator=(const Contraption &other)
 
 Contraption::Contraption(const Contraption &other) 
     throw() :
-    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
     model_(other.model_),
+    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
     id_(other.id_) {
   for (size_t field_id = 0, end = GetFieldNumber();
        field_id < end; ++field_id) {
@@ -98,8 +98,8 @@ Contraption::Contraption(const Contraption &other)
 
 Contraption::Contraption(boost::shared_ptr<const Model> model) 
     throw():
-    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
     model_(model),
+    values_(GetFieldNumber(), boost::shared_ptr<FieldType>()),
     id_(kNewID) {
 }
 
