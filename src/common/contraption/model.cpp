@@ -16,8 +16,8 @@ FieldType* Model::GetFieldValue(FieldID field_id,
     throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
-    msg << "Incorrect field_id in GetField: "
-        << field_id;
+    msg << "Incorrect field_id in Model::GetField: '"
+        << field_id << "'.";
     throw FieldException(msg.str());
   }
   return backend_->GetField(field_id, contraption);
@@ -34,8 +34,8 @@ const Field* Model::GetField(FieldID field_id) const
     throw(FieldException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
-    msg << "Incorrect field_id in GetField: "
-        << field_id;
+    msg << "Incorrect field_id in Model::GetField: '"
+        << field_id << "'.";
     throw FieldException(msg.str());
   }
   return fields_[field_id].get();
@@ -47,8 +47,8 @@ FieldID Model::GetFieldID(const std::string &field_name) const
       fields_by_name_.find(field_name);
   if (it == fields_by_name_.end()) {
     ostringstream msg;
-    msg << "Incorrect field_name in GetField: "
-        << field_name;
+    msg << "Incorrect field_name in Model::GetField: '"
+        << field_name << ".'";
     throw FieldException(msg.str());
   }
   return it->second;
@@ -85,8 +85,8 @@ void Model::InitFields(const std::vector< Field* > &fields)
     fields_.push_back(boost::shared_ptr<Field>(field));
     if (fields_by_name_.count(field->name()) > 0) {
       ostringstream msg;
-      msg << "Duplicate field name in InitFields: "
-          << field->name();
+      msg << "Duplicate field name in Model::InitFields: '"
+          << field->name() << "'";
       throw FieldException(msg.str());    
     }
     fields_by_name_[field->name()] = field_id;

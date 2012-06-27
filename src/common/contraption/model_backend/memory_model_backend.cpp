@@ -37,9 +37,9 @@ FieldType* MemoryModelBackend::GetField(FieldID field_id,
       } 
     } 
     ostringstream msg;
-    msg << "Unknown FieldType: " << typeid(*field).name()
-        << " for field: " << contraption->GetFieldName(field_id) 
-        << " in MemoryModelBackend::GetField.";
+    msg << "Unknown FieldType: '" << typeid(*field).name()
+        << "' for field: '" << contraption->GetFieldName(field_id) 
+        << "' in MemoryModelBackend::GetField.";
     throw ModelBackendException(msg.str());
   }catch (const ModelBackendException &e) {
     throw e;
@@ -88,9 +88,9 @@ void MemoryModelBackend::Save(Contraption *contraption)
         } 
       }
       ostringstream msg;
-      msg << "Unknown FieldType: " << typeid(*value).name()
-          << " for field: " << contraption->GetFieldName(field_id) 
-          << " in MemoryModelBackend::Save.";
+      msg << "Unknown FieldType: '" << typeid(*value).name()
+          << "' for field: '" << contraption->GetFieldName(field_id) 
+          << "' in MemoryModelBackend::Save.";
       throw ModelBackendException(msg.str());
     }
   } catch (const ModelBackendException &e) {
