@@ -18,6 +18,7 @@
 #include <contraption/field/simple_field.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/contraption_accessor.hpp>
+#include <contraption/contraption_array.hpp>
  
 using namespace std;
 using namespace tms::common::contraption;
@@ -31,8 +32,9 @@ class Fixture {
   Fixture() {
   }
 
-  MemoryModelBackend* backend() {
-    return new MemoryModelBackend();
+  boost::shared_ptr<MemoryModelBackend> backend() {
+    return boost::shared_ptr<MemoryModelBackend>(
+        new MemoryModelBackend());
   }
 
   vector<Field*> fields() {
@@ -42,13 +44,11 @@ class Fixture {
     ret.push_back(new SimpleFieldT<int>("password", true));
     ret.push_back(new SimpleFieldT<string>("Surname", 
                                            "surname"));
-
     return ret;
   }
 
-  boost::intrusive_ptr<Model> model() {
-    return boost::intrusive_ptr<Model>(new Model(fields(), 
-                                              backend()));    
+  ModelP model() {
+    return ModelP(new Model(fields(), backend()));    
   }
   virtual ~Fixture() {}
 };
@@ -99,33 +99,34 @@ BOOST_FIXTURE_TEST_CASE(testSimpleFieldTConstructor, Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testModelConstructor, Fixture) {
-  {
-    boost::scoped_ptr<Model> test_model(new Model(vector<Field*>(), 
-                                                  backend()));
-    BOOST_CHECK(test_model);
-  }
-  {
-    boost::scoped_ptr<Model> test_model(new Model(vector<Field*>(), 
-                                                  new MemoryModelBackend()));
-    BOOST_CHECK(test_model);
-  }
-  {
-    boost::scoped_ptr<Model> test_model(new Model(fields(), 
-                                                  new MemoryModelBackend()));
-    BOOST_CHECK(test_model);
-  }
+  Model(fields(), backend());
   BOOST_CHECK(model());
+  {
+    ModelP test_model(new Model(vector<Field*>(), 
+                                backend()));
+    BOOST_CHECK(test_model);
+  }
+  {
+    ModelP test_model(new Model(vector<Field*>(), 
+                                new MemoryModelBackend()));
+    BOOST_CHECK(test_model);
+  }
+  {
+    ModelP test_model(new Model(fields(), 
+                                new MemoryModelBackend()));
+    BOOST_CHECK(test_model);
+  }
 }
 
 BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
   {
-    boost::scoped_ptr<Model> test_model(new Model(vector<Field*>(), 
-                                                  new MemoryModelBackend()));
+    ModelP test_model(new Model(vector<Field*>(), 
+                                new MemoryModelBackend()));
     BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), 0);
   }
   {
-    boost::scoped_ptr<Model> test_model(new Model(fields(), 
-                                                  new MemoryModelBackend()));
+    ModelP test_model(new Model(fields(), 
+                                new MemoryModelBackend()));
     BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), fields().size());
   }
   {
@@ -133,8 +134,8 @@ BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
     test_fields.push_back(new SimpleFieldT<string>("name"));
     test_fields.push_back(new SimpleFieldT<string>("surname"));
     test_fields.push_back(new SimpleFieldT<int>("age"));
-    boost::scoped_ptr<Model> test_model(new Model(test_fields, 
-                                                  new MemoryModelBackend()));
+    ModelP test_model(new Model(test_fields, 
+                                new MemoryModelBackend()));
     BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), test_fields.size());
   }
   {
@@ -149,39 +150,35 @@ BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testContraptionConstructor, Fixture) {
-  boost::scoped_ptr<Contraption> test_contraprion(
-      new Contraption(model()));
+  ContraptionP test_contraprion(new Contraption(model()));
   BOOST_CHECK(test_contraprion);
-  boost::scoped_ptr<Contraption> copy_contraprion(
-      new Contraption(*test_contraprion));
+  ContraptionP copy_contraprion(new Contraption(*test_contraprion));
   BOOST_CHECK(test_contraprion);
 }
 
 BOOST_FIXTURE_TEST_CASE(testGetFieldID, Fixture) {
-  boost::intrusive_ptr<Model> test_model = model();
+  ModelP test_model = model();
   BOOST_CHECK_EQUAL(test_model->GetFieldID("name"), 0);
   BOOST_CHECK_EQUAL(test_model->GetFieldID("age"), 1);
   BOOST_CHECK_THROW(
       test_model->GetFieldID("surname"), 
       FieldException);
-  boost::scoped_ptr<Contraption> test_contraprion(
-      new Contraption(model()));
-  BOOST_CHECK_EQUAL(test_contraprion->GetFieldID("name"), 0);
-  BOOST_CHECK_EQUAL(test_contraprion->GetFieldID("age"), 1);
+  ContraptionP test_contraprion(new Contraption(model()));
+  BOOST_CHECK_EQUAL(test_contraprion->GetID("name"), 0);
+  BOOST_CHECK_EQUAL(test_contraprion->GetID("age"), 1);
   BOOST_CHECK_THROW(
-      test_contraprion->GetFieldID("surname"), 
+      test_contraprion->GetID("surname"), 
       FieldException);
-  boost::scoped_ptr<Contraption> copy_contraprion(
-      new Contraption(*test_contraprion));
-  BOOST_CHECK_EQUAL(copy_contraprion->GetFieldID("name"), 0);
-  BOOST_CHECK_EQUAL(copy_contraprion->GetFieldID("age"), 1); 
+  ContraptionP copy_contraprion(new Contraption(*test_contraprion));
+  BOOST_CHECK_EQUAL(copy_contraprion->GetID("name"), 0);
+  BOOST_CHECK_EQUAL(copy_contraprion->GetID("age"), 1); 
   BOOST_CHECK_THROW(
-      copy_contraprion->GetFieldID("surname"), 
+      copy_contraprion->GetID("surname"), 
       FieldException);
 }
 
 BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
-  boost::intrusive_ptr<Model> test_model = model();
+  ModelP test_model = model();
   BOOST_CHECK_EQUAL(test_model->GetField(0)->name(),
                     "name");
   BOOST_CHECK_EQUAL(test_model->GetField(1)->name(),
@@ -196,18 +193,13 @@ BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
-  MemoryModelBackend* test_backend = backend();
-  boost::intrusive_ptr<Model> test_model(
-      new Model(fields(), test_backend));    
-  boost::scoped_ptr<Contraption> test_contraption(
-      new Contraption(test_model));
+  boost::shared_ptr<MemoryModelBackend> test_backend = backend();
+  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
 
-  boost::scoped_ptr<FieldType> value(
-      new FieldTypeT<string>("Dummy"));
-  test_contraption->SetFieldValue("name", value.get());
-  value.reset(new FieldTypeT<int>(12));
-  test_contraption->SetFieldValue("age", value.get());
+  test_contraption->Set<string>("name", "Dummy");
+  test_contraption->Set("age", 12);
   
   BOOST_CHECK(accessor.id() == Contraption::kNewID);
 
@@ -220,13 +212,13 @@ BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
 
   BOOST_CHECK_EQUAL(test_backend->int_fields()[accessor.id()]["age"],
                     12);
+
   BOOST_CHECK_EQUAL(test_backend->string_fields()[accessor.id()]["name"], 
                     string("Dummy"));
 
   ContraptionID id = accessor.id();
 
-  value.reset(new FieldTypeT<int>(14));
-  test_contraption->SetFieldValue("age", value.get());
+  test_contraption->Set("age", 14);
   test_contraption->Save();
   BOOST_CHECK(accessor.id() == id);
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
@@ -238,13 +230,11 @@ BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
                     string("Dummy"));
 
   
-  boost::scoped_ptr<Contraption> test_contraption2(
+  ContraptionP test_contraption2(
       new Contraption(test_model));
   ContraptionAccessor accessor2(test_contraption2.get());
-  test_contraption2->SetFieldValue("age", 
-                                  FieldTypeT<int>(17));
-  test_contraption2->SetFieldValue("name", 
-                                  FieldTypeT<string>("Leonid"));
+  test_contraption2->Set("age", 17);
+  test_contraption2->Set<string>("name", "Leonid");
   test_contraption2->Save();
 
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 2);
@@ -264,36 +254,29 @@ BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
                     string("Leonid"));
 
   
-  value.reset(new FieldTypeT< vector<int> >());
   BOOST_CHECK_THROW(
-      test_contraption->SetFieldValue("age", value.get()), 
+      test_contraption->Set("age", vector<int>()), 
       FieldException);
-  
+
+
   BOOST_CHECK_THROW(
-      test_contraption->SetFieldValue("name", 
-                                      FieldTypeT<int>(17)), 
+      test_contraption->Set("name", 17), 
       FieldException);
 
   BOOST_CHECK_THROW(
-      test_contraption->SetFieldValue("surname", 
-                                      FieldTypeT<int>(17)), 
+      test_contraption->Set("surname", 17), 
       FieldException);
 }
 
 BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
-  MemoryModelBackend* test_backend = backend();
-  boost::intrusive_ptr<Model> test_model(
-      new Model(fields(), test_backend));    
-  boost::scoped_ptr<Contraption> test_contraption(
-      new Contraption(test_model));
+  boost::shared_ptr<MemoryModelBackend> test_backend 
+      = backend();
+  ModelP test_model(new Model(fields(), test_backend));    
+  ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
 
-  boost::scoped_ptr<FieldType> value(
-      new FieldTypeT<string>("Dummy"));
-  test_contraption->SetFieldValue(0, value.get());
-
-  value.reset(new FieldTypeT<int>(12));
-  test_contraption->SetFieldValue(1, value.get());
+  test_contraption->Set<string>(0, "Dummy");
+  test_contraption->Set(1, 12);
   
   BOOST_CHECK(accessor.id() == Contraption::kNewID);
 
@@ -311,8 +294,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
 
   ContraptionID id = accessor.id();
 
-  value.reset(new FieldTypeT<int>(14));
-  test_contraption->SetFieldValue(1, value.get());
+  test_contraption->Set(1, 14);
   test_contraption->Save();
   BOOST_CHECK(accessor.id() == id);
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
@@ -324,13 +306,10 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
                     string("Dummy"));
 
   
-  boost::scoped_ptr<Contraption> test_contraption2(
-      new Contraption(test_model));
+  ContraptionP test_contraption2(new Contraption(test_model));
   ContraptionAccessor accessor2(test_contraption2.get());
-  test_contraption2->SetFieldValue(1, 
-                                  FieldTypeT<int>(17));
-  test_contraption2->SetFieldValue(0, 
-                                  FieldTypeT<string>("Leonid"));
+  test_contraption2->Set(1, 17);
+  test_contraption2->Set<string>(0, "Leonid");
   test_contraption2->Save();
 
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 2);
@@ -350,52 +329,42 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
                     string("Leonid"));
 
   
-  value.reset(new FieldTypeT< vector<int> >());
   BOOST_CHECK_THROW(
-      test_contraption->SetFieldValue(1, value.get()), 
+      test_contraption->Set(1, vector<int>()), 
       FieldException);
   BOOST_CHECK_THROW(
-      test_contraption->SetFieldValue(4, 
-                                      FieldTypeT<int>(17)), 
+      test_contraption->Set(4, 17), 
       FieldException);
   BOOST_CHECK_THROW(
-      test_contraption->SetFieldValue(0, 
-                                      FieldTypeT<int>(17)), 
+      test_contraption->Set(0, 17), 
       FieldException);
 }
 
 
 BOOST_FIXTURE_TEST_CASE(testRefreshGetString, Fixture) {
-  MemoryModelBackend* test_backend = backend();
-  boost::intrusive_ptr<Model> test_model(
-      new Model(fields(), test_backend));    
-  boost::scoped_ptr<Contraption> test_contraption(
-      new Contraption(test_model));
+  boost::shared_ptr<MemoryModelBackend> test_backend 
+      = backend();
+  ModelP test_model(new Model(fields(), test_backend));    
+  ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>("age"), 0);
+  test_contraption->Set<string>("name", "Dummy");
 
-  boost::scoped_ptr<FieldType> value(
-      new FieldTypeT<string>("Dummy"));
-  test_contraption->SetFieldValue("name", value.get());
-
-  value.reset(new FieldTypeT<int>(12));
-  test_contraption->SetFieldValue("age", value.get());
-  
+  test_contraption->Set("age", 12);
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>("age"), 12);
   test_contraption->Save();
 
   test_backend->int_fields()[accessor.id()]["age"] = 18;
-  int age = dynamic_cast<FieldTypeT<int>*>(
-      test_contraption->GetFieldValue("age"))->data();
-  string name = dynamic_cast<FieldTypeT<string>*>(
-      test_contraption->GetFieldValue("name"))->data();
-  BOOST_CHECK_EQUAL(age, 12);
-  BOOST_CHECK_EQUAL(name, string("Dummy"));
+
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>("age"), 12);
+  BOOST_CHECK_EQUAL(test_contraption->Get<string>("name"), 
+                    string("Dummy"));
   test_contraption->Refresh();
-  age = dynamic_cast<FieldTypeT<int>*>(
-      test_contraption->GetFieldValue("age"))->data();
-  name = dynamic_cast<FieldTypeT<string>*>(
-      test_contraption->GetFieldValue("name"))->data();
-  BOOST_CHECK_EQUAL(age, 18);
-  BOOST_CHECK_EQUAL(name, string("Dummy"));
+
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>("age"), 18);
+  BOOST_CHECK_EQUAL(test_contraption->Get<string>("name"), 
+                    string("Dummy"));
+
   BOOST_CHECK(accessor.id() != Contraption::kNewID);
   BOOST_CHECK_EQUAL(test_backend->int_fields()[accessor.id()]["age"], 
                     18);
@@ -404,43 +373,36 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetString, Fixture) {
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
   BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 1);
 
-  BOOST_CHECK_THROW(test_contraption->GetFieldValue("surname"),
+  BOOST_CHECK_THROW(test_contraption->Get<int>("surname"),
                     FieldException);
 }
 
 BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
-  MemoryModelBackend* test_backend = backend();
-  boost::intrusive_ptr<Model> test_model(
-      new Model(fields(), test_backend));    
-  boost::scoped_ptr<Contraption> test_contraption(
-      new Contraption(test_model));
+  boost::shared_ptr<MemoryModelBackend> test_backend 
+      = backend();
+  ModelP test_model(new Model(fields(), test_backend));    
+  ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
 
-  boost::scoped_ptr<FieldType> value(
-      new FieldTypeT<string>("Dummy"));
-  test_contraption->SetFieldValue("name", value.get());
-
-  value.reset(new FieldTypeT<int>(12));
-  test_contraption->SetFieldValue("age", value.get());
+  test_contraption->Set<string>("name", "Dummy");
+  test_contraption->Set("age", 12);
   
   test_contraption->Save();
 
   test_backend->int_fields()[accessor.id()]["age"] = 18;
-  int age = dynamic_cast<FieldTypeT<int>*>(
-      test_contraption->GetFieldValue(1))->data();
-  string name = dynamic_cast<FieldTypeT<string>*>(
-      test_contraption->GetFieldValue(0))->data();
-  
-  BOOST_CHECK_EQUAL(age, 12);
-  BOOST_CHECK_EQUAL(name, string("Dummy"));
+
+  BOOST_CHECK_THROW(test_contraption->Get<string>(1),
+                    FieldException);  
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>(1),
+                    12);
+  BOOST_CHECK_EQUAL(test_contraption->Get<string>(0), 
+                    string("Dummy"));
   
   test_contraption->Refresh();
-  age = dynamic_cast<FieldTypeT<int>*>(
-      test_contraption->GetFieldValue(1))->data();
-  name = dynamic_cast<FieldTypeT<string>*>(
-      test_contraption->GetFieldValue(0))->data();
-  BOOST_CHECK_EQUAL(age, 18);
-  BOOST_CHECK_EQUAL(name, string("Dummy"));
+
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>(1), 18);
+  BOOST_CHECK_EQUAL(test_contraption->Get<string>(0), 
+                    string("Dummy"));
   BOOST_CHECK(accessor.id() != Contraption::kNewID);
   BOOST_CHECK_EQUAL(test_backend->int_fields()[accessor.id()]["age"], 
                     18);
@@ -448,46 +410,102 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
                     string("Dummy"));
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
   BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 1);
-  BOOST_CHECK_THROW(test_contraption->GetFieldValue(4),
+  BOOST_CHECK_THROW(test_contraption->Get<int>(4),
                     FieldException);
 }
 
 BOOST_FIXTURE_TEST_CASE(testGetFieldIDName, Fixture) {
-  boost::scoped_ptr<Contraption> test_contraption(
+  ContraptionP test_contraption(
       new Contraption(model()));
-  BOOST_CHECK_EQUAL(test_contraption->GetFieldName(
-      test_contraption->GetFieldID("name")), "name");
-  BOOST_CHECK_EQUAL(test_contraption->GetFieldName(
-      test_contraption->GetFieldID("age")), "age");
-  BOOST_CHECK_THROW(test_contraption->GetFieldName(4),
+  BOOST_CHECK_EQUAL(test_contraption->GetName(
+      test_contraption->GetID("name")), "name");
+  BOOST_CHECK_EQUAL(test_contraption->GetName(
+      test_contraption->GetID("age")), "age");
+  BOOST_CHECK_THROW(test_contraption->GetName(4),
                     FieldException);
-  BOOST_CHECK_THROW(test_contraption->GetFieldID("surname"),
+  BOOST_CHECK_THROW(test_contraption->GetID("surname"),
                     FieldException);
 }
 
 BOOST_FIXTURE_TEST_CASE(testPrivate, Fixture) {
-  boost::scoped_ptr<Contraption> test_contraption(
+  ContraptionP test_contraption(
       new Contraption(model()));
-  BOOST_CHECK_THROW(test_contraption->GetFieldValue("password"),
+  BOOST_CHECK_THROW(test_contraption->Get<int>("password"),
                     FieldException);
-  BOOST_CHECK_THROW(test_contraption->SetFieldValue("password",
-                                                    FieldTypeT<int>(1)),
+  BOOST_CHECK_THROW(test_contraption->Set("password", 1),
                     FieldException);
 }
 
-BOOST_FIXTURE_TEST_CASE(testBackend, Fixture) {
-  MemoryModelBackend* test_backend = backend();
-  boost::intrusive_ptr<Model> test_model(
-      new Model(fields(), test_backend));    
-  boost::scoped_ptr<Contraption> test_contraption(
-      new Contraption(test_model));
+BOOST_FIXTURE_TEST_CASE(testBackendName, Fixture) {
+  boost::shared_ptr<MemoryModelBackend> test_backend(backend());
+  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
-  test_contraption->SetFieldValue("Surname", FieldTypeT<string>("Dummy"));
+  test_contraption->Set<string>("Surname", "Dummy");
   test_contraption->Save();
   BOOST_CHECK_EQUAL(test_backend->string_fields()[accessor.id()]["surname"], 
                     string("Dummy"));
   BOOST_CHECK_EQUAL(test_backend->string_fields()[accessor.id()].count("Surname"), 
                     0);
-
 }
+
+BOOST_FIXTURE_TEST_CASE(testDelete, Fixture) {
+  boost::shared_ptr<MemoryModelBackend> test_backend(backend());
+  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionAccessor accessor(test_contraption.get());
+  test_contraption->Set<string>("Surname", "Dummy");
+  test_contraption->Save();
+  BOOST_CHECK_EQUAL(test_backend->string_fields()[accessor.id()]["surname"], 
+                    string("Dummy"));
+  BOOST_CHECK_EQUAL(test_backend->string_fields()[accessor.id()].count("Surname"), 
+                    0);
+  BOOST_CHECK(accessor.id() != Contraption::kNewID);
+  test_contraption->Delete();
+  BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 
+                    0);
+  BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 
+                    0);
+  BOOST_CHECK_EQUAL(accessor.id(), 
+                    Contraption::kNewID);
+}
+
+BOOST_FIXTURE_TEST_CASE(testAll, Fixture) {
+  boost::shared_ptr<MemoryModelBackend> test_backend(backend());
+  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionAccessor accessor(test_contraption.get());
+  test_contraption->Set<int>("age", 10);
+  test_contraption->Set<string>("Surname", "Dummy");
+  test_contraption->Save();
+  test_contraption.reset(new Contraption(test_model));
+  test_contraption->Set<int>("age", 12);
+  test_contraption->Set<string>("Surname", "Ymmud");
+  test_contraption->Save();
+  ContraptionArrayP contraptions = test_model->All();
+  BOOST_CHECK_EQUAL(contraptions->size(), 
+                    2);
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+                    10);
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+                    "Dummy");
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+                    12);
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+                    "Ymmud");
+  contraptions->erase(contraptions->begin());
+  contraptions->Save();
+  contraptions = test_model->All();
+  BOOST_CHECK_EQUAL(contraptions->size(), 
+                    1);
+  test_contraption.reset(new Contraption(test_model));
+  test_contraption->Set<int>("age", 10);
+  test_contraption->Set<string>("Surname", "Dummy");
+  contraptions->push_back(test_contraption);
+  contraptions->Save();
+  contraptions = test_model->All();
+  BOOST_CHECK_EQUAL(contraptions->size(), 
+                    2);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

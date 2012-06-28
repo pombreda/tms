@@ -10,6 +10,7 @@
 #include <boost/concept_check.hpp>
 // 
 #include <contraption/field_fwd.hpp>
+#include <contraption/field/simple_field_fwd.hpp>
 #include "field_type_fwd.hpp"
 
 namespace tms {

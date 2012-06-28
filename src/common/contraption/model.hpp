@@ -39,26 +39,16 @@ class Model {
   size_t GetFieldNumber() const
       throw();
   
-  void GetFieldValue(FieldID field_id, 
-                     Contraption *contraption,
-                     ContraptionID id) const 
-      throw(FieldException, ModelBackendException);
-  
-  void GetFieldValue(const std::string &field_name, 
-                     Contraption *contraption,
-                     ContraptionID id) const
-      throw(FieldException, ModelBackendException);
-
   const Field* GetField(FieldID field_id) const
       throw(FieldException);
 
   FieldID GetFieldID(const std::string &field_name) const
       throw(FieldException);
   
-  void Save(Contraption *contraption, ContraptionID &id) const
-      throw(ModelBackendException);
+  ContraptionArrayP All()
+      throw(ModelBackendException) {return GetContraptions();}
 
-  ContraptionArray GetContraptions() const
+  ContraptionArrayP GetContraptions()
       throw(ModelBackendException);
 
   Model(const std::vector< Field* > &fields, 
@@ -71,8 +61,26 @@ class Model {
 
   friend void boost::intrusive_ptr_add_ref(Model* model);
   friend void boost::intrusive_ptr_release(Model* model);
+  friend class Contraption;
  private:  
-  void SaveHandle (ContraptionArray& array)
+  void GetFieldValue(FieldID field_id, 
+                     Contraption *contraption,
+                     ContraptionID id) const 
+      throw(FieldException, ModelBackendException);
+  
+  void GetFieldValue(const std::string &field_name, 
+                     Contraption *contraption,
+                     ContraptionID id) const
+      throw(FieldException, ModelBackendException);
+
+  void Save(Contraption *contraption, ContraptionID &id) const
+      throw(ModelBackendException);
+
+  void Delete(ContraptionID &id) const
+      throw(ModelBackendException);
+
+  void SaveHandle(const std::vector<ContraptionP> &save, 
+                  const std::vector<ContraptionP> &remove)
       throw(ModelBackendException);
   void InitFields(const std::vector< Field* > &fields)
       throw(FieldException);

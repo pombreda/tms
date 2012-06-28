@@ -5,8 +5,9 @@
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/selector.hpp>
 #include <contraption/selector/all_selector.hpp>
-#include <boost/mem_fn.hpp>
+#include <boost/bind.hpp>
 #include "model.hpp"
+#include <iostream> //oops
 
 using namespace tms::common::contraption;
 using namespace std;
@@ -31,7 +32,9 @@ void Model::GetFieldValue(FieldID field_id,
   const GUIException *ex = 0;
   try {
     field->GetReadRecords(contraption, out);
-    backend_->ReadRecords(out, id);
+    if (!out.empty()) {
+      backend_->ReadRecords(out, id);
+    }
   } catch (const FieldException &e) {
     ex = &e;
   } catch (const ModelBackendException &e) {
@@ -41,7 +44,10 @@ void Model::GetFieldValue(FieldID field_id,
     delete out[pos];
   }
   if (ex) {
-    throw *ex;
+    if (dynamic_cast<const FieldException*>(ex)) {
+      throw FieldException(ex);
+    }
+    throw ModelBackendException(ex);
   }
 }
 
@@ -100,29 +106,60 @@ void Model::Save(Contraption *contraption, ContraptionID &id) const
   }
 }
 
-void Model::SaveHandle(ContraptionArray& array)
+void Model::Delete(ContraptionID &id) const
     throw(ModelBackendException) {
-  for (size_t pos = 0, end = array.size(); pos < end; ++pos) {
-    if (ContraptionAccessor(&array[pos]).model().get() != this) {
-      throw(ModelBackendException(
-          "Contraption was created from wrong model in ConrraptionArray::Save."));
+  backend_->DeleteEntry(id);
+}
+
+void Model::SaveHandle(const vector<ContraptionP> &save, 
+                       const vector<ContraptionP> &remove)
+    throw(ModelBackendException) {
+  ostringstream msg;
+  for (size_t pos = 0, end = save.size(); pos < end; ++pos) {
+    try {
+      if (ContraptionAccessor(save[pos].get()).model().get() != this) {
+        throw(ModelBackendException(
+            "Contraption was created from wrong model in ConrraptionArray::Save."));              
+      }
+      save[pos]->Save();
+    } catch (const ModelBackendException &e) {
+      if (msg.str().size() != 0) {
+        msg << "\n==\n";
+      }
+      msg << e.message();
     }
-    array[pos].Save();
+  }
+  for (size_t pos = 0, end = remove.size(); pos < end; ++pos) {
+    try {
+      save[pos]->Delete();
+    } catch (const ModelBackendException &e) {
+      if (msg.str().size() != 0) {
+        msg << "\n==\n";
+      }
+      msg << e.message();
+    }
+  }
+  if (msg.str().size() != 0) {
+    string emsg = "Several errors occured:" + msg.str();
+    throw(ModelBackendException(emsg));
   }
 }
 
-ContraptionArray Model::GetContraptions() const 
+ContraptionArrayP Model::GetContraptions()
     throw(ModelBackendException) {
-  auto_ptr< vector<ContraptionID> > ids = backend_->Select(AllSelector());
-  /* vector<Contraption> contraptions;
+  auto_ptr< vector<ContraptionID> > ids = backend_->Select(
+      boost::scoped_ptr<Selector>(new AllSelector()).get());
+  vector<ContraptionP> contraptions;
   for (size_t pos = 0, end = ids->size(); pos < end; ++pos) {
-    contraptions.push_back(Contraption(this));
-    ContraptionAccessor accessor(contraption).id() = (*ids)[pos];
+    contraptions.push_back(ContraptionP(new Contraption(this)));
+    ContraptionAccessor accessor(contraptions[pos].get());
+    accessor.id() = (*ids)[pos];
   }
-  std::auto_ptr<boost::signal<void (std::vector<Contraption>&)> > saver(
-      new boost::signal<void (std::vector<Contraption>&)>());
-  saver->connect(boost::mem_fn(SaveHandle));
-  return ContraptionArray(saver, contraptions);*/
+  auto_ptr<ContraptionArray::SaverType> saver(
+      new ContraptionArray::SaverType());
+  saver->connect(boost::bind(&Model::SaveHandle, this, _1, _2));
+  return ContraptionArrayP(
+      new ContraptionArray(saver, contraptions));
 }
 
 Model::Model(const vector<Field*> &fields, 
@@ -139,7 +176,7 @@ Model::Model(const vector<Field*> &fields,
              boost::shared_ptr<ModelBackend> backend)
     throw(FieldException) : 
     ptr_count_(0),
-    fields_(fields.size()),
+    fields_(),
     fields_by_name_(),
     backend_(backend) {
   InitFields(fields);

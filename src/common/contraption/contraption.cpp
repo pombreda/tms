@@ -19,26 +19,14 @@ FieldType* Contraption::GetFieldValue(size_t field_id)
         << field_id << "'.";
     throw FieldException(msg.str());
   }
-  if (IsFieldPrivate(field_id)) {
+  if (IsPrivate(field_id)) {
     ostringstream msg;
     msg << "Trying to access private field in Contraption::GetFieldValue: '" 
-        << GetFieldName(field_id) << "'.";
+        << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
-  //  if (!values_[field_id]) {
-    model_->GetFieldValue(field_id, this, id_);
-    //  }
-    return values_[(int)field_id]->Duplicate();
-}
-
-FieldType* Contraption::GetFieldValue(const std::string &field)
-    throw(FieldException, ModelBackendException) {
-  return GetFieldValue(GetFieldID(field));
-}
-
-void Contraption::SetFieldValue(size_t field_id, const FieldType *value)
-    throw(FieldException) {
-  return SetFieldValue(field_id, *value);
+  model_->GetFieldValue(field_id, this, id_);
+  return values_[(int)field_id]->Duplicate();
 }
 
 void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
@@ -49,18 +37,19 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
         << field_id << "'.";
     throw FieldException(msg.str());
   }
-  if (IsFieldPrivate(field_id)) {
+  if (IsPrivate(field_id)) {
     ostringstream msg;
     msg << "Trying to access private field in Contraption::SetFieldValue: '" 
-        << GetFieldName(field_id) << "'.";
+        << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
   if (model_->GetField(field_id)->CheckType(&value)) {
-    return values_[(int)field_id].reset(value.Duplicate());
+    values_[(int)field_id].reset(value.Duplicate());
+    on_change_();
   } else {
     ostringstream msg;
     msg << "Incorrect field type in Contraption::SetFieldValue - field: '"
-        << GetFieldName(field_id) << "' of type: '"
+        << GetName(field_id) << "' of type: '"
         << typeid(model_->GetField(field_id)).name()
         << "' can not accept value of type '"
         << typeid(value).name() << "'.";
@@ -68,19 +57,14 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
   }
 }
 
-void Contraption::SetFieldValue(const string &field, const FieldType& value)
-    throw(FieldException) {
-  SetFieldValue(GetFieldID(field), value);
-}  
-
-void Contraption::SetFieldValue(const string &field, const FieldType *value)
-    throw(FieldException) {
-  SetFieldValue(GetFieldID(field), value);
-}
-
 void Contraption::Save()
     throw(ModelBackendException) {
   model_->Save(this, id_);
+}
+
+void Contraption::Delete()
+    throw(ModelBackendException) {
+  model_->Delete(id_);
 }
 
 void Contraption::Refresh()
@@ -93,22 +77,22 @@ size_t Contraption::GetFieldNumber() const
   return model_->GetFieldNumber();
 }
 
-bool Contraption::IsFieldPrivate(FieldID field_id) const
+bool Contraption::IsPrivate(FieldID field_id) const
     throw(FieldException) {
   return model_->GetField(field_id)->is_private();
 }
 
-bool Contraption::IsFieldPrivate(const string &field) const
+bool Contraption::IsPrivate(const string &field) const
     throw(FieldException) {
-  return IsFieldPrivate(GetFieldID(field));
+  return IsPrivate(GetID(field));
 }
 
-FieldID Contraption::GetFieldID(const string &field) const
+FieldID Contraption::GetID(const string &field) const
     throw(FieldException) {
   return model_->GetFieldID(field);
 }
 
-string Contraption::GetFieldName(FieldID field_id) const
+string Contraption::GetName(FieldID field_id) const
     throw(FieldException) {
   return model_->GetField(field_id)->name();
 }
@@ -128,6 +112,9 @@ Contraption& Contraption::operator=(const Contraption &other)
 
 Contraption::Contraption(const Contraption &other) 
     throw() :
+    ptr_count_(0),
+    in_array_(false),
+    on_change_(),
     model_(other.model_),
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(other.id_) {
@@ -139,10 +126,22 @@ Contraption::Contraption(const Contraption &other)
   }
 }
 
-Contraption::Contraption(boost::intrusive_ptr<Model> model) 
+Contraption::Contraption(ModelP model) 
     throw():
+    ptr_count_(0),
+    in_array_(false),
+    on_change_(),
     model_(model),
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(kNewID) {
 }
 
+Contraption::Contraption(Model* model) 
+    throw():
+    ptr_count_(0),
+    in_array_(false),
+    on_change_(),
+    model_(model),
+    values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
+    id_(kNewID) {
+}

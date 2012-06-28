@@ -11,12 +11,14 @@ class ContraptionAccessor {
   ContraptionAccessor(Contraption *contraption) 
       throw() :
       contraption_(contraption) { }
-  boost::scoped_array<boost::scoped_ptr<FieldType> > &values() const
+  boost::scoped_array<boost::scoped_ptr<FieldType> >& values() const
       throw() { return contraption_->values_; }
   boost::intrusive_ptr<Model>& model() const
       throw() { return contraption_->model_; }
   ContraptionID& id() const
       throw() { return contraption_->id_; }
+  boost::signal<void ()>&  on_change() const 
+      throw() { return contraption_->on_change_; }
  private:
   Contraption *contraption_;
 };

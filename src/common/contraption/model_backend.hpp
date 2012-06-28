@@ -6,6 +6,8 @@
 //------------------------------------------------------------
 // stl
 #include <vector>
+// boost
+#include <boost/shared_ptr.hpp>
 // common
 #include <contraption/model_backend_exception.hpp>
 #include <contraption/record.hpp>
@@ -29,10 +31,17 @@ class ModelBackend {
       std::vector<Record*> records,
       ContraptionID &id)
       throw(ModelBackendException) = 0;
-  virtual std::auto_ptr<std::vector<ContraptionID> > Select(const Selector &selector) {}
+  virtual void DeleteEntry(
+      ContraptionID &id)
+      throw(ModelBackendException) = 0;
+  virtual std::auto_ptr<std::vector<ContraptionID> > Select(
+      const Selector *selector)
+      throw(ModelBackendException) = 0;
 
   virtual ~ModelBackend() {}
 };
+
+typedef boost::shared_ptr<ModelBackend> ModelBackendP;
 
 }
 }

@@ -3,7 +3,7 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
-#include <contraption/model.hpp>
+#include <contraption/model_fwd.hpp>
 #include <contraption/selector.hpp>
 namespace tms {
 namespace common {
