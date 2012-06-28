@@ -24,12 +24,12 @@ namespace contraption {
 class MemoryModelBackend : public ModelBackend {
  public:
   virtual void ReadRecords(
-      std::vector<Record*> records,
+      std::vector<RecordP> records,
       ContraptionID id)
       throw(ModelBackendException);      
 
   virtual void WriteRecords(
-      std::vector<Record*> records,
+      std::vector<RecordP> records,
       ContraptionID &id)
       throw(ModelBackendException);      
 

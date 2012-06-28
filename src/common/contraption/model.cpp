@@ -27,27 +27,10 @@ void Model::GetFieldValue(FieldID field_id,
         << field_id << "'.";
     throw FieldException(msg.str());
   }
-  Field *field = fields_[field_id].get();
-  vector<Record*> out(0);
-  const GUIException *ex = 0;
-  try {
-    field->GetReadRecords(contraption, out);
-    if (!out.empty()) {
-      backend_->ReadRecords(out, id);
-    }
-  } catch (const FieldException &e) {
-    ex = &e;
-  } catch (const ModelBackendException &e) {
-    ex = &e;
-  }
-  for (size_t pos = 0, end = out.size(); pos < end; ++pos) {
-    delete out[pos];
-  }
-  if (ex) {
-    if (dynamic_cast<const FieldException*>(ex)) {
-      throw FieldException(ex);
-    }
-    throw ModelBackendException(ex);
+  vector<RecordP> out(0);
+  fields_[field_id]->GetReadRecords(contraption, out);
+  if (!out.empty()) {
+    backend_->ReadRecords(out, id);
   }
 }
 
@@ -83,27 +66,24 @@ FieldID Model::GetFieldID(const std::string &field_name) const
   return it->second;
 }
 
+void Model::InitSchema()
+    throw(ModelBackendException) {
+  ContraptionP contraption(new Contraption(ModelP(this)));
+  vector<RecordP> out(0);
+  for (FieldID field_id = 0, end = fields_.size();
+       field_id < end; ++field_id) {
+    fields_[field_id]->GetReadRecords(contraption.get(), out);
+  }
+}
+
 void Model::Save(Contraption *contraption, ContraptionID &id) const
     throw(ModelBackendException) {
-  vector<Record*> out(0);
-  const GUIException *ex = 0;
-  try {
-    for (FieldID field_id = 0, end = fields_.size();
-         field_id < end; ++field_id) {
-      fields_[field_id]->GetWriteRecords(contraption, out);
-    }
-    backend_->WriteRecords(out, id);
-  } catch (const FieldException &e) {
-    ex = &e;
-  } catch (const ModelBackendException &e) {
-    ex = &e;
+  vector<RecordP> out(0);
+  for (FieldID field_id = 0, end = fields_.size();
+       field_id < end; ++field_id) {
+    fields_[field_id]->GetWriteRecords(contraption, out);
   }
-  for (size_t pos = 0, end = out.size(); pos < end; ++pos) {
-    delete out[pos];
-  }
-  if (ex) {
-    throw *ex;
-  }
+  backend_->WriteRecords(out, id);
 }
 
 void Model::Delete(ContraptionID &id) const
@@ -119,7 +99,8 @@ void Model::SaveHandle(const vector<ContraptionP> &save,
     try {
       if (ContraptionAccessor(save[pos].get()).model().get() != this) {
         throw(ModelBackendException(
-            "Contraption was created from wrong model in ConrraptionArray::Save."));              
+            "Contraption was created from wrong model in "
+            "ConrraptionArray::Save."));              
       }
       save[pos]->Save();
     } catch (const ModelBackendException &e) {
@@ -145,7 +126,7 @@ void Model::SaveHandle(const vector<ContraptionP> &save,
   }
 }
 
-ContraptionArrayP Model::GetContraptions()
+ContraptionArrayP Model::All()
     throw(ModelBackendException) {
   auto_ptr< vector<ContraptionID> > ids = backend_->Select(
       boost::scoped_ptr<Selector>(new AllSelector()).get());

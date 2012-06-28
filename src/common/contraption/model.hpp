@@ -39,16 +39,16 @@ class Model {
   size_t GetFieldNumber() const
       throw();
   
+  FieldID GetFieldID(const std::string &field_name) const
+      throw(FieldException);
+
   const Field* GetField(FieldID field_id) const
       throw(FieldException);
 
-  FieldID GetFieldID(const std::string &field_name) const
-      throw(FieldException);
-  
   ContraptionArrayP All()
-      throw(ModelBackendException) {return GetContraptions();}
-
-  ContraptionArrayP GetContraptions()
+      throw(ModelBackendException);
+  
+  void InitSchema()
       throw(ModelBackendException);
 
   Model(const std::vector< Field* > &fields, 
@@ -58,7 +58,7 @@ class Model {
   Model(const std::vector< Field* > &fields, 
         boost::shared_ptr<ModelBackend> backend)
       throw(FieldException);
-
+  
   friend void boost::intrusive_ptr_add_ref(Model* model);
   friend void boost::intrusive_ptr_release(Model* model);
   friend class Contraption;

@@ -7,11 +7,13 @@
 #include <string>
 #include <memory>
 // common
+
 #include <contraption/model.hpp>
 #include <contraption/filter.hpp>
 #include <contraption/selector.hpp>
 #include <contraption/record.hpp>
 #include <contraption/contraption_fwd.hpp>
+
 
 namespace tms {
 namespace common {
@@ -24,20 +26,13 @@ namespace contraption {
 //------------------------------------------------------------
 class Field {  
  public:
+  //------------------------------------------------------------
+  // Interface.
+  //------------------------------------------------------------
   virtual std::string name() const { return name_; }
   virtual bool is_private() const { return is_private_; }
-  virtual void Initialize(Model *model) {model = model;}
-  virtual void GetReadRecords(Contraption *contraption, 
-                              std::vector<Record*> &out
-                              ) const = 0;
-  virtual void GetWriteRecords(Contraption *contraption, 
-                               std::vector<Record*> &out
-                               ) const = 0;
-
-  virtual bool CheckType(const FieldType *type) const = 0;
   friend class SimpleField;
   friend class DependantField;
-  virtual ~Field() {}
   Field(const std::string &name, bool is_private = false) 
       throw(FieldException) : 
       name_(name),
@@ -46,7 +41,23 @@ class Field {
       throw FieldException("Field cannot be constructed from empty name.");
     }
   }
+
+  //------------------------------------------------------------
+  // Implementation. Do not use this methods.
+  //------------------------------------------------------------
+  virtual void Initialize(Model *model) {model = model;}
+  virtual void GetReadRecords(Contraption *contraption, 
+                              std::vector<RecordP> &out
+                              ) const = 0;
+  virtual void GetWriteRecords(Contraption *contraption, 
+                               std::vector<RecordP> &out
+                               ) const = 0;
+  
+  virtual bool CheckType(const FieldType *type) const = 0;
+  
+  virtual ~Field() {}
  private:
+
   const std::string name_;  
   const bool is_private_;
 };

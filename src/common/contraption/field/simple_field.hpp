@@ -67,27 +67,27 @@ class SimpleFieldT : virtual public SimpleField,
   }
   
   virtual void GetReadRecords(Contraption *contraption, 
-                          std::vector<Record*> &out) const {
+                              std::vector<RecordP> &out) const {
     if (!contraption->values_[(int)field_id_]) {
       contraption->values_[(int)field_id_].reset(new FieldTypeT<T>());
       if (contraption->id_ != Contraption::kNewID) {
-        out.push_back(new RecordT<T>(backend_name_, 
-                                     &(dynamic_cast<FieldTypeT<T>*>(
-                                         contraption->values_[(int)field_id_].get())->data_)));
+        out.push_back(RecordP(
+            new RecordT<T>(backend_name_, &(dynamic_cast<FieldTypeT<T>*>(
+                contraption->values_[(int)field_id_].get())->data_))));
       }
     }
   }
   
   virtual void GetWriteRecords(Contraption *contraption, 
-                          std::vector<Record*> &out) const {
+                          std::vector<RecordP> &out) const {
     if (!contraption->values_[(int)field_id_] 
         && contraption->id_ == Contraption::kNewID) {
       contraption->values_[(int)field_id_].reset(new FieldTypeT<T>());
     }
     if (contraption->values_[(int)field_id_]) {
-      out.push_back(new RecordT<T>(backend_name_, 
-                                   &(dynamic_cast<FieldTypeT<T>*>(
-                                       contraption->values_[(int)field_id_].get())->data_)));
+      out.push_back(RecordP(
+          new RecordT<T>(backend_name_, &(dynamic_cast<FieldTypeT<T>*>(
+              contraption->values_[(int)field_id_].get())->data_))));
     }
   }
 

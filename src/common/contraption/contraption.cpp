@@ -135,13 +135,3 @@ Contraption::Contraption(ModelP model)
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(kNewID) {
 }
-
-Contraption::Contraption(Model* model) 
-    throw():
-    ptr_count_(0),
-    in_array_(false),
-    on_change_(),
-    model_(model),
-    values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
-    id_(kNewID) {
-}

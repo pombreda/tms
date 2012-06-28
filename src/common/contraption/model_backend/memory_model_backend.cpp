@@ -16,24 +16,27 @@ using namespace tms::common::contraption;
 using namespace std;
 
 void MemoryModelBackend::ReadRecords(
-    std::vector<Record*> records,
+    std::vector<RecordP> records,
     ContraptionID id)
     throw(ModelBackendException) {
   if (id == Contraption::kNewID) {
-    throw ModelBackendException("Trying to read from ContraptionID::kNewID " 
+    throw ModelBackendException("Trying to read from "
+                                "ContraptionID::kNewID " 
                                 "in MemoryModelBackend::ReadRecords.");
   }
   try {    
     for (size_t pos = 0, end = records.size(); pos < end; ++pos) {
       {
-        RecordT<int> *record = dynamic_cast<RecordT<int>*>(records[pos]);
+        RecordT<int> *record 
+            = dynamic_cast<RecordT<int>*>(records[pos].get());
         if (record) {
           *record->data = int_fields_[id][record->field];
           continue;
         }
       }
       {
-        RecordT<string> *record = dynamic_cast<RecordT<string>*>(records[pos]);
+        RecordT<string> *record 
+            = dynamic_cast<RecordT<string>*>(records[pos].get());
         if (record) {
           *record->data = string_fields_[id][record->field];
           continue;
@@ -55,7 +58,7 @@ void MemoryModelBackend::ReadRecords(
 
 
 void MemoryModelBackend::WriteRecords(
-    std::vector<Record*> records,
+    std::vector<RecordP> records,
     ContraptionID &id)
     throw(ModelBackendException) {
   if (id == Contraption::kNewID) {
@@ -68,14 +71,16 @@ void MemoryModelBackend::WriteRecords(
   try {
     for (size_t pos = 0, end = records.size(); pos < end; ++pos) {
       {
-        RecordT<int> *record = dynamic_cast<RecordT<int>*>(records[pos]);
+        RecordT<int> *record 
+            = dynamic_cast<RecordT<int>*>(records[pos].get());
         if (record) {
           int_fields_[id][record->field] = *record->data;
           continue;
         }
       }
       {
-        RecordT<string> *record = dynamic_cast<RecordT<string>*>(records[pos]);
+        RecordT<string> *record 
+            = dynamic_cast<RecordT<string>*>(records[pos].get());
         if (record) {
           string_fields_[id][record->field] = *record->data;
           continue;
@@ -125,7 +130,7 @@ void MemoryModelBackend::DeleteEntry(
 auto_ptr< vector<ContraptionID> > MemoryModelBackend::Select(
     const Selector *selector)
     throw(ModelBackendException) {
-  const AllSelector* all_selector 
+  const AllSelector *all_selector 
       = dynamic_cast<const AllSelector*>(selector);
   if (all_selector) {
     auto_ptr< vector<ContraptionID> > ret(new vector<ContraptionID>());

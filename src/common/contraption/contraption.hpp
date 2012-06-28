@@ -91,8 +91,6 @@ class Contraption {
       throw();
   Contraption(ModelP model)
       throw();
-  Contraption(Model* model)
-      throw();
 
   void Swap(Contraption &other)
       throw();
