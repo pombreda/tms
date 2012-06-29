@@ -79,7 +79,7 @@ size_t Contraption::GetFieldNumber() const
 
 bool Contraption::IsPrivate(FieldID field_id) const
     throw(FieldException) {
-  return model_->GetField(field_id)->is_private();
+  return model_->GetField(field_id)->IsPrivate();
 }
 
 bool Contraption::IsPrivate(const string &field) const

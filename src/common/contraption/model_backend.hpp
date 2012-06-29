@@ -24,19 +24,22 @@ namespace contraption {
 class ModelBackend {
  public:
   virtual void ReadRecords(
-      std::vector<RecordP> records,
+      const std::vector<RecordP> &records,
       ContraptionID id)
       throw(ModelBackendException) = 0;
   virtual void WriteRecords(
-      std::vector<RecordP> records,
+      const std::vector<RecordP> &records,
       ContraptionID &id)
+      throw(ModelBackendException) = 0;
+  virtual void InitSchema(
+      const std::vector<RecordP> &records)
       throw(ModelBackendException) = 0;
   virtual void DeleteEntry(
       ContraptionID &id)
       throw(ModelBackendException) = 0;
   virtual std::auto_ptr<std::vector<ContraptionID> > Select(
       const Selector *selector)
-      throw(ModelBackendException) = 0;
+      throw(ModelBackendException) = 0; 
 
   virtual ~ModelBackend() {}
 };

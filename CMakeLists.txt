@@ -7,6 +7,8 @@ endif(WIN32)
 set(CMAKE_CXX_COMPILER "g++")
 set(BUILD_SHARED_LIBS ON)
 
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/ext/CMakeModules")
+
 cmake_minimum_required(VERSION 2.6) 
 
 include(ExternalProject)

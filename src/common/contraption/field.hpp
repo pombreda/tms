@@ -10,6 +10,7 @@
 
 #include <contraption/model.hpp>
 #include <contraption/filter.hpp>
+#include <contraption/field_type.hpp>
 #include <contraption/selector.hpp>
 #include <contraption/record.hpp>
 #include <contraption/contraption_fwd.hpp>
@@ -30,9 +31,7 @@ class Field {
   // Interface.
   //------------------------------------------------------------
   virtual std::string name() const { return name_; }
-  virtual bool is_private() const { return is_private_; }
-  friend class SimpleField;
-  friend class DependantField;
+  virtual bool IsPrivate() const { return is_private_; }
   Field(const std::string &name, bool is_private = false) 
       throw(FieldException) : 
       name_(name),

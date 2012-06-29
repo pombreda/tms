@@ -69,11 +69,13 @@ FieldID Model::GetFieldID(const std::string &field_name) const
 void Model::InitSchema()
     throw(ModelBackendException) {
   ContraptionP contraption(new Contraption(ModelP(this)));
+  ContraptionAccessor(contraption.get()).id()=Contraption::kNewID + 1;
   vector<RecordP> out(0);
   for (FieldID field_id = 0, end = fields_.size();
        field_id < end; ++field_id) {
     fields_[field_id]->GetReadRecords(contraption.get(), out);
   }
+  backend_->InitSchema(out);
 }
 
 void Model::Save(Contraption *contraption, ContraptionID &id) const
@@ -86,13 +88,18 @@ void Model::Save(Contraption *contraption, ContraptionID &id) const
   backend_->WriteRecords(out, id);
 }
 
+ContraptionP Model::New()
+    throw() {
+  return ContraptionP(new Contraption(ModelP(this)));
+}
+
 void Model::Delete(ContraptionID &id) const
     throw(ModelBackendException) {
   backend_->DeleteEntry(id);
 }
 
 void Model::SaveHandle(const vector<ContraptionP> &save, 
-                       const vector<ContraptionP> &remove)
+                       const vector<ContraptionP> &remove) const
     throw(ModelBackendException) {
   ostringstream msg;
   for (size_t pos = 0, end = save.size(); pos < end; ++pos) {

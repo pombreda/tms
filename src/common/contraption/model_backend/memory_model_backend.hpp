@@ -24,33 +24,41 @@ namespace contraption {
 class MemoryModelBackend : public ModelBackend {
  public:
   virtual void ReadRecords(
-      std::vector<RecordP> records,
+      const std::vector<RecordP> &records,
       ContraptionID id)
       throw(ModelBackendException);      
 
   virtual void WriteRecords(
-      std::vector<RecordP> records,
+      const std::vector<RecordP> &records,
       ContraptionID &id)
       throw(ModelBackendException);      
 
   virtual void DeleteEntry(
       ContraptionID &id)
       throw(ModelBackendException);
+  
+  virtual void InitSchema(
+      const std::vector<RecordP> &records)
+      throw(ModelBackendException) {}
 
   virtual std::auto_ptr<std::vector<ContraptionID> > Select(
       const Selector *selector)
       throw(ModelBackendException);
 
-  std::map<ContraptionID, std::map<std::string, int> >& int_fields()
+  std::map<ContraptionID, std::map<std::string, int> >& 
+  int_fields()
       throw() {return int_fields_;}
-  std::map<ContraptionID, std::map<std::string, std::string> >& string_fields()
+  std::map<ContraptionID, std::map<std::string, std::string> >& 
+  string_fields()
       throw() {return string_fields_;}
   MemoryModelBackend() : 
       int_fields_(),
       string_fields_() {}
  private:
-  std::map<ContraptionID, std::map<std::string, int> > int_fields_;
-  std::map<ContraptionID, std::map<std::string, std::string> > string_fields_;
+  std::map<ContraptionID, std::map<std::string, int> > 
+  int_fields_;
+  std::map<ContraptionID, std::map<std::string, std::string> >
+  string_fields_;
 };
 
 }

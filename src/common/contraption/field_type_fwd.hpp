@@ -7,7 +7,6 @@ namespace contraption {
 class FieldType;
 template<typename T>
 class FieldTypeT;
-
 }
 }
 }

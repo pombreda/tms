@@ -44,18 +44,39 @@ class SimpleFieldT : virtual public SimpleField,
       Field(name, is_private_),
       SimpleField(name, is_private_),
       FieldT<T>(name, is_private_),
-      field_id_(9999) {}
+      field_id_(9999),
+      default_value_() {}
+
+  SimpleFieldT(const std::string &name, bool is_private_, 
+               const T &default_value)
+      throw(FieldException) : 
+      Field(name, is_private_),
+      SimpleField(name, is_private_),
+      FieldT<T>(name, is_private_),
+      field_id_(9999),
+      default_value_(default_value) {}
+
 
   SimpleFieldT(const std::string &name, const std::string &backend_name_,
-         bool is_private_ = false)
+               bool is_private_ = false)
       throw(FieldException) : 
       Field(name, is_private_),
       SimpleField(name, backend_name_, is_private_),
       FieldT<T>(name, is_private_),
-      field_id_(9999) {}
+      field_id_(9999),
+      default_value_() {}
+
+  SimpleFieldT(const std::string &name, const std::string &backend_name_,
+               bool is_private_, const T &default_value)
+      throw(FieldException) : 
+      Field(name, is_private_),
+      SimpleField(name, backend_name_, is_private_),
+      FieldT<T>(name, is_private_),
+      field_id_(9999),
+      default_value_(default_value) {}
 
   SimpleFieldT(const std::string &name, const char *backend_name_,
-         bool is_private_ = false)
+               bool is_private_ = false)
       throw(FieldException) : 
       Field(name, is_private_),
       SimpleField(name, backend_name_, is_private_),
@@ -69,7 +90,7 @@ class SimpleFieldT : virtual public SimpleField,
   virtual void GetReadRecords(Contraption *contraption, 
                               std::vector<RecordP> &out) const {
     if (!contraption->values_[(int)field_id_]) {
-      contraption->values_[(int)field_id_].reset(new FieldTypeT<T>());
+      contraption->values_[(int)field_id_].reset(new FieldTypeT<T>(default_value_));
       if (contraption->id_ != Contraption::kNewID) {
         out.push_back(RecordP(
             new RecordT<T>(backend_name_, &(dynamic_cast<FieldTypeT<T>*>(
@@ -77,12 +98,12 @@ class SimpleFieldT : virtual public SimpleField,
       }
     }
   }
-  
+
   virtual void GetWriteRecords(Contraption *contraption, 
                           std::vector<RecordP> &out) const {
     if (!contraption->values_[(int)field_id_] 
         && contraption->id_ == Contraption::kNewID) {
-      contraption->values_[(int)field_id_].reset(new FieldTypeT<T>());
+      contraption->values_[(int)field_id_].reset(new FieldTypeT<T>(default_value_));
     }
     if (contraption->values_[(int)field_id_]) {
       out.push_back(RecordP(
@@ -93,6 +114,7 @@ class SimpleFieldT : virtual public SimpleField,
 
   virtual ~SimpleFieldT() {}
  private:
+  T default_value_;
   FieldID field_id_;
 };
 

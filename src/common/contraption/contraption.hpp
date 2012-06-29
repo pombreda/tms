@@ -96,8 +96,13 @@ class Contraption {
       throw();
   
   //------------------------------------------------------------
-  // Interface ended.
+  // Implementation. Do not use this method
   //------------------------------------------------------------
+  FieldType* GetFieldValue(FieldID field_id)
+      throw(FieldException, ModelBackendException);
+  
+  void SetFieldValue(FieldID field_id, const FieldType& value)
+      throw(FieldException);
 
   static const ContraptionID kNewID; // for Model class
   
@@ -108,12 +113,6 @@ class Contraption {
   friend void boost::intrusive_ptr_add_ref(Contraption* contraption);
   friend void boost::intrusive_ptr_release(Contraption* contraption);
  private:
-  FieldType* GetFieldValue(FieldID field_id)
-      throw(FieldException, ModelBackendException);
-   
-  void SetFieldValue(FieldID field_id, const FieldType& value)
-      throw(FieldException);
-
   size_t ptr_count_;
   bool in_array_;
   boost::signal<void ()>  on_change_;

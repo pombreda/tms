@@ -16,7 +16,7 @@ using namespace tms::common::contraption;
 using namespace std;
 
 void MemoryModelBackend::ReadRecords(
-    std::vector<RecordP> records,
+    const std::vector<RecordP> &records,
     ContraptionID id)
     throw(ModelBackendException) {
   if (id == Contraption::kNewID) {
@@ -58,7 +58,7 @@ void MemoryModelBackend::ReadRecords(
 
 
 void MemoryModelBackend::WriteRecords(
-    std::vector<RecordP> records,
+    const std::vector<RecordP> &records,
     ContraptionID &id)
     throw(ModelBackendException) {
   if (id == Contraption::kNewID) {

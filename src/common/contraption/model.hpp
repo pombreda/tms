@@ -45,9 +45,19 @@ class Model {
   const Field* GetField(FieldID field_id) const
       throw(FieldException);
 
+  ContraptionP New()
+      throw();
+
   ContraptionArrayP All()
       throw(ModelBackendException);
-  
+
+  // This method will init backend to work with models.
+  // For example - for SOCIModelBackand it
+  // creates corresponding table.
+  // In general it will be called once, when your 
+  // application is installed.
+  // Attention! This method can drop your data.
+  // At least for SOCIModelBackand it does.
   void InitSchema()
       throw(ModelBackendException);
 
@@ -80,7 +90,7 @@ class Model {
       throw(ModelBackendException);
 
   void SaveHandle(const std::vector<ContraptionP> &save, 
-                  const std::vector<ContraptionP> &remove)
+                  const std::vector<ContraptionP> &remove) const
       throw(ModelBackendException);
   void InitFields(const std::vector< Field* > &fields)
       throw(FieldException);
