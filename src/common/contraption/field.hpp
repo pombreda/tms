@@ -6,6 +6,7 @@
 // std
 #include <string>
 #include <memory>
+#include <sstream>
 // common
 
 #include <contraption/model.hpp>
@@ -53,7 +54,17 @@ class Field {
                                ) const = 0;
   
   virtual bool CheckType(const FieldType *type) const = 0;
-  
+
+  virtual SelectorP GetSelector(Filter *filter) const
+      throw(FieldException) {
+    std::ostringstream msg;
+    msg << "Unsupported filter '" << typeid(*filter).name()
+        << "' for field " <<  name_ << ".'";
+    throw FieldException(msg.str());
+    
+    throw FieldException("Unsupported Filter");
+  }
+
   virtual ~Field() {}
  private:
 

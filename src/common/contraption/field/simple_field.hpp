@@ -6,6 +6,11 @@
 #include <contraption/field.hpp>
 #include <contraption/record.hpp>
 #include <contraption/contraption.hpp>
+#include <contraption/filter.hpp>
+#include <contraption/selector.hpp>
+#include <contraption/filter/compare_filter.hpp>
+#include <contraption/selector/compare_selector.hpp>
+
 namespace tms {
 namespace common {
 namespace contraption {
@@ -27,6 +32,20 @@ class SimpleField : virtual public Field {
       throw(FieldException) : 
       Field(name, is_private_), 
       backend_name_(backend_name_) {}
+
+  virtual SelectorP GetSelector(Filter *filter) const
+      throw(FieldException) {    
+    {
+      CompareFilter *cfilter = 
+          dynamic_cast<CompareFilter *>(filter);
+      if (cfilter) {
+        return SelectorP(new CompareSelector(backend_name_, 
+                                             cfilter->type()));
+      }
+    }
+    Field::GetSelector(filter);
+  }
+
   virtual ~SimpleField() {}
  protected:
   const std::string backend_name_;  

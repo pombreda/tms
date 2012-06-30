@@ -3,6 +3,8 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
+// boost
+#include <boost/shared_ptr.hpp>
 
 namespace tms {
 namespace common {
@@ -15,6 +17,8 @@ class Selector {
  public:
   virtual ~Selector() {}
 };
+
+typedef boost::shared_ptr<Selector> SelectorP;
 }
 }
 }

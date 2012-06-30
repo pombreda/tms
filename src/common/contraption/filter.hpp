@@ -3,6 +3,9 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
+// boost
+#include <boost/shared_ptr.hpp>
+// common
 #include <contraption/model_fwd.hpp>
 #include <contraption/selector.hpp>
 namespace tms {
@@ -15,9 +18,12 @@ namespace contraption {
 //------------------------------------------------------------
 class Filter {
  public:
-  virtual Selector* Apply(Model *model);
+  virtual SelectorP Apply(Model *model);
   virtual ~Filter() {}
 };
+
+typedef boost::shared_ptr<Filter> FilterP;
+
 }
 }
 }
