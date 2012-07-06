@@ -65,6 +65,11 @@ class Field {
   virtual FieldTypeP GetValue(FieldTypeArray &values, ContraptionID id) {
     return FieldTypeP(values[field_id_]->Duplicate());
   }
+  virtual void SetValue(const FieldType &value, 
+                        FieldTypeArray &values,
+                        ContraptionID id) {
+    values[(int)this->field_id_].reset(value.Duplicate());
+  }
 
   virtual SelectorP GetSelector(Filter *filter) const
       throw(FieldException) {

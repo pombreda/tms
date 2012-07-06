@@ -78,6 +78,12 @@ class Model {
                            ContraptionID id) const 
       throw(FieldException, ModelBackendException);
   
+  void SetFieldValue(FieldID field_id,
+                     const FieldType &value,
+                     FieldTypeArray &values,
+                     ContraptionID id) const
+       throw(FieldException);
+  
   void Save(FieldTypeArray &values, ContraptionID &id) const
       throw(ModelBackendException);
 

@@ -35,6 +35,26 @@ FieldTypeP Model::GetFieldValue(FieldID field_id,
   return fields_[field_id]->GetValue(values, id);
 }
 
+
+void Model::SetFieldValue(FieldID field_id,
+                          const FieldType &value,
+                          FieldTypeArray &values,
+                          ContraptionID id) const
+    throw(FieldException) {
+  if (fields_[field_id]->CheckType(&value)) {
+    fields_[field_id]->SetValue(value, values, id);
+  } else {
+    ostringstream msg;
+    msg << "Incorrect field type in Contraption::SetFieldValue - field: '"
+        << fields_[field_id]->name() << "' of type: '"
+        << typeid(fields_[field_id]).name()
+        << "' can not accept value of type '"
+        << typeid(value).name() << "'.";
+    throw FieldException(msg.str());
+  }  
+}
+  
+
 const Field* Model::GetField(FieldID field_id) const
     throw(FieldException) {
   if (field_id >= GetFieldNumber()) {
@@ -45,6 +65,7 @@ const Field* Model::GetField(FieldID field_id) const
   }
   return fields_[field_id].get();
 }
+
 
 FieldID Model::GetFieldID(const std::string &field_name) const
     throw(FieldException) {

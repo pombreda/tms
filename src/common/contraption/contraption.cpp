@@ -42,18 +42,8 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
         << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
-  if (model_->GetField(field_id)->CheckType(&value)) {
-    values_[(int)field_id].reset(value.Duplicate());
-    on_change_();
-  } else {
-    ostringstream msg;
-    msg << "Incorrect field type in Contraption::SetFieldValue - field: '"
-        << GetName(field_id) << "' of type: '"
-        << typeid(model_->GetField(field_id)).name()
-        << "' can not accept value of type '"
-        << typeid(value).name() << "'.";
-    throw FieldException(msg.str());
-  }
+  model_->SetFieldValue(field_id, value, values_, id_);
+  on_change_();    
 }
 
 void Contraption::Save()
