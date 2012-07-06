@@ -20,10 +20,9 @@ namespace tms {
 namespace common {
 namespace contraption {
 
-BOOST_PARAMETER_NAME(is_private)
 BOOST_PARAMETER_NAME(name)
-BOOST_PARAMETER_NAME(readable)
-BOOST_PARAMETER_NAME(writable)
+BOOST_PARAMETER_NAME(is_readable)
+BOOST_PARAMETER_NAME(is_writable)
 BOOST_PARAMETER_NAME(backend_name)
 BOOST_PARAMETER_NAME(default_value)
 
@@ -37,7 +36,9 @@ class SimpleFieldTImpl : public FieldT<T> {
   template <class ArgPack>
   SimpleFieldTImpl(ArgPack const &args) 
       throw(FieldException) :
-      FieldT<T>(args[_name], args[_is_private | false]),
+      FieldT<T>(args[_name], 
+                args[_is_readable | true], 
+                args[_is_writable | true]),
       field_id_(9999),
       default_value_(args[_default_value | T()]),
       backend_name_(args[_backend_name | args[_name]]) {
@@ -102,7 +103,8 @@ class SimpleFieldT : public SimpleFieldTImpl<T> {
       (name, (std::string))
     ) 
     (optional 
-      (is_private, (bool))
+      (is_readable, (bool))    
+      (is_writable, (bool))
       (backend_name, (std::string))
       (default_value, (T))
     )

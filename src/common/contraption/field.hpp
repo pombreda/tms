@@ -32,11 +32,13 @@ class Field {
   // Interface.
   //------------------------------------------------------------
   virtual std::string name() const { return name_; }
-  virtual bool IsPrivate() const { return is_private_; }
-  Field(const std::string &name, bool is_private = false) 
+  virtual bool IsReadable() const { return is_readable_; }
+  virtual bool IsWritable() const { return is_writable_; }
+  Field(const std::string &name, bool is_readable, bool is_writable) 
       throw(FieldException) : 
-      name_(name),
-      is_private_(is_private) {
+      is_readable_(is_readable),
+      is_writable_(is_writable),
+      name_(name) {
     if (name.size() == 0) {
       throw FieldException("Field cannot be constructed from empty name.");
     }
@@ -66,10 +68,12 @@ class Field {
   }
 
   virtual ~Field() {}
- private:
 
-  const std::string name_;  
-  const bool is_private_;
+ protected:
+  const bool is_readable_;
+  const bool is_writable_;
+ private: 
+  const std::string name_;
 };
 
 //------------------------------------------------------------
@@ -79,9 +83,9 @@ class Field {
 template<class T>
 class FieldT : public Field {  
  public:
-  FieldT(std::string name, bool is_private)
+  FieldT(std::string name, bool is_readable, bool is_writable)
       throw(FieldException) :
-      Field(name, is_private) {}
+      Field(name, is_readable, is_writable) {}
   virtual bool CheckType(const FieldType *type) const {
     return dynamic_cast<const FieldTypeT<T>*>(type);
   }

@@ -69,9 +69,13 @@ class Contraption {
   size_t GetFieldNumber() const
       throw();
 
-  bool IsPrivate(const std::string &field) const
+  bool IsReadable(const std::string &field) const
       throw(FieldException);
-  bool IsPrivate(FieldID field_id) const
+  bool IsReadable(FieldID field_id) const
+      throw(FieldException);
+  bool IsWritable(const std::string &field) const
+      throw(FieldException);
+  bool IsWritable(FieldID field_id) const
       throw(FieldException);
   
   void Save()

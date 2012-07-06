@@ -42,7 +42,8 @@ class Fixture {
     ret.push_back(new SimpleFieldT<string>("name"));
     ret.push_back(new SimpleFieldT<int>("age"));
     ret.push_back(new SimpleFieldT<int>("password", 
-                                        _is_private = true));
+                                        _is_readable = false,
+                                        _is_writable = false));
     ret.push_back(new SimpleFieldT<string>("Surname", 
                                            _backend_name = "surname"));
     return ret;

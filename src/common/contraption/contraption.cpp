@@ -19,9 +19,9 @@ FieldType* Contraption::GetFieldValue(size_t field_id)
         << field_id << "'.";
     throw FieldException(msg.str());
   }
-  if (IsPrivate(field_id)) {
+  if (!IsReadable(field_id)) {
     ostringstream msg;
-    msg << "Trying to access private field in Contraption::GetFieldValue: '" 
+    msg << "Trying to read non-readable field in Contraption::GetFieldValue: '" 
         << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
@@ -37,9 +37,9 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
         << field_id << "'.";
     throw FieldException(msg.str());
   }
-  if (IsPrivate(field_id)) {
+  if (!IsWritable(field_id)) {
     ostringstream msg;
-    msg << "Trying to access private field in Contraption::SetFieldValue: '" 
+    msg << "Trying to write non-writable field in Contraption::SetFieldValue: '" 
         << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
@@ -77,14 +77,24 @@ size_t Contraption::GetFieldNumber() const
   return model_->GetFieldNumber();
 }
 
-bool Contraption::IsPrivate(FieldID field_id) const
+bool Contraption::IsReadable(FieldID field_id) const
     throw(FieldException) {
-  return model_->GetField(field_id)->IsPrivate();
+  return model_->GetField(field_id)->IsReadable();
 }
 
-bool Contraption::IsPrivate(const string &field) const
+bool Contraption::IsReadable(const string &field) const
     throw(FieldException) {
-  return IsPrivate(GetID(field));
+  return IsReadable(GetID(field));
+}
+
+bool Contraption::IsWritable(FieldID field_id) const
+    throw(FieldException) {
+  return model_->GetField(field_id)->IsWritable();
+}
+
+bool Contraption::IsWritable(const string &field) const
+    throw(FieldException) {
+  return IsWritable(GetID(field));
 }
 
 FieldID Contraption::GetID(const string &field) const

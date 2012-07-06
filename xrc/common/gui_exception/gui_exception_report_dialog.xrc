@@ -22,7 +22,7 @@
                         <flag>wxALL</flag>
                         <border>6</border>
                         <object class="wxStaticText" name="label_">
-                            <size>330, 64</size>
+                            <size>330, 74</size>
                             <label>Пожалуйста скопируйте сообщение об ошибке из окна ниже и отправьте его на почту: adavydow@yandex.ru. Также в письме постарайтесь как можно подробнее описать действия, которые привели к ошибке.</label>
                         </object>
                     </object>

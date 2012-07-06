@@ -44,7 +44,7 @@ class Fixture {
     fields.push_back(new SimpleFieldT<string>("name"));
     fields.push_back(new SimpleFieldT<int>("age"));
     fields.push_back(new SimpleFieldT<int>("password", 
-                                           _is_private = true));
+                                           _is_readable = false));
     fields.push_back(new SimpleFieldT<string>("Surname", 
                                               _backend_name = "surname"));
     model.reset(new Model(fields, backend));    
