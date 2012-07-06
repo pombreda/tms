@@ -41,9 +41,10 @@ class Fixture {
     vector<Field*> ret;
     ret.push_back(new SimpleFieldT<string>("name"));
     ret.push_back(new SimpleFieldT<int>("age"));
-    ret.push_back(new SimpleFieldT<int>("password", true));
+    ret.push_back(new SimpleFieldT<int>("password", 
+                                        _is_private = true));
     ret.push_back(new SimpleFieldT<string>("Surname", 
-                                           "surname"));
+                                           _backend_name = "surname"));
     return ret;
   }
 
@@ -194,7 +195,7 @@ BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend = backend();
-  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ModelP test_model(new Model(fields(), test_backend));    
   ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
 
@@ -271,6 +272,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
 BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend 
       = backend();
+
   ModelP test_model(new Model(fields(), test_backend));    
   ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
@@ -438,7 +440,7 @@ BOOST_FIXTURE_TEST_CASE(testPrivate, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testBackendName, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend(backend());
-  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ModelP test_model(new Model(fields(), test_backend));    
   ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
   test_contraption->Set<string>("Surname", "Dummy");
@@ -451,7 +453,7 @@ BOOST_FIXTURE_TEST_CASE(testBackendName, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testDelete, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend(backend());
-  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ModelP test_model(new Model(fields(), test_backend));    
   ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
   test_contraption->Set<string>("Surname", "Dummy");
@@ -472,7 +474,7 @@ BOOST_FIXTURE_TEST_CASE(testDelete, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testAll, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend(backend());
-  ModelP test_model(new Model(fields(), test_backend.get()));    
+  ModelP test_model(new Model(fields(), test_backend));    
   ContraptionP test_contraption(new Contraption(test_model));
   ContraptionAccessor accessor(test_contraption.get());
   test_contraption->Set<int>("age", 10);
