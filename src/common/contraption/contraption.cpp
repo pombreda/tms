@@ -25,8 +25,7 @@ FieldTypeP Contraption::GetFieldValue(size_t field_id)
         << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
-  model_->GetFieldValue(field_id, this, id_);
-  return FieldTypeP(values_[(int)field_id]->Duplicate());
+  return model_->GetFieldValue(field_id, values_, id_);
 }
 
 void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
@@ -59,7 +58,7 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
 
 void Contraption::Save()
     throw(ModelBackendException) {
-  model_->Save(this, id_);
+  model_->Save(values_, id_);
 }
 
 void Contraption::Delete()

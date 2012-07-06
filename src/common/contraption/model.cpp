@@ -17,9 +17,9 @@ size_t Model::GetFieldNumber() const
   return fields_.size();
 }
 
-void Model::GetFieldValue(FieldID field_id,
-                          Contraption *contraption,
-                          ContraptionID id) const
+FieldTypeP Model::GetFieldValue(FieldID field_id,
+                                FieldTypeArray &values,
+                                ContraptionID id) const
     throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
@@ -28,18 +28,19 @@ void Model::GetFieldValue(FieldID field_id,
     throw FieldException(msg.str());
   }
   vector<RecordP> out(0);
-  fields_[field_id]->GetReadRecords(contraption, out);
+  fields_[field_id]->GetReadRecords(values, id, out);
   if (!out.empty()) {
     backend_->ReadRecords(out, id);
   }
+  return fields_[field_id]->GetValue(values, id);
 }
 
-void Model::GetFieldValue(
+FieldTypeP Model::GetFieldValue(
     const std::string &field_name,
-    Contraption *contraption,
+    FieldTypeArray &values,
     ContraptionID id) const
     throw(FieldException, ModelBackendException) {
-  GetFieldValue(GetFieldID(field_name), contraption, id);
+  return GetFieldValue(GetFieldID(field_name), values, id);
 }
 
 const Field* Model::GetField(FieldID field_id) const
@@ -68,22 +69,21 @@ FieldID Model::GetFieldID(const std::string &field_name) const
 
 void Model::InitSchema()
     throw(ModelBackendException) {
-  ContraptionP contraption(new Contraption(ModelP(this)));
-  ContraptionAccessor(contraption.get()).id()=Contraption::kNewID + 1;
+  FieldTypeArray values(new boost::scoped_ptr<FieldType>[GetFieldNumber()]);
   vector<RecordP> out(0);
   for (FieldID field_id = 0, end = fields_.size();
        field_id < end; ++field_id) {
-    fields_[field_id]->GetReadRecords(contraption.get(), out);
+    fields_[field_id]->GetWriteRecords(values, Contraption::kNewID, out);
   }
   backend_->InitSchema(out);
 }
 
-void Model::Save(Contraption *contraption, ContraptionID &id) const
+void Model::Save(FieldTypeArray &values, ContraptionID &id) const
     throw(ModelBackendException) {
   vector<RecordP> out(0);
   for (FieldID field_id = 0, end = fields_.size();
        field_id < end; ++field_id) {
-    fields_[field_id]->GetWriteRecords(contraption, out);
+    fields_[field_id]->GetWriteRecords(values, id, out);
   }
   backend_->WriteRecords(out, id);
 }

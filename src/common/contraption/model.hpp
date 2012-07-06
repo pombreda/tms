@@ -73,17 +73,17 @@ class Model {
   friend void boost::intrusive_ptr_release(Model* model);
   friend class Contraption;
  private:  
-  void GetFieldValue(FieldID field_id, 
-                     Contraption *contraption,
-                     ContraptionID id) const 
+  FieldTypeP GetFieldValue(FieldID field_id, 
+                           FieldTypeArray &values,
+                           ContraptionID id) const 
       throw(FieldException, ModelBackendException);
   
-  void GetFieldValue(const std::string &field_name, 
-                     Contraption *contraption,
-                     ContraptionID id) const
+  FieldTypeP GetFieldValue(const std::string &field_name, 
+                           FieldTypeArray &values,
+                           ContraptionID id) const
       throw(FieldException, ModelBackendException);
 
-  void Save(Contraption *contraption, ContraptionID &id) const
+  void Save(FieldTypeArray &values, ContraptionID &id) const
       throw(ModelBackendException);
 
   void Delete(ContraptionID &id) const

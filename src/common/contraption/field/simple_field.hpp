@@ -39,7 +39,6 @@ class SimpleFieldTImpl : public FieldT<T> {
       FieldT<T>(args[_name], 
                 args[_is_readable | true], 
                 args[_is_writable | true]),
-      field_id_(9999),
       default_value_(args[_default_value | T()]),
       backend_name_(args[_backend_name | args[_name]]) {
   }
@@ -57,38 +56,35 @@ class SimpleFieldTImpl : public FieldT<T> {
     return Field::GetSelector(filter);
   }
 
-  virtual void Initialize(Model *model) {
-    field_id_ = model->GetFieldID(this->name());
-  }
-  
-  virtual void GetReadRecords(Contraption *contraption, 
+  virtual void GetReadRecords(FieldTypeArray &values, 
+                              ContraptionID id,
                               std::vector<RecordP> &out) const {
-    if (!contraption->values_[(int)field_id_]) {
-      contraption->values_[(int)field_id_].reset(new FieldTypeT<T>(default_value_));
-      if (contraption->id_ != Contraption::kNewID) {
+    if (!values[(int)this->field_id_]) { 
+      values[(int)this->field_id_].reset(new FieldTypeT<T>(default_value_));
+      if (id != Contraption::kNewID) {
         out.push_back(RecordP(
             new RecordT<T>(backend_name_, &(dynamic_cast<FieldTypeT<T>*>(
-                contraption->values_[(int)field_id_].get())->data_))));
+                values[(int)this->field_id_].get())->data_))));
       }
     }
   }
 
-  virtual void GetWriteRecords(Contraption *contraption, 
-                          std::vector<RecordP> &out) const {
-    if (!contraption->values_[(int)field_id_] 
-        && contraption->id_ == Contraption::kNewID) {
-      contraption->values_[(int)field_id_].reset(new FieldTypeT<T>(default_value_));
+  virtual void GetWriteRecords(FieldTypeArray &values, 
+                               ContraptionID id,
+                               std::vector<RecordP> &out) const {
+    if (!values[(int)this->field_id_] 
+        && id == Contraption::kNewID) {
+      values[(int)this->field_id_].reset(new FieldTypeT<T>(default_value_));
     }
-    if (contraption->values_[(int)field_id_]) {
+    if (values[(int)this->field_id_]) {
       out.push_back(RecordP(
           new RecordT<T>(backend_name_, &(dynamic_cast<FieldTypeT<T>*>(
-              contraption->values_[(int)field_id_].get())->data_))));
+              values[(int)this->field_id_].get())->data_))));
     }
   }
 
   virtual ~SimpleFieldTImpl() {}
  private:
-  FieldID field_id_;
   T default_value_;
   const std::string backend_name_; 
 };

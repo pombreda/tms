@@ -112,8 +112,6 @@ class Contraption {
   
   friend class ContraptionAccessor;
   friend class ContraptionArray;
-  template<typename T>
-  friend class SimpleFieldTImpl;
   friend void boost::intrusive_ptr_add_ref(Contraption* contraption);
   friend void boost::intrusive_ptr_release(Contraption* contraption);
  private:
@@ -121,7 +119,7 @@ class Contraption {
   bool in_array_;
   boost::signal<void ()>  on_change_;
   ModelP model_;
-  boost::scoped_array<boost::scoped_ptr<FieldType> > values_;
+  FieldTypeArray values_;
   ContraptionID id_;
 };
 
