@@ -42,7 +42,7 @@ namespace contraption {
 //------------------------------------------------------------
 class Contraption {
  public:
-  // It is strongly recommended to rok with field_id version
+  // It is strongly recommended to work with field_id version
   // as its performance is much greater
   template<typename T>
   T Get(FieldID field_id)
