@@ -102,7 +102,7 @@ class Contraption {
   //------------------------------------------------------------
   // Implementation. Do not use this method
   //------------------------------------------------------------
-  FieldType* GetFieldValue(FieldID field_id)
+  FieldTypeP GetFieldValue(FieldID field_id)
       throw(FieldException, ModelBackendException);
   
   void SetFieldValue(FieldID field_id, const FieldType& value)
@@ -128,8 +128,9 @@ class Contraption {
 template<typename T>
 T Contraption::Get(FieldID field_id)
     throw(FieldException, ModelBackendException) {
+  FieldTypeP ret = GetFieldValue(field_id);
   FieldTypeT<T> *ptr = dynamic_cast<FieldTypeT<T>*>(
-      GetFieldValue(field_id));
+      ret.get());
   if (ptr) {
     return ptr->data();
   } else {

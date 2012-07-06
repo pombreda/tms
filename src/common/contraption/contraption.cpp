@@ -11,7 +11,7 @@ using namespace tms::common::contraption;
 
 const ContraptionID Contraption::kNewID = 0;
 
-FieldType* Contraption::GetFieldValue(size_t field_id)
+FieldTypeP Contraption::GetFieldValue(size_t field_id)
     throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
@@ -26,7 +26,7 @@ FieldType* Contraption::GetFieldValue(size_t field_id)
     throw FieldException(msg.str());
   }
   model_->GetFieldValue(field_id, this, id_);
-  return values_[(int)field_id]->Duplicate();
+  return FieldTypeP(values_[(int)field_id]->Duplicate());
 }
 
 void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
