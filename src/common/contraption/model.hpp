@@ -78,11 +78,6 @@ class Model {
                            ContraptionID id) const 
       throw(FieldException, ModelBackendException);
   
-  FieldTypeP GetFieldValue(const std::string &field_name, 
-                           FieldTypeArray &values,
-                           ContraptionID id) const
-      throw(FieldException, ModelBackendException);
-
   void Save(FieldTypeArray &values, ContraptionID &id) const
       throw(ModelBackendException);
 

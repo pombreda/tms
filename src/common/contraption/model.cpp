@@ -35,14 +35,6 @@ FieldTypeP Model::GetFieldValue(FieldID field_id,
   return fields_[field_id]->GetValue(values, id);
 }
 
-FieldTypeP Model::GetFieldValue(
-    const std::string &field_name,
-    FieldTypeArray &values,
-    ContraptionID id) const
-    throw(FieldException, ModelBackendException) {
-  return GetFieldValue(GetFieldID(field_name), values, id);
-}
-
 const Field* Model::GetField(FieldID field_id) const
     throw(FieldException) {
   if (field_id >= GetFieldNumber()) {
