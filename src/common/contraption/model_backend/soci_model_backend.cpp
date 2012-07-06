@@ -219,11 +219,11 @@ void SOCIModelBackend::WriteRecords(
   }
 }
 
-string SQLTypeName(const int &dummy) {
+string SQLTypeName(const int &/*dummy*/) {
   return "INTEGER";
 }
 
-string SQLTypeName(const string &dummy) {
+string SQLTypeName(const string &/*dummy*/) {
   return "LONGTEXT";
 }
 
@@ -341,7 +341,7 @@ auto_ptr< vector<ContraptionID> > SOCIModelBackend::Select(
     for (soci::rowset<int>::const_iterator it = rs.begin(); 
          it != rs.end(); ++it)
     {
-      ret->push_back(*it);
+      ret->push_back((ContraptionID) *it);
     }
     return ret;
   }

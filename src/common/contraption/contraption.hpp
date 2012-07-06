@@ -109,7 +109,7 @@ class Contraption {
   friend class ContraptionAccessor;
   friend class ContraptionArray;
   template<typename T>
-  friend class SimpleFieldT;
+  friend class SimpleFieldTImpl;
   friend void boost::intrusive_ptr_add_ref(Contraption* contraption);
   friend void boost::intrusive_ptr_release(Contraption* contraption);
  private:

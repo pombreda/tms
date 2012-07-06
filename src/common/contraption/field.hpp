@@ -8,7 +8,6 @@
 #include <memory>
 #include <sstream>
 // common
-
 #include <contraption/model.hpp>
 #include <contraption/filter.hpp>
 #include <contraption/field_type.hpp>
@@ -20,6 +19,7 @@
 namespace tms {
 namespace common {
 namespace contraption {
+
 //------------------------------------------------------------
 // Field class. This is an abstract class.
 // Do not inherit this class directly.
@@ -73,15 +73,15 @@ class Field {
 };
 
 //------------------------------------------------------------
-// FieldT class. All non-abstract fiels classes must inherit 
+// FieldT class. All non-abstract fields classes must inherit 
 // this class.
 //------------------------------------------------------------
 template<class T>
-class FieldT : virtual public Field {  
+class FieldT : public Field {  
  public:
-  FieldT(const std::string &name, bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_) {}
+  FieldT(std::string name, bool is_private)
+      throw(FieldException) :
+      Field(name, is_private) {}
   virtual bool CheckType(const FieldType *type) const {
     return dynamic_cast<const FieldTypeT<T>*>(type);
   }

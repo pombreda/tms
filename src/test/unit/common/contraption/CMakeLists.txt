@@ -18,6 +18,7 @@ add_executable(soci_contraption_test
 
 find_package(Soci REQUIRED)
 find_package(Sqlite3 REQUIRED)
+include_directories(${SOCI_INCLUDE_DIRS})
 
 target_link_libraries(soci_contraption_test 
   tms_soci_contraption 

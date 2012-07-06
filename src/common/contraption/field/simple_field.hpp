@@ -3,6 +3,11 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
+// std
+#include <typeinfo>
+// boost
+#include <boost/parameter.hpp>
+// common
 #include <contraption/field.hpp>
 #include <contraption/record.hpp>
 #include <contraption/contraption.hpp>
@@ -15,23 +20,28 @@ namespace tms {
 namespace common {
 namespace contraption {
 
-//------------------------------------------------------------
-// SimpleField class. Represents a simple mapping to db.
-// This is an abstract class. SimpleFieldT - concrete 
-// realization.
-//------------------------------------------------------------
-class SimpleField : virtual public Field {  
- public:
-  SimpleField(const std::string &name, bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_), 
-      backend_name_(name) {}
+BOOST_PARAMETER_NAME(is_private)
+BOOST_PARAMETER_NAME(name)
+BOOST_PARAMETER_NAME(readable)
+BOOST_PARAMETER_NAME(writable)
+BOOST_PARAMETER_NAME(backend_name)
+BOOST_PARAMETER_NAME(default_value)
 
-  SimpleField(const std::string &name, const std::string &backend_name_,
-         bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_), 
-      backend_name_(backend_name_) {}
+//------------------------------------------------------------
+// SimpleFieldT class. Represents a simple mapping to db.
+//------------------------------------------------------------
+template<class T>
+class SimpleFieldTImpl : public FieldT<T> {  
+ public:  
+  using FieldT<T>::CheckType;
+  template <class ArgPack>
+  SimpleFieldTImpl(ArgPack const &args) 
+      throw(FieldException) :
+      FieldT<T>(args[_name], args[_is_private | false]),
+      field_id_(9999),
+      default_value_(args[_default_value | T()]),
+      backend_name_(args[_backend_name | args[_name]]) {
+  }
 
   virtual SelectorP GetSelector(Filter *filter) const
       throw(FieldException) {    
@@ -43,67 +53,11 @@ class SimpleField : virtual public Field {
                                              cfilter->type()));
       }
     }
-    Field::GetSelector(filter);
+    return Field::GetSelector(filter);
   }
 
-  virtual ~SimpleField() {}
- protected:
-  const std::string backend_name_;  
-};
-
-//------------------------------------------------------------
-// SimpleFieldT class. Represents a simple mapping to db.
-//------------------------------------------------------------
-template<class T>
-class SimpleFieldT : virtual public SimpleField,
-                     virtual public FieldT<T> {  
- public:
-  SimpleFieldT(const std::string &name, bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_),
-      SimpleField(name, is_private_),
-      FieldT<T>(name, is_private_),
-      field_id_(9999),
-      default_value_() {}
-
-  SimpleFieldT(const std::string &name, bool is_private_, 
-               const T &default_value)
-      throw(FieldException) : 
-      Field(name, is_private_),
-      SimpleField(name, is_private_),
-      FieldT<T>(name, is_private_),
-      field_id_(9999),
-      default_value_(default_value) {}
-
-
-  SimpleFieldT(const std::string &name, const std::string &backend_name_,
-               bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_),
-      SimpleField(name, backend_name_, is_private_),
-      FieldT<T>(name, is_private_),
-      field_id_(9999),
-      default_value_() {}
-
-  SimpleFieldT(const std::string &name, const std::string &backend_name_,
-               bool is_private_, const T &default_value)
-      throw(FieldException) : 
-      Field(name, is_private_),
-      SimpleField(name, backend_name_, is_private_),
-      FieldT<T>(name, is_private_),
-      field_id_(9999),
-      default_value_(default_value) {}
-
-  SimpleFieldT(const std::string &name, const char *backend_name_,
-               bool is_private_ = false)
-      throw(FieldException) : 
-      Field(name, is_private_),
-      SimpleField(name, backend_name_, is_private_),
-      FieldT<T>(name, is_private_),
-      field_id_(9999) {}
-
   virtual void Initialize(Model *model) {
-    field_id_ = model->GetFieldID(name());
+    field_id_ = model->GetFieldID(this->name());
   }
   
   virtual void GetReadRecords(Contraption *contraption, 
@@ -131,12 +85,29 @@ class SimpleFieldT : virtual public SimpleField,
     }
   }
 
-  virtual ~SimpleFieldT() {}
+  virtual ~SimpleFieldTImpl() {}
  private:
-  T default_value_;
   FieldID field_id_;
+  T default_value_;
+  const std::string backend_name_; 
 };
 
+template <class T>
+class SimpleFieldT : public SimpleFieldTImpl<T> {
+ public:
+  BOOST_PARAMETER_CONSTRUCTOR(
+    SimpleFieldT, (SimpleFieldTImpl<T>),
+    tag, 
+    (required 
+      (name, (std::string))
+    ) 
+    (optional 
+      (is_private, (bool))
+      (backend_name, (std::string))
+      (default_value, (T))
+    )
+  )
+};
 
 }
 }

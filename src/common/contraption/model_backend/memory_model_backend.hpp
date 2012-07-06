@@ -38,7 +38,7 @@ class MemoryModelBackend : public ModelBackend {
       throw(ModelBackendException);
   
   virtual void InitSchema(
-      const std::vector<RecordP> &records)
+      const std::vector<RecordP> &/*records*/)
       throw(ModelBackendException) {}
 
   virtual std::auto_ptr<std::vector<ContraptionID> > Select(

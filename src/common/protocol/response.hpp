@@ -77,15 +77,13 @@ class Response {
   friend class boost::serialization::access;
 
   template<class Archive>
-  void save(Archive &ar, const unsigned int version) const {
+  void save(Archive &ar, const unsigned int /*version*/) const {
     ar & status_;
-    version = version;
   }
 
   template<class Archive>
-  void load(Archive &ar, const unsigned int version) {
+  void load(Archive &ar, const unsigned int /*version*/) {
     ar & status_;
-    version = version;
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

@@ -12,7 +12,7 @@ using namespace tms::common::contraption;
 const ContraptionID Contraption::kNewID = 0;
 
 FieldType* Contraption::GetFieldValue(size_t field_id)
-      throw(FieldException, ModelBackendException) {
+    throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
     msg << "Incorrect field_id in Contraption::GetFieldValue: '" 

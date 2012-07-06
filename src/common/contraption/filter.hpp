@@ -18,7 +18,7 @@ namespace contraption {
 //------------------------------------------------------------
 class Filter {
  public:
-  virtual SelectorP Apply(Model *model);
+  virtual SelectorP Apply(const Model *model) = 0;
   virtual ~Filter() {}
 };
 

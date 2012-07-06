@@ -5,6 +5,8 @@ namespace common {
 namespace contraption {
 class SimpleField;
 template<class T>
+class SimpleFieldTImpl;
+template<class T>
 class SimpleFieldT;
 }
 }

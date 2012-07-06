@@ -77,19 +77,17 @@ class Request {
   friend class boost::serialization::access;
 
   template<class Archive>
-  void save(Archive &ar, const unsigned int version) const {
+  void save(Archive &ar, const unsigned int /*version*/) const {
     ar & user_;
     ar & password_hash_;
     ar & version_;
-    version = version;
   }
 
   template<class Archive>
-  void load(Archive &ar, const unsigned int version) {
+  void load(Archive &ar, const unsigned int /*version*/) {
     ar & user_;
     ar & password_hash_;
     ar & version_;
-    version = version;
   }
 
   BOOST_SERIALIZATION_SPLIT_MEMBER()

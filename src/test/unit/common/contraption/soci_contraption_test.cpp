@@ -33,7 +33,9 @@ using namespace tms::common::contraption;
 
 class Fixture {
  public:
-  Fixture() {
+  Fixture()
+    : backend(),
+      model() {
     string test_db("test.sqlite3");
     remove(test_db.c_str());
     SOCIDBScheme scheme(soci::sqlite3, test_db);    
@@ -41,9 +43,10 @@ class Fixture {
     vector<Field*> fields;
     fields.push_back(new SimpleFieldT<string>("name"));
     fields.push_back(new SimpleFieldT<int>("age"));
-    fields.push_back(new SimpleFieldT<int>("password", true));
+    fields.push_back(new SimpleFieldT<int>("password", 
+                                           _is_private = true));
     fields.push_back(new SimpleFieldT<string>("Surname", 
-                                              "surname"));
+                                              _backend_name = "surname"));
     model.reset(new Model(fields, backend));    
   }
 
