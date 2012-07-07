@@ -62,12 +62,12 @@ class Field {
                                ) const = 0;
   
   virtual bool CheckType(const FieldType *type) const = 0;
-  virtual FieldTypeP GetValue(FieldTypeArray &values, ContraptionID id) {
-    return FieldTypeP(values[field_id_]->Duplicate());
+  virtual FieldTypeP GetValue(FieldTypeArray &values, ContraptionID /*id*/) {
+    return FieldTypeP(values[(int)this->field_id_]->Duplicate());
   }
   virtual void SetValue(const FieldType &value, 
                         FieldTypeArray &values,
-                        ContraptionID id) {
+                        ContraptionID /*id*/) {
     values[(int)this->field_id_].reset(value.Duplicate());
   }
 
