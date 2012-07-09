@@ -1,5 +1,5 @@
-#ifndef _REQUEST_HPP_
-#define _REQUEST_HPP_
+#ifndef _TMS_COMMON_PROTOCOL__REQUEST_HPP_
+#define _TMS_COMMON_PROTOCOL__REQUEST_HPP_
 
 //------------------------------------------------------------
 // Headers
@@ -16,18 +16,12 @@
 
 namespace tms {
 namespace common {
+namespace protocol {
 
 //------------------------------------------------------------
 // Unique ids for different requests
 //------------------------------------------------------------
 
-namespace RequestID {
-enum RequestID {
-  kRequest,
-  kIncorrect
-};
-const size_t kAuthentication = kRequest;
-}
 
 //------------------------------------------------------------
 // Class definition: Request
@@ -36,70 +30,12 @@ const size_t kAuthentication = kRequest;
 
 class Request {
  public:
-  Request(std::string user, std::string password) 
-      : user_(user),
-        password_hash_(sha256(password)),
-        version_(kVersion) {
-  }
+  Request() {}
   
-  //------------------------------------------------------------
-  // Unique ID
-  //------------------------------------------------------------
-
-  virtual size_t RequestID() {
-    return RequestID::kRequest;
-  }
-  
-  //------------------------------------------------------------
-  // Getters
-  //------------------------------------------------------------
-
-  std::string user() {
-    return user_;
-  }
-  
-  std::string password_hash() {
-    return password_hash_;
-  }
-
-  int version() {
-    return version_;
-  }
-      
-  Request() : user_(), password_hash_(), version_() {} // for serialization only  
   virtual ~Request(){}
- 
- private:
-
-  //------------------------------------------------------------
-  // Serialization
-  //------------------------------------------------------------
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void save(Archive &ar, const unsigned int /*version*/) const {
-    ar & user_;
-    ar & password_hash_;
-    ar & version_;
-  }
-
-  template<class Archive>
-  void load(Archive &ar, const unsigned int /*version*/) {
-    ar & user_;
-    ar & password_hash_;
-    ar & version_;
-  }
-
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
-  
-  //------------------------------------------------------------
-  // Data
-  //------------------------------------------------------------
-
-  std::string user_;
-  std::string password_hash_;
-  int version_;
 };
+
 }
 }
-#endif // _REQUEST_HPP_
+}
+#endif // _TMS_COMMON_PROTOCOL__REQUEST_HPP_
