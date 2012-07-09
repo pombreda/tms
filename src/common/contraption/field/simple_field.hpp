@@ -67,7 +67,7 @@ class SimpleFieldTImpl : public FieldT<T> {
     }
   }
 
-  const std::string backend_name() const
+  const std::string& backend_name() const
       throw () {
     return backend_name_;
   }

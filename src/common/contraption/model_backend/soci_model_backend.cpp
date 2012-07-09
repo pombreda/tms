@@ -9,6 +9,8 @@
 // common
 #include <contraption/contraption.hpp>
 #include <contraption/filter/all_filter.hpp>
+#include <contraption/filter/compare_filter.hpp>
+#include <contraption/filter/logical_connective.hpp>
 //
 #include "soci_model_backend.hpp"
 
@@ -327,25 +329,172 @@ void SOCIModelBackend::DeleteEntry(
   }
 }
 
-auto_ptr< vector<ContraptionID> > SOCIModelBackend::Select(
-    FilterCP filter)
+static void WriteSelector(FilterCP filter,
+                          ostringstream &query,
+                          soci::statement &st) 
+    throw(ModelBackendException);
+
+template<class T>
+static bool WriteCompareSelector(FilterCP filter_p,
+                                 ostringstream &query,
+                                 soci::statement &st) 
     throw(ModelBackendException) {
-  const AllFilter *all_filter 
-      = dynamic_cast<const AllFilter*>(filter.get());
-  if (all_filter) {
-    soci::rowset<int> rs 
-        = (session_.prepare << "SELECT " << id_column_ 
-           << " FROM " << table_name_);
-    auto_ptr< vector<ContraptionID> > ret(new vector<ContraptionID>());
-    for (soci::rowset<int>::const_iterator it = rs.begin(); 
-         it != rs.end(); ++it)
-    {
-      ret->push_back((ContraptionID) *it);
+  const CompareFilterT<T> *filter 
+      = dynamic_cast<const CompareFilterT<T>*>(filter_p.get());
+  if (filter) {
+    query << filter->backend_name() << ' ';
+    switch (filter->type()) {
+      case kEqual:
+        query << "==";
+        break;
+      case kNotEqual:
+        query << "!=";
+        break;
+      case kLesser:
+        query << "<";
+        break;
+      case kNotLesser:
+        query << ">=";
+        break;
+      case kGreater:
+        query << ">";
+        break;
+      case kNotGreater:
+        query << "<=";
+        break;
+      default:
+        ostringstream msg;
+        msg << "Unsupported CompareFilter type '" << filter->type()
+            << "' in SOCIModelBackend::Select.";
+        throw ModelBackendException(msg.str());
     }
-    return ret;
+    query << " :v" << query.str().size();
+    st.exchange(soci::use(filter->value()));
+    return true;
+  }
+  return false;
+}
+
+
+static bool WriteNotSelector(FilterCP filter_p,
+                             ostringstream &query,
+                             soci::statement &st) 
+    throw(ModelBackendException) {
+  const NotFilter *filter 
+      = dynamic_cast<const NotFilter*>(filter_p.get());
+  if (filter) {
+    query << "NOT (";
+    WriteSelector(filter->filter(), query, st);
+    query << ")";
+    return true;
+  }
+  return false;
+}
+
+static bool WriteAndSelector(FilterCP filter_p,
+                             ostringstream &query,
+                             soci::statement &st) 
+    throw(ModelBackendException) {
+  const AndFilter *filter 
+      = dynamic_cast<const AndFilter*>(filter_p.get());
+  if (filter) {
+    query << "(";
+    WriteSelector(filter->filter1(), query, st);
+    query << ") AND (";
+    WriteSelector(filter->filter2(), query, st);
+    query << ")";
+    return true;
+  }
+  return false;
+}
+
+static bool WriteOrSelector(FilterCP filter_p,
+                            ostringstream &query,
+                            soci::statement &st) 
+    throw(ModelBackendException) {
+  const OrFilter *filter 
+      = dynamic_cast<const OrFilter*>(filter_p.get());
+  if (filter) {
+    query << "(";
+    WriteSelector(filter->filter1(), query, st);
+    query << ") OR (";
+    WriteSelector(filter->filter2(), query, st);
+    query << ")";
+    return true;
+  }
+  return false;
+}
+
+static void WriteSelector(FilterCP filter,
+                          ostringstream &query,
+                          soci::statement &st) 
+    throw(ModelBackendException) {
+  if (WriteCompareSelector<int>(filter, query, st)) {
+    return;
+  }
+  if (WriteCompareSelector<string>(filter, query, st)) {
+    return;
+  }
+  if (WriteNotSelector(filter, query, st)) {
+    return;
+  }
+  if (WriteAndSelector(filter, query, st)) {
+    return;
+  }
+  if (WriteOrSelector(filter, query, st)) {
+    return;
   }
   ostringstream msg;
   msg << "Unsupported filter '" << typeid(*filter).name()
-      << "' in MemoryModelBackend::Select.";
+      << "' in SOCIModelBackend::Select.";
   throw ModelBackendException(msg.str());
+}
+
+auto_ptr< vector<ContraptionID> > SOCIModelBackend::Select(
+    FilterCP filter)
+    throw(ModelBackendException) {
+  try {
+    OpenSession();    
+    const AllFilter *all_filter 
+        = dynamic_cast<const AllFilter*>(filter.get());
+    ostringstream query;
+    soci::statement st(session_);
+    if (all_filter) {
+      query << "SELECT " << id_column_ 
+            << " FROM " << table_name_;
+    } else {
+      query << "SELECT " << id_column_ << " FROM " << table_name_ 
+            << " WHERE ";
+      WriteSelector(filter, query, st);
+    }
+    ContraptionID id;
+    st.exchange(soci::into(id));
+    st.alloc();
+    st.prepare(query.str());
+    st.define_and_bind();
+    st.execute();
+    auto_ptr< vector<ContraptionID> > ret(new vector<ContraptionID>());
+    while(st.fetch()) {
+      ret->push_back(id);
+    }
+    return ret;
+  } catch (const ModelBackendException &e) {
+    throw;
+  } catch (const exception &e) {
+    throw ModelBackendException(&e, "Exception in SOCIModelBackend::Select.");
+  } catch (...) {
+    throw ModelBackendException("Unsupported exception type in "
+                                "SOCIModelBackend::Select.");
+  }
+  try {
+    CloseSession();
+  } catch (const ModelBackendException &e) {
+    throw;
+  } catch (const exception &e) {
+    throw ModelBackendException(&e, 
+                                "Exception in SOCIModelBackend::DeleteSchema");
+  } catch (...) {
+    throw ModelBackendException("Unsupported exception type in "
+                                "SOCIModelBackend::DeleteRecords.");
+  }
 }

@@ -27,23 +27,23 @@ class CompareFilterT : public Filter {
       type_(type),
       value_(value) {}
          
-  CompareID type() 
+  CompareID type() const
       throw() {
     return type_;
   }
 
-  const std::string &backend_name() {
+  const std::string &backend_name() const {
     return backend_name_;
   }
 
-  const T &value() {
+  const T &value() const {
     return value_;
   }
       
  private:
   const std::string &backend_name_; 
   CompareID type_;
-  const T &value_;
+  const T value_;
 };
 
 template <class T>
