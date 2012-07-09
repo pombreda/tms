@@ -11,7 +11,6 @@
 #include <contraption/model.hpp>
 #include <contraption/filter.hpp>
 #include <contraption/field_type.hpp>
-#include <contraption/selector.hpp>
 #include <contraption/record.hpp>
 #include <contraption/contraption_fwd.hpp>
 
@@ -69,16 +68,6 @@ class Field {
                         FieldTypeArray &values,
                         ContraptionID /*id*/) {
     values[(int)this->field_id_].reset(value.Duplicate());
-  }
-
-  virtual SelectorP GetSelector(Filter *filter) const
-      throw(FieldException) {
-    std::ostringstream msg;
-    msg << "Unsupported filter '" << typeid(*filter).name()
-        << "' for field " <<  name_ << ".'";
-    throw FieldException(msg.str());
-    
-    throw FieldException("Unsupported Filter");
   }
 
   virtual ~Field() {}

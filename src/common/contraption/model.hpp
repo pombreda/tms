@@ -45,10 +45,16 @@ class Model {
   const Field* GetField(FieldID field_id) const
       throw(FieldException);
 
+  const Field* GetField(const std::string &field_name) const
+      throw(FieldException);
+
   ContraptionP New()
       throw();
 
   ContraptionArrayP All()
+      throw(ModelBackendException);
+
+  ContraptionArrayP Filter(FilterCP filter)
       throw(ModelBackendException);
 
   // This method will init backend to work with models.

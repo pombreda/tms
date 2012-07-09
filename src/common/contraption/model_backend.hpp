@@ -12,7 +12,7 @@
 #include <contraption/model_backend_exception.hpp>
 #include <contraption/record.hpp>
 #include <contraption/contraption_fwd.hpp>
-#include <contraption/selector.hpp>
+#include <contraption/filter.hpp>
 
 namespace tms {
 namespace common {
@@ -38,7 +38,7 @@ class ModelBackend {
       ContraptionID &id)
       throw(ModelBackendException) = 0;
   virtual std::auto_ptr<std::vector<ContraptionID> > Select(
-      const Selector *selector)
+      FilterCP filter)
       throw(ModelBackendException) = 0; 
 
   virtual ~ModelBackend() {}

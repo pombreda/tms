@@ -7,7 +7,6 @@
 #include <boost/shared_ptr.hpp>
 // common
 #include <contraption/model_fwd.hpp>
-#include <contraption/selector.hpp>
 namespace tms {
 namespace common {
 namespace contraption {
@@ -18,11 +17,11 @@ namespace contraption {
 //------------------------------------------------------------
 class Filter {
  public:
-  virtual SelectorP Apply(const Model *model) = 0;
   virtual ~Filter() {}
 };
 
 typedef boost::shared_ptr<Filter> FilterP;
+typedef boost::shared_ptr<const Filter> FilterCP;
 
 }
 }

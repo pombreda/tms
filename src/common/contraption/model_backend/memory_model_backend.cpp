@@ -6,8 +6,7 @@
 // common
 #include <contraption/record.hpp>
 #include <contraption/contraption.hpp> // for kNewID only
-#include <contraption/selector.hpp>
-#include <contraption/selector/all_selector.hpp>
+#include <contraption/filter/all_filter.hpp>
 //
 #include "memory_model_backend.hpp"
 #include <iostream> //oops
@@ -128,11 +127,11 @@ void MemoryModelBackend::DeleteEntry(
 }
 
 auto_ptr< vector<ContraptionID> > MemoryModelBackend::Select(
-    const Selector *selector)
+    FilterCP filter)
     throw(ModelBackendException) {
-  const AllSelector *all_selector 
-      = dynamic_cast<const AllSelector*>(selector);
-  if (all_selector) {
+  const AllFilter *all_filter 
+      = dynamic_cast<const AllFilter*>(filter.get());
+  if (all_filter) {
     auto_ptr< vector<ContraptionID> > ret(new vector<ContraptionID>());
     for (map<ContraptionID, map<string, int> >::iterator it 
              = int_fields_.begin(), end = int_fields_.end(); 
@@ -142,7 +141,7 @@ auto_ptr< vector<ContraptionID> > MemoryModelBackend::Select(
     return ret;
   }
   ostringstream msg;
-  msg << "Unsupported selector '" << typeid(*selector).name()
+  msg << "Unsupported selector '" << typeid(*filter).name()
       << "' in MemoryModelBackend::Select.";
   throw ModelBackendException(msg.str());
 }

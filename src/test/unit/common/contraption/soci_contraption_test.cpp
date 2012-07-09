@@ -23,7 +23,9 @@
 #include <contraption/field_type.hpp>
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/contraption_array.hpp>
- 
+#include <contraption/logical_connective.hpp>
+#include <contraption/filter/compare_filter.hpp>
+
 using namespace std;
 using namespace tms::common::contraption;
 
@@ -48,6 +50,7 @@ class Fixture {
     fields.push_back(new SimpleFieldT<string>("Surname", 
                                               _backend_name = "surname"));
     model.reset(new Model(fields, backend));    
+    model->InitSchema();
   }
 
   ModelBackendP backend;
@@ -63,7 +66,6 @@ class Fixture {
 BOOST_AUTO_TEST_SUITE(testSociContraption)
 
 BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
-  model->InitSchema();
   ContraptionP test_contraption = model->New();
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Du'\"\\mmy");
@@ -96,6 +98,32 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
   2);  
+}
+
+BOOST_FIXTURE_TEST_CASE(testFilter, Fixture) {
+  const SimpleFieldT<int> *field = dynamic_cast<const SimpleFieldT<int>*>(model->GetField("age"));
+  BOOST_CHECK(field);
+  ContraptionP test_contraption = model->New();
+  test_contraption->Set<int>("age", 10);
+  test_contraption->Set<string>("Surname", "Dummy");
+  test_contraption->Save();
+  test_contraption = model->New();
+  test_contraption->Set<int>("age", 12);
+  test_contraption->Set<string>("Surname", "Ymmud");
+  test_contraption->Save();
+  test_contraption->Set<int>("age", 12);
+  test_contraption->Set<string>("Surname", "Dummy");
+  test_contraption->Save();
+  test_contraption->Set<int>("age", 12);
+  test_contraption->Set<string>("Surname", "Ymmud");
+  test_contraption->Save();
+  test_contraption->Set<int>("age", 10);
+  test_contraption->Set<string>("Surname", "Ymmud");
+  test_contraption->Save();
+  test_contraption->Set<int>("age", 14);
+  test_contraption->Set<string>("Surname", "Ymmud");
+  test_contraption->Save();
+  FilterP filter = Compare(field, kEqual, 12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

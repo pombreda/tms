@@ -8,8 +8,7 @@
 #include <boost/foreach.hpp>
 // common
 #include <contraption/contraption.hpp>
-#include <contraption/selector.hpp>
-#include <contraption/selector/all_selector.hpp>
+#include <contraption/filter/all_filter.hpp>
 //
 #include "soci_model_backend.hpp"
 
@@ -329,11 +328,11 @@ void SOCIModelBackend::DeleteEntry(
 }
 
 auto_ptr< vector<ContraptionID> > SOCIModelBackend::Select(
-    const Selector *selector)
+    FilterCP filter)
     throw(ModelBackendException) {
-  const AllSelector *all_selector 
-      = dynamic_cast<const AllSelector*>(selector);
-  if (all_selector) {
+  const AllFilter *all_filter 
+      = dynamic_cast<const AllFilter*>(filter.get());
+  if (all_filter) {
     soci::rowset<int> rs 
         = (session_.prepare << "SELECT " << id_column_ 
            << " FROM " << table_name_);
@@ -346,7 +345,7 @@ auto_ptr< vector<ContraptionID> > SOCIModelBackend::Select(
     return ret;
   }
   ostringstream msg;
-  msg << "Unsupported selector '" << typeid(*selector).name()
+  msg << "Unsupported filter '" << typeid(*filter).name()
       << "' in MemoryModelBackend::Select.";
   throw ModelBackendException(msg.str());
 }

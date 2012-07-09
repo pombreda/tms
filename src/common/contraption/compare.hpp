@@ -4,12 +4,12 @@ namespace common {
 namespace contraption {
 
 enum CompareID {
-  kE,
-  kNE,
-  kL,
-  kNL,
-  kG,
-  kNG
+  kEqual,
+  kNotEqual,
+  kLesser,
+  kNotLesser,
+  kGreater,
+  kNotGreater
 };
 
 }

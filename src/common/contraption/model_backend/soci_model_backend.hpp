@@ -29,11 +29,10 @@ struct SOCIDBScheme {
 };
 
 //------------------------------------------------------------
-// MemoryModelBackend class. This class is mainly for
-// unit testing.
+// SOCIModelBackend class.
 // It is not thread-safe. Moreover It'll breake if any
 // other process will write to the db.
-// While it is possible to rewrite it to be trhead-safe
+// While it is possible to rewrite it to be thread-safe
 // it'll require special functions of concrete sql realization
 // like sqlite3_last_insert_rowid.
 //------------------------------------------------------------
@@ -58,7 +57,7 @@ class SOCIModelBackend : public ModelBackend {
       throw(ModelBackendException);
   
   virtual std::auto_ptr< std::vector<ContraptionID> > Select(
-      const Selector *selector)
+      FilterCP filter)
       throw(ModelBackendException);
   
   SOCIModelBackend(const SOCIDBScheme &scheme, 

@@ -1,11 +1,12 @@
+// boost
+#include <boost/bind.hpp>
+// common
 #include <contraption/contraption.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/field.hpp>
 #include <contraption/contraption_array.hpp>
 #include <contraption/contraption_accessor.hpp>
-#include <contraption/selector.hpp>
-#include <contraption/selector/all_selector.hpp>
-#include <boost/bind.hpp>
+#include <contraption/filter/all_filter.hpp>
 #include "model.hpp"
 #include <iostream> //oops
 
@@ -66,6 +67,10 @@ const Field* Model::GetField(FieldID field_id) const
   return fields_[field_id].get();
 }
 
+const Field* Model::GetField(const std::string &field_name) const 
+    throw(FieldException) {
+  return GetField(GetFieldID(field_name));
+}
 
 FieldID Model::GetFieldID(const std::string &field_name) const
     throw(FieldException) {
@@ -146,10 +151,9 @@ void Model::SaveHandle(const vector<ContraptionP> &save,
   }
 }
 
-ContraptionArrayP Model::All()
+ContraptionArrayP Model::Filter(FilterCP filter)
     throw(ModelBackendException) {
-  auto_ptr< vector<ContraptionID> > ids = backend_->Select(
-      boost::scoped_ptr<Selector>(new AllSelector()).get());
+  auto_ptr< vector<ContraptionID> > ids = backend_->Select(filter);
   vector<ContraptionP> contraptions;
   for (size_t pos = 0, end = ids->size(); pos < end; ++pos) {
     contraptions.push_back(ContraptionP(new Contraption(this)));
@@ -161,6 +165,12 @@ ContraptionArrayP Model::All()
   saver->connect(boost::bind(&Model::SaveHandle, this, _1, _2));
   return ContraptionArrayP(
       new ContraptionArray(saver, contraptions));
+}
+
+
+ContraptionArrayP Model::All()
+    throw(ModelBackendException) {
+  return Filter(tms::common::contraption::All());
 }
 
 Model::Model(const vector<Field*> &fields, 

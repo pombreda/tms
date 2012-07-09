@@ -42,7 +42,7 @@ class MemoryModelBackend : public ModelBackend {
       throw(ModelBackendException) {}
 
   virtual std::auto_ptr<std::vector<ContraptionID> > Select(
-      const Selector *selector)
+      FilterCP filter)
       throw(ModelBackendException);
 
   std::map<ContraptionID, std::map<std::string, int> >& 

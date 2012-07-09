@@ -18,41 +18,39 @@ namespace contraption {
 // CompareFilter class.
 //------------------------------------------------------------
 
-class CompareFilter : public Filter {
+template <class T>
+class CompareFilterT : public Filter {
  public: 
-  CompareFilter(FieldID field_id, CompareID type) 
+  CompareFilterT(const SimpleFieldT<T> *field, CompareID type, const T& value) 
       throw() :
-      field_id_(new FieldID(field_id)),
-      field_(),
-      type_(type) {}
-  
-  CompareFilter(const std::string &field, CompareID type) 
-      throw() :
-      field_id_(),
-      field_(new std::string(field)),
-      type_(type) {}
-  
-  virtual SelectorP Apply(const Model *model) 
-      throw (FieldException) {
-    FieldID field_id;
-    if (field_id_.get()) {
-      field_id = *field_id_;
-    } else {
-      field_id = model->GetFieldID(*field_);
-    }
-    return model->GetField(field_id)->GetSelector(this);
-  }
-
+      backend_name_(field->backend_name()),
+      type_(type),
+      value_(value) {}
+         
   CompareID type() 
       throw() {
     return type_;
   }
+
+  const std::string &backend_name() {
+    return backend_name_;
+  }
+
+  const T &value() {
+    return value_;
+  }
       
  private:
-  std::auto_ptr<FieldID> field_id_;
-  std::auto_ptr<std::string> field_;
+  const std::string &backend_name_; 
   CompareID type_;
+  const T &value_;
 };
+
+template <class T>
+FilterP Compare (const SimpleFieldT<T> *field, CompareID type, const T& value) {
+  return FilterP(new CompareFilterT<T>(field, type, value));
+}
+
 }
 }
 }

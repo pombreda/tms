@@ -12,9 +12,6 @@
 #include <contraption/record.hpp>
 #include <contraption/contraption.hpp>
 #include <contraption/filter.hpp>
-#include <contraption/selector.hpp>
-#include <contraption/filter/compare_filter.hpp>
-#include <contraption/selector/compare_selector.hpp>
 
 namespace tms {
 namespace common {
@@ -41,19 +38,6 @@ class SimpleFieldTImpl : public FieldT<T> {
                 args[_is_writable | true]),
       default_value_(args[_default_value | T()]),
       backend_name_(args[_backend_name | args[_name]]) {
-  }
-
-  virtual SelectorP GetSelector(Filter *filter) const
-      throw(FieldException) {    
-    {
-      CompareFilter *cfilter = 
-          dynamic_cast<CompareFilter *>(filter);
-      if (cfilter) {
-        return SelectorP(new CompareSelector(backend_name_, 
-                                             cfilter->type()));
-      }
-    }
-    return Field::GetSelector(filter);
   }
 
   virtual void GetReadRecords(FieldTypeArray &values, 
@@ -83,7 +67,13 @@ class SimpleFieldTImpl : public FieldT<T> {
     }
   }
 
+  const std::string backend_name() const
+      throw () {
+    return backend_name_;
+  }
+
   virtual ~SimpleFieldTImpl() {}
+
  private:
   T default_value_;
   const std::string backend_name_; 
