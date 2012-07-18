@@ -82,6 +82,8 @@ void Protocol::AddMessageClass()
   helpers_.push_back(MessageHelperCP(new MessageHelperT<Message>()));
 }
 
+typedef shared_ptr<Protocol> ProtocolP;
+
 }
 }
 }
