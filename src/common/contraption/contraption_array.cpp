@@ -2,6 +2,7 @@
 #include <contraption/field_type.hpp>
 #include "contraption_array.hpp"
 
+
 using namespace std;
 using namespace tms::common::contraption;
 

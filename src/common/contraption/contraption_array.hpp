@@ -11,6 +11,9 @@
 #include <contraption/contraption.hpp>
 #include "contraption_array_fwd.hpp"
 
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
+#pragma GCC diagnostic ignored "-Weffc++"
+//ToDo rewrite
 namespace tms {
 namespace common {
 namespace contraption {
@@ -37,4 +40,7 @@ class ContraptionArray : public std::vector<ContraptionP> {
 }
 }
 }
+#pragma GCC diagnostic warning "-Wnon-virtual-dtor"
+#pragma GCC diagnostic warning "-Weffc++"
+
 #endif // _TMS_COMMON_CONTRAPTION__CONTRAPTION_ARRAY_HPP_
