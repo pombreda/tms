@@ -1,0 +1,10 @@
+package tms.test;
+message DummyMessage {
+  required string name = 1;
+}
+
+message DummyMessage2 {
+}
+
+message DummyMessage3 {
+}

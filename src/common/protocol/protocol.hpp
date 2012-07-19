@@ -9,11 +9,14 @@
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/scoped_array.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/shared_ptr.hpp>
 // protobuf
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 // common
 #include <protocol/message.hpp>
 #include <protocol/protocol_exception.hpp>
+#include <rtti/typeinfo.hpp>
 
 
 namespace tms {
@@ -25,7 +28,7 @@ class Protocol {
   Protocol()
       throw();
   template<class Message>
-  // Do not add several transaction of the same type;
+  // Do not add several MessageClass multiple times;
   void AddMessageClass()
       throw(ProtocolException);
   void Initialize()
@@ -37,22 +40,27 @@ class Protocol {
   void WriteMessage(std::ostream &sout, 
                     const Message &message)
       throw(ProtocolException);
-  ~Protocol() {}
+  ~Protocol() 
+      throw() {}
  private:
   class MessageHelper {
    public:
+    MessageHelper(size_t id) : id_(id) {}
     virtual bool Accept(const Message &message) const = 0;
     virtual MessageP ReadMessage(std::istream &sin) const = 0;
+    size_t id() const {return id_;}
     virtual ~MessageHelper() {}
+   private: 
+    size_t id_;
  };
 
   template <class Message>
   class MessageHelperT : public MessageHelper {
    public:
+    MessageHelperT(size_t id) : MessageHelper(id) {}
     virtual bool Accept(const ::tms::common::protocol::Message &message) const {
       return dynamic_cast<const Message*>(&message);
     }
-
     virtual MessageP ReadMessage(std::istream &sin) const {
       MessageP ret(new Message());
       uint32_t size;
@@ -65,6 +73,8 @@ class Protocol {
 
   typedef boost::shared_ptr<const MessageHelper> MessageHelperCP;
   bool initialized_;
+  typedef boost::unordered_map<rtti::TypeInfo, MessageHelperCP> HelpersMap;
+  HelpersMap helpers_by_type_info;
   std::vector<MessageHelperCP> helpers_;
 };
 
@@ -79,10 +89,13 @@ void Protocol::AddMessageClass()
     throw ProtocolException("Protocol::AddMessageClass called for protocol "
                             "which is already initialized.");
   }
-  helpers_.push_back(MessageHelperCP(new MessageHelperT<Message>()));
+  helpers_by_type_info[rtti::TypeID<Message>()]
+      =MessageHelperCP(new MessageHelperT<Message>(helpers_.size()));
+  helpers_.push_back(
+      MessageHelperCP(new MessageHelperT<Message>(helpers_.size())));
 }
 
-typedef shared_ptr<Protocol> ProtocolP;
+typedef boost::shared_ptr<Protocol> ProtocolP;
 
 }
 }
