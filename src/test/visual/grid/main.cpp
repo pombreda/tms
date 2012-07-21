@@ -24,6 +24,7 @@
 #include <wx/grid.h>
 
 #include <cstdio>
+#include <iostream>
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
 // common
@@ -38,12 +39,16 @@
 #include <contraption/contraption_array.hpp>
 #include <contraption/filter/logical_connective.hpp>
 #include <contraption/filter/compare_filter.hpp>
+#include <widget/printer.hpp>
+#include <gui_exception/gui_exception.hpp>
 
 #include <boost/lexical_cast.hpp>
 
 using namespace std;
 using namespace tms::common::contraption;
 using namespace boost;
+using namespace tms::common::widget;
+using namespace tms::common;
 
 static void init(ModelBackendP &backend, ModelP &model) {
   string test_db("test.sqlite3");
@@ -120,13 +125,17 @@ bool ExceptionTest::OnInit()
 {
   // call the base class initialization method, currently it only parses a
   // few common command-line options but it could be do more in the future
-  if ( !wxApp::OnInit() )
-    return false;
-  wxImage::AddHandler( new wxPNGHandler );
-  wxXmlResource::Get()->InitAllHandlers();
-  // create the main application window
-  MyFrame *frame = new MyFrame(_T("Grid test"));
-  frame->Show(true);
+  try {
+    if ( !wxApp::OnInit() )
+      return false;
+    wxImage::AddHandler( new wxPNGHandler );
+    wxXmlResource::Get()->InitAllHandlers();
+    // create the main application window
+    MyFrame *frame = new MyFrame(_T("Grid test"));
+    frame->Show(true);
+  } catch (GUIException &e) {
+    std::cerr << e.message() << std::endl;
+  }
   // Success: wxApp::OnRun() will be called which will enter the main message
   // loop and the application will run. If we returned false here, the
   // application would exit immediately.
@@ -141,32 +150,40 @@ bool ExceptionTest::OnInit()
 MyFrame::MyFrame(const wxString& title)
     : wxFrame(NULL, wxID_ANY, title)
 {
-  grid = new wxGrid( this,
-                     wxID_ANY,
-                     wxPoint( 0, 0 ),
-                     wxSize( 400, 300 ) );
-  grid->CreateGrid( 0, 0 );
-  grid->AppendRows(100);
-  grid->AppendCols(100);
-  wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
-  topSizer->Add( grid,
-                 1,
-                 wxEXPAND );
-  SetAutoLayout(true);
-  SetSizer( topSizer );
-  topSizer->Fit( this );
-  Centre();
 
   ModelBackendP backend;
   ModelP model;
   init(backend, model);
-//  printf("%p\n", (int*)(void*)model);
   ContraptionArrayP contraptions = model->All();
-//  printf("%d\n", contraptions->size());
-  grid->SetColFormatNumber(1);
-  grid->SetCellValue(0, 0, _T(contraptions->at(0)->Get<string>("Surname")));
-  grid->SetCellValue(0, 1, _T(lexical_cast<string>(contraptions->at(0)->Get<int>("age"))));
-  grid->SetCellValue(1, 0, _T(contraptions->at(1)->Get<string>("Surname")));
-  grid->SetCellValue(1, 1, _T(lexical_cast<string>(contraptions->at(1)->Get<int>("age"))));
-}
+  int k = model->GetFieldNumber();
+  int n = contraptions->size();
 
+  grid = new wxGrid(this, wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
+  grid->CreateGrid(0, 0);
+  grid->AppendRows(n);
+  grid->AppendCols(k);
+  wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
+  topSizer->Add(grid, 1, wxEXPAND);
+  SetAutoLayout(true);
+  SetSizer(topSizer);
+  topSizer->Fit(this);
+  Centre();
+
+  Printer* printer[k];
+  for (int i = 0; i < k; i++) {
+    if (dynamic_cast<const FieldT<int>*>(model->GetField(i)) != 0) {
+      printer[i] = new PrinterT<int>();
+    } else if (dynamic_cast<const FieldT<string>*>(model->GetField(i)) != 0) {
+      printer[i] = new PrinterT<string>();
+    }
+    string name = model->GetField(i)->name();
+    grid->SetColLabelValue(i, _T(name));
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < k; j++) {
+      if (model->GetField(j)->IsReadable()) {
+        grid->SetCellValue(i, j, _T(printer[j]->ToString(*(contraptions->at(i)->GetFieldValue(j)))));
+      }
+    }
+  }
+}
