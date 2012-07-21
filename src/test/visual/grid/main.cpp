@@ -23,8 +23,9 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/grid.h>
 
+// std
 #include <cstdio>
-#include <iostream>
+#include <iostream> //oops
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
 // common
@@ -34,15 +35,11 @@
 #include <contraption/model_backend/soci_model_backend.hpp>
 #include <contraption/field.hpp>
 #include <contraption/field/simple_field.hpp>
-#include <contraption/field_type.hpp>
-#include <contraption/contraption_accessor.hpp>
 #include <contraption/contraption_array.hpp>
-#include <contraption/filter/logical_connective.hpp>
-#include <contraption/filter/compare_filter.hpp>
-#include <widget/printer.hpp>
-#include <gui_exception/gui_exception.hpp>
 
-#include <boost/lexical_cast.hpp>
+//#include <widget/printer.hpp>
+#include <widget/contraption_grid.hpp>
+#include <gui_exception/gui_exception.hpp>
 
 using namespace std;
 using namespace tms::common::contraption;
@@ -121,8 +118,7 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
 // 'Main program' equivalent: the program execution "starts" here
-bool ExceptionTest::OnInit()
-{
+bool ExceptionTest::OnInit() {
   // call the base class initialization method, currently it only parses a
   // few common command-line options but it could be do more in the future
   try {
@@ -148,42 +144,18 @@ bool ExceptionTest::OnInit()
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title)
-    : wxFrame(NULL, wxID_ANY, title)
-{
+    : wxFrame(NULL, wxID_ANY, title) {
 
   ModelBackendP backend;
   ModelP model;
   init(backend, model);
   ContraptionArrayP contraptions = model->All();
-  int k = model->GetFieldNumber();
-  int n = contraptions->size();
-
-  grid = new wxGrid(this, wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
-  grid->CreateGrid(0, 0);
-  grid->AppendRows(n);
-  grid->AppendCols(k);
+  grid = new ContraptionGrid(contraptions, model, this,
+                             wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
   wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
   topSizer->Add(grid, 1, wxEXPAND);
   SetAutoLayout(true);
   SetSizer(topSizer);
   topSizer->Fit(this);
   Centre();
-
-  Printer* printer[k];
-  for (int i = 0; i < k; i++) {
-    if (dynamic_cast<const FieldT<int>*>(model->GetField(i)) != 0) {
-      printer[i] = new PrinterT<int>();
-    } else if (dynamic_cast<const FieldT<string>*>(model->GetField(i)) != 0) {
-      printer[i] = new PrinterT<string>();
-    }
-    string name = model->GetField(i)->name();
-    grid->SetColLabelValue(i, _T(name));
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < k; j++) {
-      if (model->GetField(j)->IsReadable()) {
-        grid->SetCellValue(i, j, _T(printer[j]->ToString(*(contraptions->at(i)->GetFieldValue(j)))));
-      }
-    }
-  }
 }

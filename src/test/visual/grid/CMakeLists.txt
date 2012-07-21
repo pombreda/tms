@@ -16,6 +16,7 @@ include_directories(${SOCI_INCLUDE_DIRS})
 target_link_libraries(grid_exe
   tms_soci_contraption
   tms_contraption
+  tms_contraption_grid
   ${SOCI_sqlite3_PLUGIN}
   ${SQLITE3_LIBRARIES}
   ${SOCIDB_LIBRARY}

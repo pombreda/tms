@@ -5,7 +5,7 @@
       <Option title="TMS" />
       <Option makefile_is_custom="1" />
       <Option compiler="gcc" />
-      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\usr\;CMake Files\..\..\..\usr\share\;CMake Files\..\..\..\usr\share\cmake-2.8\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Platform\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Compiler\;CMake Files\src\;CMake Files\src\common\;CMake Files\src\common\gui_exception\;CMake Files\src\common\protocol\;CMake Files\src\common\contraption\;CMake Files\src\common\contraption\model_backend\;CMake Files\src\test\;CMake Files\src\test\visual\;CMake Files\src\test\visual\exception\;CMake Files\src\test\visual\grid\;CMake Files\src\test\unit\;CMake Files\src\test\unit\common\;CMake Files\src\test\unit\common\gui_exception\;CMake Files\src\test\unit\common\contraption\;CMake Files\src\test\unit\common\protocol\;CMake Files\ext\;CMake Files\ext\CMakeModules\;" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\usr\;CMake Files\..\..\..\usr\share\;CMake Files\..\..\..\usr\share\cmake-2.8\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Platform\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Compiler\;CMake Files\src\;CMake Files\src\common\;CMake Files\src\common\gui_exception\;CMake Files\src\common\protocol\;CMake Files\src\common\contraption\;CMake Files\src\common\contraption\model_backend\;CMake Files\src\common\widget\;CMake Files\src\test\;CMake Files\src\test\visual\;CMake Files\src\test\visual\exception\;CMake Files\src\test\visual\grid\;CMake Files\src\test\unit\;CMake Files\src\test\unit\common\;CMake Files\src\test\unit\common\gui_exception\;CMake Files\src\test\unit\common\contraption\;CMake Files\src\test\unit\common\protocol\;CMake Files\ext\;CMake Files\ext\CMakeModules\;" />
       <Build>
       <Target title="all">
          <Option working_dir="/home/mariya/tms" />
@@ -241,6 +241,42 @@
             <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/contraption/model_backend/Makefile&quot; clean" />
          </MakeCommands>
       </Target>
+      <Target title="tms_contraption_grid">
+         <Option output="/home/mariya/tms/lib/libtms_contraption_grid.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/common/widget" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
+            <Add directory="/usr/local/include/wx-2.8" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; tms_contraption_grid" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="tms_contraption_grid/fast">
+         <Option output="/home/mariya/tms/lib/libtms_contraption_grid.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/common/widget" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
+            <Add directory="/usr/local/include/wx-2.8" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; tms_contraption_grid/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
       <Target title="exception_exe">
          <Option output="/home/mariya/tms/bin/test/visual/exception/exception" prefix_auto="0" extension_auto="0" />
          <Option working_dir="/home/mariya/tms/bin/test/visual/exception" />
@@ -287,6 +323,7 @@
             <Add directory="/home/mariya/tms/src/common" />
             <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
             <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/include/soci" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/visual/grid/Makefile&quot; grid_exe" />
@@ -305,6 +342,7 @@
             <Add directory="/home/mariya/tms/src/common" />
             <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
             <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/include/soci" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/visual/grid/Makefile&quot; grid_exe/fast" />
@@ -472,6 +510,8 @@
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/server.cpp">
       </Unit>
+      <Unit filename="/home/mariya/tms/src/common/widget/contraption_grid.cpp">
+      </Unit>
       <Unit filename="/home/mariya/tms/src/test/unit/common/contraption/memory_contraption_test.cpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/test/unit/common/contraption/soci_contraption_test.cpp">
@@ -513,6 +553,10 @@
       <Unit filename="/home/mariya/tms/src/common/protocol/protocol_impl.hpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/server.hpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/widget/contraption_grid.hpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/widget/printer.hpp">
       </Unit>
       <Unit filename="/home/mariya/tms/CMakeLists.txt">
           <Option virtualFolder="CMake Files\" />
@@ -592,6 +636,30 @@
       <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
           <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
       </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
       <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
           <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
       </Unit>
@@ -655,6 +723,9 @@
       <Unit filename="/home/mariya/tms/src/common/contraption/model_backend/CMakeLists.txt">
           <Option virtualFolder="CMake Files\src\common\contraption\model_backend\" />
       </Unit>
+      <Unit filename="/home/mariya/tms/src/common/widget/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\common\widget\" />
+      </Unit>
       <Unit filename="/home/mariya/tms/src/test/CMakeLists.txt">
           <Option virtualFolder="CMake Files\src\test\" />
       </Unit>
@@ -683,6 +754,12 @@
           <Option virtualFolder="CMake Files\src\test\unit\common\protocol\" />
       </Unit>
       <Unit filename="/home/mariya/tms/ext/CMakeModules/FindSoci.cmake">
+          <Option virtualFolder="CMake Files\ext\CMakeModules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/ext/CMakeModules/FindSoci.cmake">
+          <Option virtualFolder="CMake Files\ext\CMakeModules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/ext/CMakeModules/FindSqlite3.cmake">
           <Option virtualFolder="CMake Files\ext\CMakeModules\" />
       </Unit>
       <Unit filename="/home/mariya/tms/ext/CMakeModules/FindSoci.cmake">
