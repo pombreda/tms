@@ -37,7 +37,7 @@ SET(_SOCI_REQUIRED_VARS  SOCI_INCLUDE_DIR SOCI_LIBRARY)
 #
 FIND_PATH(
     SOCI_INCLUDE_DIR soci.h
-    PATH "/usr/local"
+    PATH "/usr/local" "/usr/lib" "/usr/include"
     PATH_SUFFIXES "" "soci"
     DOC "Soci (http://soci.sourceforge.net) include directory")
 MARK_AS_ADVANCED(SOCI_INCLUDE_DIR)
@@ -51,7 +51,7 @@ SET(SOCI_VERSION "3_1")
 
 FIND_LIBRARY(
     SOCI_LIBRARY
-    NAMES soci_core soci_core_${SOCI_VERSION}
+    NAMES soci_core soci_core_${SOCI_VERSION} soci_core-gcc-3_0
     HINTS ${SOCI_INCLUDE_DIR}/.. 
     PATH_SUFFIXES lib64 lib lib${LIB_SUFFIX})
 MARK_AS_ADVANCED(SOCI_LIBRARY)
@@ -69,7 +69,7 @@ IF(SOCI_INCLUDE_DIR AND SOCI_LIBRARY)
 
         FIND_LIBRARY(
             SOCI_${plugin}_PLUGIN
-            NAMES soci_${plugin} soci_${plugin}_${SOCI_VERSION}
+            NAMES soci_${plugin} soci_${plugin}_${SOCI_VERSION} soci_${plugin}-gcc-3_0
             HINTS ${SOCI_INCLUDE_DIR}/..
             PATH_SUFFIXES lib64 lib lib${LIB_SUFFIX})
         MARK_AS_ADVANCED(SOCI_${plugin}_PLUGIN)
