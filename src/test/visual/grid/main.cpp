@@ -26,6 +26,8 @@
 // std
 #include <cstdio>
 #include <iostream> //oops
+// boost
+#include <boost/lexical_cast.hpp>
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
 // common
@@ -36,8 +38,6 @@
 #include <contraption/field.hpp>
 #include <contraption/field/simple_field.hpp>
 #include <contraption/contraption_array.hpp>
-
-//#include <widget/printer.hpp>
 #include <widget/contraption_grid.hpp>
 #include <gui_exception/gui_exception.hpp>
 
@@ -61,14 +61,17 @@ static void init(ModelBackendP &backend, ModelP &model) {
                                             _backend_name = "surname"));
   model.reset(new Model(fields, backend));
   model->InitSchema();
-  ContraptionP test_contraption = model->New();
-  test_contraption->Set<int>("age", 10);
-  test_contraption->Set<string>("Surname", "Du'\"\\mmy");
-  test_contraption->Save();
-  test_contraption = model->New();
-  test_contraption->Set<int>("age", 12);
-  test_contraption->Set<string>("Surname", "Ymmud");
-  test_contraption->Save();
+  ContraptionP test_contraption;
+  for (int i = 0; i < 100; i++) {
+    test_contraption = model->New();
+    test_contraption->Set<string>("name", string("John") + lexical_cast<string>(i % 100));
+    test_contraption->Set<int>("age", i % 40 + 10);
+    test_contraption->Set<string>("Surname", string("Smith") + lexical_cast<string>(i % 100));
+    test_contraption->Save();
+    if ((i + 1) % 10 == 0)
+      std::cout << i + 1 << " records are written." << std::endl;
+  }
+  std::cout << "All records are written!" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
