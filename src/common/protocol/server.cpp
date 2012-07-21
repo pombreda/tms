@@ -1,5 +1,6 @@
 #include "server.hpp"
 // boost
+#include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
 using namespace std;
@@ -8,8 +9,10 @@ using namespace tms::common::protocol;
 Server::Server(iostream &stream, ProtocolP protocol)
     throw()  :
     running_(false),
+    listen_thread_(0),
     stream_(stream),
-    protocol_(protocol) {}  
+    protocol_(protocol),
+    handlers_map_() {}  
 
 void Server::Listen() 
     throw(ServerException) {
@@ -50,7 +53,11 @@ void Server::ListenThread()
 }
 
 MessageP Server::Eval(const Message &message) 
-    throw(ServerException){
-  return MessageP();
+    throw(ServerException) {
+  HandlersMap::iterator it = handlers_map_.find(rtti::TypeID(message));
+  if (it == handlers_map_.end()) {
+    throw(ServerException("Unsupported Message in Server::Eval."));
+  }
+  return (it->second)(message);
 }
     

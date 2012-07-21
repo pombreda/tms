@@ -8,6 +8,7 @@ using namespace tms::common::protocol;
 Protocol::Protocol() 
     throw() :
     initialized_(false),
+    helpers_by_type_info(),
     helpers_(0) {}
 
 bool Protocol::IsInitialized() 
@@ -60,7 +61,7 @@ void Protocol::WriteMessage(std::ostream &sout,
           << "type = '" << typeid(message).name() << "'.";
       throw ProtocolException(msg.str());
     }
-    uint32_t id = it->second->id();
+    uint32_t id = static_cast<uint32_t>(it->second->id());
 
     sout.write(static_cast<char*>(static_cast<void*>(&id)), 4);
     uint32_t size = static_cast<uint32_t>(message.ByteSize());

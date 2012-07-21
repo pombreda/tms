@@ -4,12 +4,13 @@
 // std
 #include <istream>
 // boost 
-#include <boost/signals.hpp>
+#include <boost/function.hpp>
+#include <boost/unordered_map.hpp>
 #include <boost/thread.hpp>
-#include <boost/bind.hpp>
 // common
 #include <protocol/protocol.hpp>
 #include <protocol/server_exception.hpp>
+#include <rtti/typeinfo.hpp>
 namespace tms {
 namespace common {
 namespace protocol {
@@ -24,9 +25,13 @@ class Server {
       throw(ServerException);
   bool IsListening()
       throw();
+  template<class Message>
+  void AddHandler(boost::function<MessageP (const Message&)> handler);
   virtual ~Server()
       throw();
  private:
+  typedef boost::function<MessageP (const Message&)> HandlerFunction;
+  typedef boost::unordered_map<rtti::TypeInfo, HandlerFunction> HandlersMap;
   void ListenThread()
       throw();
   MessageP Eval(const Message &message)
@@ -35,9 +40,11 @@ class Server {
   std::auto_ptr<boost::thread> listen_thread_;
   std::iostream &stream_;
   ProtocolP protocol_;
+  HandlersMap handlers_map_;
 };
 
 }
 }
 }  
+#include "server_impl.hpp"
 #endif // _TMS_COMMON_PROTOCOL__SERVER_HPP_
