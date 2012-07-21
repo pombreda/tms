@@ -62,7 +62,7 @@ static void init(ModelBackendP &backend, ModelP &model) {
   model.reset(new Model(fields, backend));
   model->InitSchema();
   ContraptionP test_contraption;
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 25; i++) {
     test_contraption = model->New();
     test_contraption->Set<string>("name", string("John") + lexical_cast<string>(i % 100));
     test_contraption->Set<int>("age", i % 40 + 10);
@@ -153,7 +153,11 @@ MyFrame::MyFrame(const wxString& title)
   ModelP model;
   init(backend, model);
   ContraptionArrayP contraptions = model->All();
-  grid = new ContraptionGrid(contraptions, model, this,
+  vector<Column> cols;
+  cols.push_back(Column(0, "Name", 70));
+  cols.push_back(Column(3, "Surname", 100));
+  cols.push_back(Column(1, "Age", 50));
+  grid = new ContraptionGrid(contraptions, model, cols, this,
                              wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
   wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
   topSizer->Add(grid, 1, wxEXPAND);

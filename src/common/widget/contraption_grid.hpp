@@ -1,13 +1,18 @@
 #ifndef _TMS_COMMON_WIDGET__CONTRAPTION_GRID_HPP_
 #define _TMS_COMMON_WIDGET__CONTRAPTION_GRID_HPP_
 
+// wxWidget
 #include <wx/grid.h>
+// std
+#include <cstdio>
+#include <vector>
+// common
 #include <contraption/model.hpp>
 #include <contraption/contraption_array.hpp>
 #include <contraption/field.hpp>
 #include <contraption/field_type.hpp>
-#include <cstdio>
 #include "printer.hpp"
+#include "column.hpp"
 
 namespace tms {
 namespace common {
@@ -18,6 +23,7 @@ using namespace contraption;
 class ContraptionGrid : public wxGrid {
  public:
   ContraptionGrid(ContraptionArrayP &contraptions, ModelP &model,
+                  std::vector<Column> &cols,
                   wxWindow *parent, wxWindowID id,
                   const wxPoint &pos=wxDefaultPosition,
                   const wxSize &size=wxDefaultSize,
@@ -27,6 +33,7 @@ class ContraptionGrid : public wxGrid {
  private:
   ContraptionArrayP contraptions_;
   ModelP model_;
+  std::vector<Column> cols_;
 };
 
 }
