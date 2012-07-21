@@ -36,31 +36,31 @@ public:
   const std::type_info *type_info_;
 };
 
-bool operator==(const TypeInfo& a, const TypeInfo &b) {
+inline bool operator==(const TypeInfo& a, const TypeInfo &b) {
   return *a.type_info_ == *b.type_info_;
 }
 
-bool operator!=(const TypeInfo& a, const TypeInfo &b) {
+inline bool operator!=(const TypeInfo& a, const TypeInfo &b) {
   return *a.type_info_ != *b.type_info_;
 }
 
-bool operator>(const TypeInfo& a, const TypeInfo &b) {
+inline bool operator>(const TypeInfo& a, const TypeInfo &b) {
   return b.type_info_->before(*b.type_info_);
 }
 
-bool operator<(const TypeInfo& a, const TypeInfo &b) {
+inline bool operator<(const TypeInfo& a, const TypeInfo &b) {
   return a.type_info_->before(*b.type_info_);
 }
 
-bool operator>=(const TypeInfo& a, const TypeInfo &b) {
+inline bool operator>=(const TypeInfo& a, const TypeInfo &b) {
   return !(a < b);
 }
 
-bool operator<=(const TypeInfo& a, const TypeInfo &b) {
+inline bool operator<=(const TypeInfo& a, const TypeInfo &b) {
   return !(a > b);
 }
 
-size_t hash_value(const TypeInfo &ti) {
+inline size_t hash_value(const TypeInfo &ti) {
   return ti.GetHash();
 }
 
