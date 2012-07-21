@@ -12,13 +12,18 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions, ModelP &model,
                                  const wxPoint &pos, const wxSize &size,
                                  long style, const wxString &name) :
   wxGrid(parent, id, pos, size, style, name),
-  contraptions_(contraptions), model_(model), cols_(cols)  {
+  contraptions_(contraptions), model_(model), cols_(cols) {
+
+  EnableDragColSize();
+  EnableDragColMove();
+  EnableDragRowSize();
+  DisableCellEditControl();
+  EnableEditing(false);
+
   int cols_number = cols_.size();
   int rows_number = contraptions_->size();
 
-  CreateGrid(0, 0);
-  AppendRows(rows_number);
-  AppendCols(cols_number);
+  CreateGrid(rows_number, cols_number, wxGridSelectRows);
 
   Printer* printer[cols_number];
   for (int j = 0; j < cols_number; j++) {
