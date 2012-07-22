@@ -29,6 +29,13 @@ void Server::Listen()
   }
 }
 
+void Server::AddHandler(boost::function<MessageP (const Message&)> handler, 
+                        const rtti::TypeInfo &typeinfo) 
+    throw() {
+  (*handlers_map_)[typeinfo] = handler;
+}
+
+
 void Server::Stop()
     throw(ServerException) {
   running_ = false;

@@ -7,6 +7,7 @@ add_library (tms_protocol SHARED
   server_impl
   stream_server
   socket_server
+  decorator_server
   client
   message
   )

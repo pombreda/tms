@@ -25,8 +25,7 @@ class Server::FunctionWrapper {
 template<class Message>
 void Server::AddHandler(boost::function<MessageP (const Message&)> handler) 
     throw() {
-  (*handlers_map_)[rtti::TypeID<const Message&>()] 
-      = FunctionWrapper<Message>(handler);
+  AddHandler(FunctionWrapper<Message>(handler), rtti::TypeID<const Message&>());
 }
 
 template<class Message>

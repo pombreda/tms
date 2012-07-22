@@ -30,12 +30,13 @@ class SocketServer : public Server {
  private:
   void ReadMessageHandler(MessageP message, ProtocolExceptionP exception);
   void WriteMessageHandler(ProtocolExceptionP exception);
-  virtual void ListenThread()
-      throw();
   MessageP Eval(const Message &message)
       throw(ServerException);
   SocketP socket_;
   ProtocolP protocol_;
+ protected:
+  virtual void ListenThread()
+      throw();
 };
 
 }

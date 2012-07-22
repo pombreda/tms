@@ -16,14 +16,26 @@ target_link_libraries(protocol_test
 )
 add_test(protocol_test protocol_test)
 
-add_executable(server_test 
+add_executable(server_client_test 
   server_client_test.cpp
   ${PROTO_SRCS}
   ${PROTO_HDRS}
 )
-target_link_libraries(server_test 
+target_link_libraries(server_client_test 
   tms_protocol 
   ${Boost_LIBRARIES} 
   ${PROTOBUF_LIBRARY}
 )
-add_test(server_client_test server_test)
+add_test(server_client_test server_client_test)
+
+add_executable(server_decorator_test 
+  server_decorator_test.cpp
+  ${PROTO_SRCS}
+  ${PROTO_HDRS}
+)
+target_link_libraries(server_decorator_test 
+  tms_protocol 
+  ${Boost_LIBRARIES} 
+  ${PROTOBUF_LIBRARY}
+)
+add_test(server_decorator_test server_decorator_test)

@@ -24,9 +24,9 @@ class Server {
       throw(ServerException);
   virtual void Stop()
       throw(ServerException);
-  void Wait()
+  virtual void Wait()
       throw(ServerException);
-  bool IsListening()
+  virtual bool IsListening()
       throw();
   template<class Message>
   void AddHandler(boost::function<MessageP (const Message&)> handler)
@@ -36,14 +36,17 @@ class Server {
       throw();
   virtual ~Server()
       throw();
+  virtual void AddHandler(boost::function<MessageP (const Message&)> handler, 
+                          const rtti::TypeInfo &typeinfo)
+      throw();
  private:
   template<class Message>
   class FunctionWrapper;
-  virtual void ListenThread()
-      throw() = 0;
   bool running_;
   std::auto_ptr<boost::thread> listen_thread_;
  protected:
+  virtual void ListenThread()
+      throw() {};
   typedef boost::function<MessageP (const Message&)> HandlerFunction;
   typedef boost::unordered_map<rtti::TypeInfo, HandlerFunction> HandlersMap;
   typedef boost::shared_ptr<HandlersMap> HandlersMapP;

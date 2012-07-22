@@ -1,0 +1,8 @@
+package tms.common.protocol.message;
+message LoginResponse {
+  enum Status {
+    kOK = 0;
+    kACCESS_VIOLATION = 1;
+  }
+  required Status status = 1;
+}

@@ -27,12 +27,13 @@ class StreamServer : public Server {
   StreamServer(StreamP stream, ProtocolP protocol, HandlersMapP handlers_map)
       throw();
  private:
-  virtual void ListenThread()
-      throw();
   MessageP Eval(const Message &message)
       throw(ServerException);
   StreamP stream_;
   ProtocolP protocol_;
+ protected:
+  virtual void ListenThread()
+      throw();
 };
 
 }
