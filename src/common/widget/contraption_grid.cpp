@@ -26,6 +26,10 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions,
   model_ = contraptions_->model();
 
   CreateGrid(rows_number, cols_number, wxGridSelectRows);
+  contraprions_drawn_ = new bool[rows_number];
+  for (int i = 0; i < rows_number; ++i) {
+    contraprions_drawn_[i] = false;
+  }
 
   printer_ = new Printer*[cols_number];
   for (int j = 0; j < cols_number; j++) {
@@ -49,11 +53,10 @@ ContraptionGrid::~ContraptionGrid() {
   delete printer_;
 }
 
-void ContraptionGrid::DrawContent(int min_row) {
+void ContraptionGrid::DrawContent(int min_row, int max_row) {
   int cols_number = cols_.size();
-  int rows_number = contraptions_->size();
-  for (int i = min_row; i < rows_number; i++) {
-    if (IsVisible(i, 0, false)) {
+  for (int i = min_row; i < max_row; i++) {
+    if (!contraprions_drawn_[i]) {
       for (int j = 0; j < cols_number; j++) {
         if (model_->GetField(cols_[j].field_id)->IsReadable()) {
           SetCellValue(i, j, printer_[j]->ToString(*(contraptions_->at(i)->
@@ -62,12 +65,24 @@ void ContraptionGrid::DrawContent(int min_row) {
           SetCellValue(i, j, _T("Unreadable value!"));
         }
       }
+      contraprions_drawn_[i] = true;
     }
   }
 }
 
 void ContraptionGrid::OnUpdateView(wxPaintEvent &e) {
-  DrawContent(0);
+  int x = 0;
+  int y = 0;
+  CalcUnscrolledPosition(0, 0, &x, &y);
+  int min_row = YToRow(y);
+  int w = 0;
+  int h = 0;
+  GetSize(&w, &h);
+  CalcUnscrolledPosition(0, h, &x, &y);
+  int max_row = YToRow(y);
+  if (max_row == -1) max_row = contraptions_->size();
+  std::cerr << "Displayng rows from " << min_row << " to " << max_row << std::endl;
+  DrawContent(min_row, max_row);
 }
 
 }

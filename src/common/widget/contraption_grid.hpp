@@ -34,12 +34,13 @@ class ContraptionGrid : public wxGrid {
 
  private:
   ContraptionArrayP contraptions_;
+  bool* contraprions_drawn_;
   ModelP model_;
   std::vector<Column> cols_;
   Printer** printer_;
 
  private:
-  void DrawContent(int min_row);
+  void DrawContent(int min_row, int max_row);
   void OnUpdateView(wxPaintEvent &e);
 };
 
