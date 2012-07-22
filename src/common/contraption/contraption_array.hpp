@@ -7,6 +7,8 @@
 #include <vector>
 // boost
 #include <boost/signal.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 // common
 #include <contraption/contraption.hpp>
 #include "contraption_array_fwd.hpp"
@@ -22,23 +24,33 @@ namespace contraption {
 // correctness. Now it'll report about incorrect model
 // only on Save() attempt.
 //------------------------------------------------------------
-class ContraptionArray : public std::vector<ContraptionP> {
+class ContraptionArray : private std::vector<ContraptionP> {
  public:
   void Save();
   ModelP model() {return model_;}
   friend class Model;
+
+  void push_back(const ContraptionP& contraption);
+  void erase(size_t position);
+  ContraptionP& at(size_t position);
+  size_t size();
+
+  void SetOnChange(boost::function<void ()> f);
+
  private:
-  typedef boost::signal<void (const std::vector<ContraptionP>&, 
+  typedef boost::signal<void (const std::vector<ContraptionP>&,
                               const std::vector<ContraptionP>&)> SaverType;
 
   ContraptionArray(
       std::auto_ptr<SaverType> saver,
       const std::vector<ContraptionP> &contraptions,
-      ModelP model) 
+      ModelP model)
       throw();
-  std::auto_ptr<SaverType> saver_;  
+  void OnChange();
+  std::auto_ptr<SaverType> saver_;
   vector<ContraptionP> back_up_;
   ModelP model_;
+  boost::signal<void ()>  on_change_;
 };
 }
 }

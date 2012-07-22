@@ -49,8 +49,8 @@ using namespace boost;
 using namespace tms::common::widget;
 using namespace tms::common;
 
-void OnClick(ContraptionP contraption, FieldID field_id) {
-  std::cerr << "I received a callback!!!" << std::endl;
+void OnClick(ContraptionP &contraption, FieldID field_id) {
+  contraption->Set<string>("name", string("Ivan"));
 }
 
 static void init(ModelBackendP &backend, ModelP &model) {
