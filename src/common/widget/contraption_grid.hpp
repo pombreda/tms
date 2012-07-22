@@ -3,6 +3,7 @@
 
 // wxWidget
 #include <wx/grid.h>
+#include <wx/event.h>
 // std
 #include <cstdio>
 #include <vector>
@@ -30,10 +31,17 @@ class ContraptionGrid : public wxGrid {
                   long style=wxWANTS_CHARS,
                   const wxString &name=wxGridNameStr);
   virtual ~ContraptionGrid();
+
  private:
   ContraptionArrayP contraptions_;
   ModelP model_;
   std::vector<Column> cols_;
+  Printer** printer_;
+
+
+ private:
+  void DrawContent(int min_row);
+  void OnUpdateView(wxPaintEvent &e);
 };
 
 }
