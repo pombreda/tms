@@ -24,6 +24,8 @@ class Server {
       throw(ServerException);
   virtual void Stop()
       throw(ServerException);
+  void Wait()
+      throw(ServerException);
   bool IsListening()
       throw();
   template<class Message>

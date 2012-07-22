@@ -164,7 +164,7 @@ ContraptionArrayP Model::Filter(FilterCP filter)
       new ContraptionArray::SaverType());
   saver->connect(boost::bind(&Model::SaveHandle, this, _1, _2));
   return ContraptionArrayP(
-      new ContraptionArray(saver, contraptions));
+      new ContraptionArray(saver, contraptions, ModelP(this)));
 }
 
 

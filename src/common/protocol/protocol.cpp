@@ -65,7 +65,7 @@ void Protocol::WriteMessage(std::ostream &sout,
     HelpersMap::const_iterator it = helpers_by_type_info.find(rtti::TypeID(message));
     if (it == helpers_by_type_info.end()) {
       ostringstream msg;
-      msg << "Unknown message type in Protocol::ReadMessage "
+      msg << "Unknown message type in Protocol::WriteMessage "
           << "type = '" << typeid(message).name() << "'.";
       throw ProtocolException(msg.str());
     }

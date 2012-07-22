@@ -39,6 +39,15 @@ void Server::Stop()
   }
 }
 
+void Server::Wait()
+    throw(ServerException) {
+  try {
+    listen_thread_->join();
+  } catch (boost::thread_interrupted e) {
+    throw ServerException("Thread was interrupted in Server::Stop.");
+  }
+}
+
 bool Server::IsListening()
     throw() {  
   return running_;

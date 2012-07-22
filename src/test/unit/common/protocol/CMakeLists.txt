@@ -26,4 +26,4 @@ target_link_libraries(server_test
   ${Boost_LIBRARIES} 
   ${PROTOBUF_LIBRARY}
 )
-add_test(server_client_test server_client_test)
+add_test(server_client_test server_test)

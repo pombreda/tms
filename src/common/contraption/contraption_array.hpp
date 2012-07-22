@@ -25,6 +25,7 @@ namespace contraption {
 class ContraptionArray : public std::vector<ContraptionP> {
  public:
   void Save();
+  ModelP model() {return model_;}
   friend class Model;
  private:
   typedef boost::signal<void (const std::vector<ContraptionP>&, 
@@ -32,10 +33,12 @@ class ContraptionArray : public std::vector<ContraptionP> {
 
   ContraptionArray(
       std::auto_ptr<SaverType> saver,
-      const std::vector<ContraptionP> &contraptions) 
+      const std::vector<ContraptionP> &contraptions,
+      ModelP model) 
       throw();
-  std::auto_ptr<SaverType> saver_;
+  std::auto_ptr<SaverType> saver_;  
   vector<ContraptionP> back_up_;
+  ModelP model_;
 };
 }
 }
