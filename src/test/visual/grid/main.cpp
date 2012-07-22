@@ -28,6 +28,8 @@
 #include <iostream> //oops
 // boost
 #include <boost/lexical_cast.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
 // common
@@ -46,6 +48,10 @@ using namespace tms::common::contraption;
 using namespace boost;
 using namespace tms::common::widget;
 using namespace tms::common;
+
+void OnClick(ContraptionP contraption, FieldID field_id) {
+  std::cerr << "I received a callback!!!" << std::endl;
+}
 
 static void init(ModelBackendP &backend, ModelP &model) {
   string test_db("test.sqlite3");
@@ -97,7 +103,7 @@ class MyFrame : public wxFrame
  public:
   MyFrame(const wxString& title);
  private:
-  wxGrid *grid;
+  ContraptionGrid *grid;
   // any class wishing to process wxWidgets events must use this macro
   DECLARE_EVENT_TABLE()
 };
@@ -159,6 +165,8 @@ MyFrame::MyFrame(const wxString& title)
   cols.push_back(Column(1, "Age", 50));
   grid = new ContraptionGrid(contraptions, cols, this,
                              wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
+  function<void(ContraptionP, FieldID)> f = bind(&OnClick, _1, _2);
+  grid->SetOnCellClick(f);
   wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
   topSizer->Add(grid, 1, wxEXPAND);
   SetAutoLayout(true);

@@ -13,7 +13,7 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions,
                                  const wxPoint &pos, const wxSize &size,
                                  long style, const wxString &name) :
   wxGrid(parent, id, pos, size, style, name),
-  contraptions_(contraptions), cols_(cols) {
+  contraptions_(contraptions), cols_(cols), on_cell_click_() {
 
   EnableDragColSize();
   EnableDragColMove();
@@ -44,6 +44,7 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions,
   }
 
   Bind(wxEVT_PAINT, &ContraptionGrid::OnUpdateView, this);
+  Bind(wxEVT_GRID_CELL_LEFT_CLICK, &ContraptionGrid::OnCellClick, this);
 }
 
 ContraptionGrid::~ContraptionGrid() {
@@ -51,6 +52,11 @@ ContraptionGrid::~ContraptionGrid() {
     delete printer_[i];
   }
   delete printer_;
+}
+
+void ContraptionGrid::SetOnCellClick(boost::function<
+                                     void(ContraptionP, FieldID)> on_cell_click) {
+  on_cell_click_ = on_cell_click;
 }
 
 void ContraptionGrid::DrawContent(int min_row, int max_row) {
@@ -83,6 +89,16 @@ void ContraptionGrid::OnUpdateView(wxPaintEvent &e) {
   if (max_row == -1) max_row = contraptions_->size();
   std::cerr << "Displayng rows from " << min_row << " to " << max_row << std::endl;
   DrawContent(min_row, max_row);
+}
+
+void ContraptionGrid::OnCellClick(wxGridEvent &e) {
+  int row = e.GetRow();
+  int col = e.GetCol();
+  ContraptionP contraption = contraptions_->at(row);
+  FieldID field_id = cols_[col].field_id;
+  std::cerr << "Clicking on cell at " << row << ", " << col << std::endl;
+  if (on_cell_click_ != 0)
+    on_cell_click_(contraption, field_id);
 }
 
 }

@@ -4,6 +4,9 @@
 // wxWidget
 #include <wx/grid.h>
 #include <wx/event.h>
+// boost
+#include <boost/signals.hpp>
+#include <boost/function.hpp>
 // std
 #include <cstdio>
 #include <vector>
@@ -31,6 +34,7 @@ class ContraptionGrid : public wxGrid {
                   long style=wxWANTS_CHARS,
                   const wxString &name=wxGridNameStr);
   virtual ~ContraptionGrid();
+  void SetOnCellClick(boost::function<void(ContraptionP, FieldID)> on_cell_click);
 
  private:
   ContraptionArrayP contraptions_;
@@ -38,10 +42,12 @@ class ContraptionGrid : public wxGrid {
   ModelP model_;
   std::vector<Column> cols_;
   Printer** printer_;
+  boost::function<void(ContraptionP contraption, FieldID field_id)> on_cell_click_;
 
  private:
   void DrawContent(int min_row, int max_row);
   void OnUpdateView(wxPaintEvent &e);
+  void OnCellClick(wxGridEvent &e);
 };
 
 }
