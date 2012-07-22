@@ -49,8 +49,10 @@ using namespace boost;
 using namespace tms::common::widget;
 using namespace tms::common;
 
-void OnClick(ContraptionP &contraption, FieldID field_id) {
+void OnClick(ContraptionP &contraption, FieldID field_id,
+             ContraptionArrayP contraptions) {
   contraption->Set<string>("name", string("Ivan"));
+  contraptions->erase(contraptions->size() - 1);
 }
 
 static void init(ModelBackendP &backend, ModelP &model) {
@@ -165,7 +167,7 @@ MyFrame::MyFrame(const wxString& title)
   cols.push_back(Column(1, "Age", 50));
   grid = new ContraptionGrid(contraptions, cols, this,
                              wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
-  function<void(ContraptionP, FieldID)> f = bind(&OnClick, _1, _2);
+  function<void(ContraptionP, FieldID)> f = bind(&OnClick, _1, _2, contraptions);
   grid->SetOnCellClick(f);
   wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
   topSizer->Add(grid, 1, wxEXPAND);

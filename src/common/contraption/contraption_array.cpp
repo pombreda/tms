@@ -47,6 +47,7 @@ void ContraptionArray::push_back(const ContraptionP& contraption) {
 
 void ContraptionArray::erase(size_t position) {
   vector::erase(begin() + position);
+  OnChange();
 }
 
 ContraptionP& ContraptionArray::at(size_t position) {

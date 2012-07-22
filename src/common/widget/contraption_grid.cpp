@@ -107,7 +107,12 @@ void ContraptionGrid::OnChange() {
   for (int i = 0; i < rows_number; ++i) {
     contraprions_drawn_[i] = false;
   }
-  // TODO: reset rows number and scroll position
+  int delta = rows_number - GetNumberRows();
+  if (delta > 0) {
+    AppendRows(delta);
+  } else if (delta < 0) {
+    DeleteRows(rows_number, delta);
+  }
   wxPaintEvent e;
   OnUpdateView(e);
 }
