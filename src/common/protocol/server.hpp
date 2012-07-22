@@ -4,40 +4,61 @@
 // std
 #include <istream>
 // boost 
-#include <boost/signals.hpp>
+#include <boost/function.hpp>
+#include <boost/unordered_map.hpp>
 #include <boost/thread.hpp>
-#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
 // common
 #include <protocol/protocol.hpp>
 #include <protocol/server_exception.hpp>
+#include <rtti/typeinfo.hpp>
 namespace tms {
 namespace common {
 namespace protocol {
 
 class Server {
  public:
-  Server(std::iostream &stream, ProtocolP protocol)
+  Server()
       throw();
-  void Listen()
+  virtual void Listen()
       throw(ServerException);
-  void Stop()
+  virtual void Stop()
       throw(ServerException);
-  bool IsListening()
+  virtual void Wait()
+      throw(ServerException);
+  virtual bool IsListening()
+      throw();
+  template<class Message>
+  void AddHandler(boost::function<MessageP (const Message&)> handler)
+      throw();
+  template<class Message>
+  void AddHandler(MessageP (*handler)(const Message&)) 
       throw();
   virtual ~Server()
       throw();
- private:
-  void ListenThread()
+  virtual void AddHandler(boost::function<MessageP (const Message&)> handler, 
+                          const rtti::TypeInfo &typeinfo)
       throw();
-  MessageP Eval(const Message &message)
-      throw(ServerException);
+ private:
+  template<class Message>
+  class FunctionWrapper;
   bool running_;
   std::auto_ptr<boost::thread> listen_thread_;
-  std::iostream &stream_;
-  ProtocolP protocol_;
+ protected:
+  virtual void ListenThread()
+      throw() {};
+  typedef boost::function<MessageP (const Message&)> HandlerFunction;
+  typedef boost::unordered_map<rtti::TypeInfo, HandlerFunction> HandlersMap;
+  typedef boost::shared_ptr<HandlersMap> HandlersMapP;
+  Server(HandlersMapP handlers_map)
+      throw();
+  HandlersMapP handlers_map_;
 };
+
+typedef boost::shared_ptr<Server> ServerP;
 
 }
 }
 }  
+#include "server_impl.hpp"
 #endif // _TMS_COMMON_PROTOCOL__SERVER_HPP_

@@ -1,0 +1,5 @@
+package tms.common.protocol.message;
+message LoginRequest {
+  required string name = 1;
+  required string password_hash = 2;
+}

@@ -1,26 +1,40 @@
 #include "server.hpp"
 // boost
+#include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
 using namespace std;
 using namespace tms::common::protocol;
 
-Server::Server(iostream &stream, ProtocolP protocol)
-    throw()  :
+Server::Server() 
+    throw():
     running_(false),
-    stream_(stream),
-    protocol_(protocol) {}  
+    listen_thread_(0),
+    handlers_map_(new HandlersMap) {}  
+
+Server::Server(HandlersMapP handlers_map) 
+    throw():
+    running_(false),
+    listen_thread_(0),
+    handlers_map_(handlers_map) {}  
 
 void Server::Listen() 
     throw(ServerException) {
   try {
+    running_ = true;
     listen_thread_.reset(new boost::thread(
         boost::bind(&Server::ListenThread, this)));
-    running_ = true;
   } catch(boost::thread_resource_error &e) {
     throw ServerException(&e);
   }
 }
+
+void Server::AddHandler(boost::function<MessageP (const Message&)> handler, 
+                        const rtti::TypeInfo &typeinfo) 
+    throw() {
+  (*handlers_map_)[typeinfo] = handler;
+}
+
 
 void Server::Stop()
     throw(ServerException) {
@@ -28,7 +42,16 @@ void Server::Stop()
   try {
     listen_thread_->join();
   } catch (boost::thread_interrupted e) {
-    throw ServerException("Tread was interrupted in Server::Stop.");
+    throw ServerException("Thread was interrupted in Server::Stop.");
+  }
+}
+
+void Server::Wait()
+    throw(ServerException) {
+  try {
+    listen_thread_->join();
+  } catch (boost::thread_interrupted e) {
+    throw ServerException("Thread was interrupted in Server::Stop.");
   }
 }
 
@@ -39,18 +62,3 @@ bool Server::IsListening()
 
 Server::~Server()
     throw() {}
-
-void Server::ListenThread()
-    throw() {
-  while (running_) {
-    boost::this_thread::disable_interruption di;
-    MessageP message = protocol_->ReadMessage(stream_);
-    protocol_->WriteMessage(stream_, *Eval(*message));
-  }
-}
-
-MessageP Server::Eval(const Message &message) 
-    throw(ServerException){
-  return MessageP();
-}
-    

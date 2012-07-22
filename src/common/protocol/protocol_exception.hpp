@@ -1,5 +1,8 @@
 #ifndef _TMS_COMMON_PROTOCOL__PROTOCOL_EXCEPTION_HPP_
 #define _TMS_COMMON_PROTOCOL__PROTOCOL_EXCEPTION_HPP__
+// boost
+#include <boost/shared_ptr.hpp>
+// common
 #include <gui_exception/gui_exception.hpp>
 namespace tms {
 namespace common {
@@ -17,6 +20,8 @@ class ProtocolException : public GUIException {
       GUIException(gui_exception, message) {}
 
 };
+
+typedef boost::shared_ptr<ProtocolException> ProtocolExceptionP;
 
 }
 }

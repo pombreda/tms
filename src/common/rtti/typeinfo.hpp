@@ -45,7 +45,7 @@ inline bool operator!=(const TypeInfo& a, const TypeInfo &b) {
 }
 
 inline bool operator>(const TypeInfo& a, const TypeInfo &b) {
-  return b.type_info_->before(*b.type_info_);
+  return b.type_info_->before(*a.type_info_);
 }
 
 inline bool operator<(const TypeInfo& a, const TypeInfo &b) {

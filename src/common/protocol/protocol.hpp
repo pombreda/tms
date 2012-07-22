@@ -11,6 +11,9 @@
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+#include <boost/array.hpp>
+#include <boost/asio.hpp>
 // protobuf
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 // common
@@ -36,12 +39,45 @@ class Protocol {
       throw();
   MessageP ReadMessage(std::istream &sin)
       throw(ProtocolException);
+  typedef boost::function<void (MessageP, 
+                                ProtocolExceptionP exception)> AsyncReadHandler;
+  typedef boost::function<void (ProtocolExceptionP exception)> AsyncWriteHandler;
+  template <class AsyncReadStream>
+  void AsyncReadMessage(AsyncReadStream &stream, AsyncReadHandler handler);
+  template <class AsyncWriteStream>
+  void AsyncWriteMessage(AsyncWriteStream &stream, MessageP message, 
+                         AsyncWriteHandler handler);
   void WriteMessage(std::ostream &sout, 
                     const Message &message)
       throw(ProtocolException);
-  ~Protocol() 
+  virtual ~Protocol() 
       throw() {}
  private:
+  template <class AsyncReadStream>
+  void AsyncReadHeader(const boost::system::error_code &ec,
+                       AsyncReadStream &stream, uint32_t *buff,
+                       AsyncReadHandler handler);
+
+  template <class AsyncWriteStream>
+  void AsyncWriteHeader(const boost::system::error_code &ec,
+                        AsyncWriteStream &stream, 
+                        MessageP message,
+                        uint32_t *buff,
+                        AsyncWriteHandler handler);
+
+
+  template <class AsyncReadStream>
+  void AsyncReadBody(const boost::system::error_code &ec,
+                     char *buff,
+                     uint32_t id, uint32_t size,
+                     AsyncReadHandler handler);
+
+  template <class AsyncWriteStream>
+  void AsyncWriteBody(const boost::system::error_code &ec,
+                      AsyncWriteStream &stream, 
+                      char *buff,
+                      AsyncWriteHandler handler);
+
   class MessageHelper;
 
   template <class Message>

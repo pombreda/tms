@@ -1,5 +1,5 @@
 #ifndef _TMS_COMMON_PROTOCOL__SERVER_EXCEPTION_HPP_
-#define _TMS_COMMON_PROTOCOL__SERVER_EXCEPTION_HPP__
+#define _TMS_COMMON_PROTOCOL__SERVER_EXCEPTION_HPP_
 #include <gui_exception/gui_exception.hpp>
 namespace tms {
 namespace common {

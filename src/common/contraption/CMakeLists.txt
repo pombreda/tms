@@ -1,9 +1,9 @@
 add_subdirectory(model_backend)
 
 add_library (tms_contraption SHARED
-  model.cpp  
-  contraption.cpp
-  contraption_array.cpp
+  model
+  contraption
+  contraption_array
   )
 
 find_package(Boost COMPONENTS signals REQUIRED)

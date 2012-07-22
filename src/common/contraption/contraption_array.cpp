@@ -27,10 +27,12 @@ void ContraptionArray::Save() {
 
 ContraptionArray::ContraptionArray(
     auto_ptr<SaverType> saver,
-    const vector<ContraptionP> &contraptions) 
+    const vector<ContraptionP> &contraptions,
+    ModelP model) 
     throw() :
     vector<ContraptionP>(contraptions),
     saver_(saver),
-    back_up_(contraptions) {
+    back_up_(contraptions),
+    model_(model) {
 }
 
