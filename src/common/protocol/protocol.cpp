@@ -37,7 +37,15 @@ MessageP Protocol::ReadMessage(std::istream &sin)
           << "id = " << id << ".";
       throw ProtocolException(msg.str());
     }
-    return helpers_[id]->ReadMessage(sin);
+    if (!sin.good()) {
+      throw(ProtocolException("Error while reading message."));
+    }
+    uint32_t size;
+    sin.read(static_cast<char*>(static_cast<void*>(&size)), 4);
+    if (!sin.good()) {
+      throw(ProtocolException("Error while reading message."));
+    }
+    return helpers_[id]->ReadMessage(sin, size);
   } catch (ProtocolException&) {
     throw;
   } catch (std::exception &e) {
@@ -68,6 +76,7 @@ void Protocol::WriteMessage(std::ostream &sout,
     sout.write(static_cast<char*>(static_cast<void*>(&size)), 4);
     google::protobuf::io::OstreamOutputStream stream(&sout);
     message.SerializeToZeroCopyStream(&stream);
+    sout.flush();
   } catch (ProtocolException&) {
     throw;
   } catch (std::exception &e) {

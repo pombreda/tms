@@ -3,7 +3,10 @@ add_library (tms_protocol SHARED
   protocol
   protocol_impl
   server
+  tcp_server
   server_impl
+  stream_server
+  socket_server
   client
   message
   )

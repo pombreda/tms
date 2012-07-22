@@ -39,7 +39,7 @@ class Fixture {
 
 BOOST_AUTO_TEST_SUITE(testSuiteProtocol)
 
-BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
+BOOST_FIXTURE_TEST_CASE(testStream, Fixture)
 {
   Protocol protocol;
   protocol.AddMessageClass<DummyMessage>();
@@ -47,21 +47,21 @@ BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
   BOOST_CHECK(!protocol.IsInitialized());
   protocol.Initialize();
   BOOST_CHECK(protocol.IsInitialized());
-  ostringstream sout;
+  stringstream stream(ios_base::in | ios_base::out);
   DummyMessage dummy;
   dummy.set_name("hlesss");
-  protocol.WriteMessage(sout, dummy);
-  protocol.WriteMessage(sout, dummy);
-  istringstream sin(sout.str());
+  protocol.WriteMessage(stream, dummy);
+  protocol.WriteMessage(stream, dummy);
     
   boost::shared_ptr<DummyMessage> restored 
-      = boost::dynamic_pointer_cast<DummyMessage>(protocol.ReadMessage(sin));
+      = boost::dynamic_pointer_cast<DummyMessage>(protocol.ReadMessage(stream));
   BOOST_CHECK(restored);
   BOOST_CHECK_EQUAL(dummy.name(), restored->name());
   boost::shared_ptr<DummyMessage2> restored2 
-      = boost::dynamic_pointer_cast<DummyMessage2>(protocol.ReadMessage(sin));
+      = boost::dynamic_pointer_cast<DummyMessage2>(protocol.ReadMessage(stream));
   BOOST_CHECK(!restored2);
-  BOOST_CHECK_THROW(protocol.WriteMessage(sout, DummyMessage3()), ProtocolException);
-  protocol.WriteMessage(sout, DummyMessage2());
+  BOOST_CHECK_THROW(protocol.WriteMessage(stream, DummyMessage3()), ProtocolException);
+  protocol.WriteMessage(stream, DummyMessage2());
 }
+
 BOOST_AUTO_TEST_SUITE_END()
