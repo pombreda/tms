@@ -10,12 +10,6 @@
 	<File name="src/common/contraption/contraption.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="2095" topLine="99" />
 	</File>
-	<File name="src/common/contraption/field.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="2188" topLine="51" />
-	</File>
-	<File name="src/common/contraption/field_type.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="0" topLine="29" />
-	</File>
 	<File name="src/common/contraption/model.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="0" topLine="3" />
 	</File>
@@ -31,14 +25,17 @@
 	<File name="src/common/gui_exception/gui_exception_report_dialog.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="207" topLine="5" />
 	</File>
-	<File name="src/common/protocol/CMakeLists.txt" open="1" top="0" tabpos="4">
+	<File name="src/common/protocol/CMakeLists.txt" open="0" top="0" tabpos="4">
 		<Cursor position="41" topLine="0" />
 	</File>
-	<File name="src/common/widget/CMakeLists.txt" open="1" top="1" tabpos="5">
+	<File name="src/common/widget/CMakeLists.txt" open="0" top="0" tabpos="5">
 		<Cursor position="90" topLine="0" />
 	</File>
-	<File name="src/common/widget/contraption_grid.hpp" open="1" top="0" tabpos="3">
-		<Cursor position="102" topLine="0" />
+	<File name="src/common/widget/contraption_grid.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="2264" topLine="51" />
+	</File>
+	<File name="src/common/widget/contraption_grid.hpp" open="1" top="0" tabpos="2">
+		<Cursor position="1178" topLine="25" />
 	</File>
 	<File name="src/common/widget/printer.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="335" topLine="10" />
@@ -49,10 +46,10 @@
 	<File name="src/test/unit/common/contraption/soci_contraption_test.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="2729" topLine="72" />
 	</File>
-	<File name="src/test/visual/grid/CMakeLists.txt" open="1" top="0" tabpos="2">
+	<File name="src/test/visual/grid/CMakeLists.txt" open="0" top="0" tabpos="2">
 		<Cursor position="513" topLine="0" />
 	</File>
-	<File name="src/test/visual/grid/main.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="5895" topLine="12" />
+	<File name="src/test/visual/grid/main.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="5895" topLine="142" />
 	</File>
 </CodeBlocks_layout_file>

@@ -23,7 +23,7 @@ using namespace contraption;
 
 class ContraptionGrid : public wxGrid {
  public:
-  ContraptionGrid(ContraptionArrayP &contraptions, ModelP &model,
+  ContraptionGrid(ContraptionArrayP &contraptions,
                   std::vector<Column> &cols,
                   wxWindow *parent, wxWindowID id,
                   const wxPoint &pos=wxDefaultPosition,
@@ -37,7 +37,6 @@ class ContraptionGrid : public wxGrid {
   ModelP model_;
   std::vector<Column> cols_;
   Printer** printer_;
-
 
  private:
   void DrawContent(int min_row);

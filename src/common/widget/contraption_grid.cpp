@@ -7,13 +7,13 @@ namespace widget {
 
 using namespace contraption;
 
-ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions, ModelP &model,
+ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions,
                                  std::vector<Column> &cols,
                                  wxWindow *parent, wxWindowID id,
                                  const wxPoint &pos, const wxSize &size,
                                  long style, const wxString &name) :
   wxGrid(parent, id, pos, size, style, name),
-  contraptions_(contraptions), model_(model), cols_(cols) {
+  contraptions_(contraptions), cols_(cols) {
 
   EnableDragColSize();
   EnableDragColMove();
@@ -23,6 +23,7 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions, ModelP &model,
 
   int cols_number = cols_.size();
   int rows_number = contraptions_->size();
+  model_ = contraptions_->model();
 
   CreateGrid(rows_number, cols_number, wxGridSelectRows);
 
@@ -66,7 +67,6 @@ void ContraptionGrid::DrawContent(int min_row) {
 }
 
 void ContraptionGrid::OnUpdateView(wxPaintEvent &e) {
-  std::cerr << "onpaint" << std::endl;
   DrawContent(0);
 }
 
