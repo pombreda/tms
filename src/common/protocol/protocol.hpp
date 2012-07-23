@@ -1,5 +1,9 @@
 #ifndef _TMS_COMMON_PROTOCOL__PROTOCOL_HPP_
 #define _TMS_COMMON_PROTOCOL__PROTOCOL_HPP_
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 // std
 #include <istream>
 #include <ostream>

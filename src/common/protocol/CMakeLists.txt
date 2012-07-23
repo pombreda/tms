@@ -21,7 +21,7 @@ add_library (tms_protocol SHARED
   message
   )
 
-find_package(Boost COMPONENTS serialization thread system REQUIRED)
+find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)
 target_link_libraries(tms_protocol tms_exception tms_message tms_contraption crypto ${Boost_LIBRARIES})
 if(WIN32)
   target_link_libraries(tms_protocol ws2_32 mswsock)

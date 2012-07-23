@@ -2,6 +2,9 @@ set(CMAKE_C_COMPILER "gcc")
 
 if(WIN32)
 set(CMAKE_RC_COMPILER "windres") #just a hack
+set(Boost_USE_STATIC_LIBS        OFF)
+set(Boost_USE_MULTITHREADED      ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
 endif(WIN32)
 
 set(CMAKE_CXX_COMPILER "g++")
@@ -13,7 +16,7 @@ cmake_minimum_required(VERSION 2.6)
 
 include(ExternalProject)
 
-add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -Wextra -Weffc++ -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Wconversion -Wsign-conversion -Winit-self -Wunreachable-code -pedantic)
+add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -Wextra -Weffc++ -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Wconversion -Wsign-conversion -Winit-self -Wunreachable-code -pedantic -DBOOST_THREAD_USE_LIB -D_WIN32_WINNT=0x0501)
 
 include_directories(src/common)
 include_directories(bin/common)
