@@ -5,7 +5,7 @@
       <Option title="TMS" />
       <Option makefile_is_custom="1" />
       <Option compiler="gcc" />
-      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\usr\;CMake Files\..\..\..\usr\share\;CMake Files\..\..\..\usr\share\cmake-2.8\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Platform\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Compiler\;CMake Files\src\;CMake Files\src\common\;CMake Files\src\common\gui_exception\;CMake Files\src\common\protocol\;CMake Files\src\common\contraption\;CMake Files\src\common\contraption\model_backend\;CMake Files\src\common\widget\;CMake Files\src\test\;CMake Files\src\test\visual\;CMake Files\src\test\visual\exception\;CMake Files\src\test\visual\grid\;CMake Files\src\test\unit\;CMake Files\src\test\unit\common\;CMake Files\src\test\unit\common\gui_exception\;CMake Files\src\test\unit\common\contraption\;CMake Files\src\test\unit\common\protocol\;CMake Files\ext\;CMake Files\ext\CMakeModules\;" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\usr\;CMake Files\..\..\..\usr\share\;CMake Files\..\..\..\usr\share\cmake-2.8\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Platform\;CMake Files\..\..\..\usr\share\cmake-2.8\Modules\Compiler\;CMake Files\src\;CMake Files\src\common\;CMake Files\src\common\gui_exception\;CMake Files\src\common\protocol\;CMake Files\src\common\contraption\;CMake Files\src\common\contraption\model_backend\;CMake Files\src\common\widget\;CMake Files\src\common\model\;CMake Files\src\test\;CMake Files\src\test\visual\;CMake Files\src\test\visual\exception\;CMake Files\src\test\visual\grid\;CMake Files\src\test\unit\;CMake Files\src\test\unit\common\;CMake Files\src\test\unit\common\gui_exception\;CMake Files\src\test\unit\common\contraption\;CMake Files\src\test\unit\common\protocol\;CMake Files\src\client\;CMake Files\ext\;CMake Files\ext\CMakeModules\;" />
       <Build>
       <Target title="all">
          <Option working_dir="/home/mariya/tms" />
@@ -45,8 +45,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/gui_exception/Makefile&quot; tms_exception" />
@@ -63,8 +63,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/gui_exception/Makefile&quot; tms_exception/fast" />
@@ -81,8 +81,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/gui_exception/Makefile&quot; tms_gui_exception" />
@@ -99,8 +99,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/gui_exception/Makefile&quot; tms_gui_exception/fast" />
@@ -249,8 +249,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; tms_contraption_grid" />
@@ -267,14 +267,46 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; tms_contraption_grid/fast" />
             <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; &quot;$file&quot;" />
             <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; clean" />
             <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/widget/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="tms_model">
+         <Option output="/home/mariya/tms/lib/libtms_model.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/common/model" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; tms_model" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="tms_model/fast">
+         <Option output="/home/mariya/tms/lib/libtms_model.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/common/model" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; tms_model/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/common/model/Makefile&quot; clean" />
          </MakeCommands>
       </Target>
       <Target title="exception_exe">
@@ -285,8 +317,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/visual/exception/Makefile&quot; exception_exe" />
@@ -303,8 +335,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
          </Compiler>
          <MakeCommands>
             <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/visual/exception/Makefile&quot; exception_exe/fast" />
@@ -321,8 +353,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
             <Add directory="/usr/include/soci" />
          </Compiler>
          <MakeCommands>
@@ -340,8 +372,8 @@
          <Option compiler="gcc" />
          <Compiler>
             <Add directory="/home/mariya/tms/src/common" />
-            <Add directory="/usr/local/lib/wx/include/gtk2-ansi-release-2.8" />
-            <Add directory="/usr/local/include/wx-2.8" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
             <Add directory="/usr/include/soci" />
          </Compiler>
          <MakeCommands>
@@ -487,8 +519,120 @@
             <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
          </MakeCommands>
       </Target>
+      <Target title="server_client_test">
+         <Option output="/home/mariya/tms/bin/test/unit/common/protocol/server_client_test" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/test/unit/common/protocol" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/include" />
+            <Add directory="/home/mariya/tms/bin/test/unit/common/protocol" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; server_client_test" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="server_client_test/fast">
+         <Option output="/home/mariya/tms/bin/test/unit/common/protocol/server_client_test" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/test/unit/common/protocol" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/include" />
+            <Add directory="/home/mariya/tms/bin/test/unit/common/protocol" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; server_client_test/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="server_decorator_test">
+         <Option output="/home/mariya/tms/bin/test/unit/common/protocol/server_decorator_test" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/test/unit/common/protocol" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/include" />
+            <Add directory="/home/mariya/tms/bin/test/unit/common/protocol" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; server_decorator_test" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="server_decorator_test/fast">
+         <Option output="/home/mariya/tms/bin/test/unit/common/protocol/server_decorator_test" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/test/unit/common/protocol" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/include" />
+            <Add directory="/home/mariya/tms/bin/test/unit/common/protocol" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; server_decorator_test/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/test/unit/common/protocol/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="client_app">
+         <Option output="/home/mariya/tms/bin/client/client_app" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/client" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
+            <Add directory="/usr/include/soci" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; client_app" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="client_app/fast">
+         <Option output="/home/mariya/tms/bin/client/client_app" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/mariya/tms/bin/client" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/home/mariya/tms/src/common" />
+            <Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+            <Add directory="/usr/local/include/wx-2.9" />
+            <Add directory="/usr/include/soci" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; client_app/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/mariya/tms/bin/client/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
       </Build>
       <Unit filename="/home/mariya/tms/bin/test/unit/common/protocol/dummy.pb.cc">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/client/main.cpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/contraption/contraption.cpp">
       </Unit>
@@ -504,11 +648,21 @@
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/gui_exception/gui_exception_report_dialog.cpp">
       </Unit>
+      <Unit filename="/home/mariya/tms/src/common/model/user.cpp">
+      </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/crypto.cpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/decorator_server.cpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/protocol.cpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/server.cpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/socket_server.cpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/stream_server.cpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/tcp_server.cpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/widget/contraption_grid.cpp">
       </Unit>
@@ -519,6 +673,10 @@
       <Unit filename="/home/mariya/tms/src/test/unit/common/gui_exception/gui_exception_test.cpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/test/unit/common/protocol/protocol_test.cpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/test/unit/common/protocol/server_client_test.cpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/test/unit/common/protocol/server_decorator_test.cpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/test/visual/exception/main.cpp">
       </Unit>
@@ -542,17 +700,29 @@
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/gui_exception/gui_exception_report_dialog.hpp">
       </Unit>
+      <Unit filename="/home/mariya/tms/src/common/model/user.hpp">
+      </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/client.hpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/crypto.hpp">
       </Unit>
-      <Unit filename="/home/mariya/tms/src/common/protocol/message.hpp">
+      <Unit filename="/home/mariya/tms/src/common/protocol/decorator_server.hpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/message">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/protocol.hpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/protocol_impl.hpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/protocol/server.hpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/server_impl.hpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/socket_server.hpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/stream_server.hpp">
+      </Unit>
+      <Unit filename="/home/mariya/tms/src/common/protocol/tcp_server.hpp">
       </Unit>
       <Unit filename="/home/mariya/tms/src/common/widget/contraption_grid.hpp">
       </Unit>
@@ -621,6 +791,9 @@
       <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
           <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
       </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
       <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
           <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
       </Unit>
@@ -676,6 +849,30 @@
           <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
       </Unit>
       <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
           <Option virtualFolder="CMake Files\..\..\..\usr\share\cmake-2.8\Modules\" />
       </Unit>
       <Unit filename="/home/mariya/tms/../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
@@ -726,6 +923,9 @@
       <Unit filename="/home/mariya/tms/src/common/widget/CMakeLists.txt">
           <Option virtualFolder="CMake Files\src\common\widget\" />
       </Unit>
+      <Unit filename="/home/mariya/tms/src/common/model/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\common\model\" />
+      </Unit>
       <Unit filename="/home/mariya/tms/src/test/CMakeLists.txt">
           <Option virtualFolder="CMake Files\src\test\" />
       </Unit>
@@ -753,6 +953,9 @@
       <Unit filename="/home/mariya/tms/src/test/unit/common/protocol/CMakeLists.txt">
           <Option virtualFolder="CMake Files\src\test\unit\common\protocol\" />
       </Unit>
+      <Unit filename="/home/mariya/tms/src/client/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\client\" />
+      </Unit>
       <Unit filename="/home/mariya/tms/ext/CMakeModules/FindSoci.cmake">
           <Option virtualFolder="CMake Files\ext\CMakeModules\" />
       </Unit>
@@ -772,6 +975,12 @@
           <Option virtualFolder="CMake Files\ext\CMakeModules\" />
       </Unit>
       <Unit filename="/home/mariya/tms/ext/CMakeModules/ParseArguments.cmake">
+          <Option virtualFolder="CMake Files\ext\CMakeModules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/ext/CMakeModules/FindSoci.cmake">
+          <Option virtualFolder="CMake Files\ext\CMakeModules\" />
+      </Unit>
+      <Unit filename="/home/mariya/tms/ext/CMakeModules/FindSqlite3.cmake">
           <Option virtualFolder="CMake Files\ext\CMakeModules\" />
       </Unit>
    </Project>
