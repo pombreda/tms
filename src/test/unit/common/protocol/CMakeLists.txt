@@ -28,6 +28,10 @@ target_link_libraries(server_client_test
 )
 add_test(server_client_test server_client_test)
 
+find_package(Soci REQUIRED)
+find_package(Sqlite3 REQUIRED)
+include_directories(${SOCI_INCLUDE_DIRS})
+
 add_executable(login_server_test 
   login_server_test.cpp
   ${PROTO_SRCS}
@@ -35,7 +39,13 @@ add_executable(login_server_test
 )
 target_link_libraries(login_server_test 
   tms_protocol 
+  tms_contraption
+  tms_soci_contraption
+  tms_model
   ${Boost_LIBRARIES} 
+  ${SOCI_sqlite3_PLUGIN} 
+  ${SQLITE3_LIBRARIES} 
+  ${SOCIDB_LIBRARY}
   ${PROTOBUF_LIBRARY}
 )
 add_test(login_server_test login_server_test)

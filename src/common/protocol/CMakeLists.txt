@@ -11,6 +11,7 @@ add_library (tms_protocol SHARED
   request_processor
   simple_request_processor
   login_request_processor
+  login_protocol
   client
   message
   )

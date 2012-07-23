@@ -29,16 +29,24 @@ class Protocol::MessageHelperT : public MessageHelper  {
   }
   virtual MessageP ReadMessage(std::istream &sin, uint32_t size) const {
     MessageP ret(new Message());
-    google::protobuf::io::IstreamInputStream stream(&sin, static_cast<int>(size));
-    ret->ParseFromBoundedZeroCopyStream(&stream, static_cast<int>(size));
+    cerr << "Reading: " << typeid(*ret).name() << endl;
+    if (size) {
+      google::protobuf::io::IstreamInputStream stream(&sin, static_cast<int>(size));
+      ret->ParseFromBoundedZeroCopyStream(&stream, static_cast<int>(size));
+    }
+    cerr << "Read: " << typeid(*ret).name() << endl;
     return ret;
   }
 
   virtual MessageP ReadMessage(const void *data, uint32_t size) const {
     MessageP ret(new Message());
-    google::protobuf::io::ArrayInputStream stream(data, static_cast<int>(size), 
-                                                  static_cast<int>(size));
-    ret->ParseFromZeroCopyStream(&stream);
+    cerr << "Reading: " << typeid(*ret).name() << endl;
+    if (size) {
+      google::protobuf::io::ArrayInputStream stream(data, static_cast<int>(size), 
+                                                    static_cast<int>(size));
+      ret->ParseFromZeroCopyStream(&stream);
+    }
+    cerr << "Read: " << typeid(*ret).name() << endl;
     return ret;
   }
 };
@@ -124,13 +132,14 @@ template <class AsyncWriteStream>
 void Protocol::AsyncWriteMessage(AsyncWriteStream &stream,
                                  MessageP message,
                                  AsyncWriteHandler handler) {
+  cerr << "Writing: " << typeid(*message).name() << endl;
   uint32_t *buff = new uint32_t[2];
   HelpersMap::const_iterator it 
       = helpers_by_type_info_.find(rtti::TypeID(*message));
   if (it == helpers_by_type_info_.end()) {
     ostringstream msg;
     msg << "Unknown message type in Protocol::AsyncWriteMessage "
-          << "type = '" << typeid(message).name() << "'.";
+        << "type = '" << typeid(*message).name() << "'.";
     throw ProtocolException(msg.str());
   }
   
@@ -152,6 +161,8 @@ void Protocol::AsyncWriteHeader(const boost::system::error_code &ec,
                                 MessageP message,
                                 uint32_t *buff,
                                 AsyncWriteHandler handler) {
+  cerr << "Headers: " << typeid(*message).name() << endl;
+  cerr << "Size: " << buff[1] << endl;
   if (ec) {
     delete[] buff;
     handler(ProtocolExceptionP(
@@ -178,6 +189,7 @@ void Protocol::AsyncWriteBody(const boost::system::error_code &ec,
                               AsyncWriteStream &/*stream*/, 
                               char *buff,
                               AsyncWriteHandler handler) {
+  cerr << "Body written." << endl;
   delete[] buff;
   ProtocolExceptionP exception;
   if (ec) {

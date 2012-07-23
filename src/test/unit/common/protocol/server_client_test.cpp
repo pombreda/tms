@@ -60,10 +60,9 @@ BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
                        ProtocolP(new DummyProtocol)));
   boost::shared_ptr<DummyMessage> message(new DummyMessage());
   message->set_name("huricane bla bla bla");
-  cerr << message->name() << endl;  
   message = boost::dynamic_pointer_cast<DummyMessage>(client->EvalRequest(*message));
+  BOOST_CHECK(message);
   server->Stop();
-  cerr << message->name() << endl;
   BOOST_CHECK_EQUAL("Evaled: huricane bla bla bla", message->name());
 }
 

@@ -1,4 +1,7 @@
 #include "socket_server.hpp"
+// std
+#include <iostream> //oops
+#include <typeinfo> //oops
 // boost 
 #include <boost/bind.hpp>
 
@@ -33,6 +36,7 @@ void SocketServer::ReadMessageHandler(MessageP message,
                                       ProtocolExceptionP exception) {
   if (!exception) {
     MessageP ret = request_processor_->Eval(*message);
+    cerr << "Returning: " << typeid(*ret).name() << endl;
     protocol_->AsyncWriteMessage(*socket_, ret,
                                  boost::bind(&SocketServer::WriteMessageHandler,
                                              this,

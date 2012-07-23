@@ -1,7 +1,7 @@
 #include "login_request_processor.hpp"
-#include <protocol/message/login_request.pb.h>
-#include <protocol/message/login_response.pb.h>
-#include <protocol/message/error_response.pb.h>
+#include <protocol/message/login_request.hpp>
+#include <protocol/message/login_response.hpp>
+#include <protocol/message/error_response.hpp>
 #include <contraption/filter/logical_connective.hpp>
 #include <contraption/filter/compare_filter.hpp>
 #include <contraption/contraption_array.hpp>
@@ -43,5 +43,6 @@ MessageP LoginRequestProcessor::Eval(const Message &message) {
       return request_processor_->Eval(message);
     }
   }
+  cerr << "authentication error" << endl;
   return MessageP(new ErrorResponse());
 }

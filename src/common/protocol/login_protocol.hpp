@@ -9,10 +9,15 @@ namespace tms {
 namespace common {
 namespace protocol {
 
-class LoginProtocol {
+class LoginProtocol : public Protocol {
  public:
   LoginProtocol()
-      throw();
+      throw(ProtocolException);
+  LoginProtocol(const Protocol &other)
+      throw(ProtocolException);
+ private:
+  void AddClasses()
+      throw(ProtocolException);
 };
 
 typedef boost::shared_ptr<LoginProtocol> LoginProtocolP;

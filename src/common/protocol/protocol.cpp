@@ -51,6 +51,7 @@ MessageP Protocol::ReadMessage(std::istream &sin)
     if (!sin.good()) {
       throw(ProtocolException("Error while reading message."));
     }
+    cerr << "Header Read: " << id << " " << size << endl;
     return helpers_[id]->ReadMessage(sin, size);
   } catch (ProtocolException&) {
     throw;
