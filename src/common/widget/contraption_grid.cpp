@@ -13,8 +13,10 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions,
                                  const wxPoint &pos, const wxSize &size,
                                  long style, const wxString &name) :
     wxGrid(parent, id, pos, size, style, name),
+    parent_(parent),
     contraptions_(contraptions), model_(), cols_(cols),
-    on_cell_click_(), contraprions_drawn_(), printer_() {
+    on_cell_click_(), on_cell_dclick_(),
+    contraprions_drawn_(), printer_() {
   EnableDragColSize();
   EnableDragColMove();
   EnableDragRowSize();
@@ -49,8 +51,12 @@ void ContraptionGrid::LoadData() {
 }
 
 void ContraptionGrid::BindListeners() {
-  Bind(wxEVT_PAINT, &ContraptionGrid::OnUpdateView, this);
+  parent_->Bind(wxEVT_MOVE, &ContraptionGrid::OnMove, this);
+  parent_->Bind(wxEVT_MOVING, &ContraptionGrid::OnMove, this);
+  Bind(wxEVT_PAINT, &ContraptionGrid::OnPaint, this);
+  Bind(wxEVT_SIZE, &ContraptionGrid::OnSize, this);
   Bind(wxEVT_GRID_CELL_LEFT_CLICK, &ContraptionGrid::OnCellClick, this);
+  Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &ContraptionGrid::OnCellDClick, this);
   contraptions_->SetOnChange(boost::bind(&ContraptionGrid::OnChange, this));
 }
 
@@ -63,9 +69,12 @@ ContraptionGrid::~ContraptionGrid() {
   }
 }
 
-void ContraptionGrid::SetOnCellClick(boost::function<
-                                     void(ContraptionP&, FieldID)> on_cell_click) {
+void ContraptionGrid::SetOnCellClick(OnClickFunction on_cell_click) {
   on_cell_click_ = on_cell_click;
+}
+
+void ContraptionGrid::SetOnCellDClick(OnClickFunction on_cell_dclick) {
+  on_cell_dclick_ = on_cell_dclick;
 }
 
 void ContraptionGrid::DrawContent(int min_row, int max_row) {
@@ -85,7 +94,8 @@ void ContraptionGrid::DrawContent(int min_row, int max_row) {
   }
 }
 
-void ContraptionGrid::OnUpdateView(wxPaintEvent &WXUNUSED(e)) {
+void ContraptionGrid::OnUpdateView() {
+  ForceRefresh();
   int x = 0;
   int y = 0;
   CalcUnscrolledPosition(0, 0, &x, &y);
@@ -99,6 +109,23 @@ void ContraptionGrid::OnUpdateView(wxPaintEvent &WXUNUSED(e)) {
   DrawContent(min_row, max_row);
 }
 
+void ContraptionGrid::OnMove(wxMoveEvent &WXUNUSED(e)) {
+  OnUpdateView();
+}
+
+void ContraptionGrid::OnPaint(wxPaintEvent &WXUNUSED(e)) {
+  OnUpdateView();
+}
+
+void ContraptionGrid::OnSize(wxSizeEvent &WXUNUSED(e)) {
+//  parent_->GetSizer()->RecalcSizes();
+  OnUpdateView();
+}
+
+void ContraptionGrid::OnScrollWin(wxScrollWinEvent &WXUNUSED(e)) {
+  OnUpdateView();
+}
+
 void ContraptionGrid::OnCellClick(wxGridEvent &e) {
   size_t row = e.GetRow();
   size_t col = e.GetCol();
@@ -106,6 +133,15 @@ void ContraptionGrid::OnCellClick(wxGridEvent &e) {
   FieldID field_id = cols_[col].field_id;
   if (on_cell_click_ != 0)
     on_cell_click_(contraption, field_id);
+}
+
+void ContraptionGrid::OnCellDClick(wxGridEvent &e) {
+  size_t row = e.GetRow();
+  size_t col = e.GetCol();
+  ContraptionP &contraption = contraptions_->at(row);
+  FieldID field_id = cols_[col].field_id;
+  if (on_cell_dclick_ != 0)
+    on_cell_dclick_(contraption, field_id);
 }
 
 void ContraptionGrid::OnChange() {
@@ -120,8 +156,7 @@ void ContraptionGrid::OnChange() {
   } else if (delta < 0) {
     DeleteRows(rows_number, delta);
   }
-  wxPaintEvent e;
-  OnUpdateView(e);
+  OnUpdateView();
 }
 
 }
