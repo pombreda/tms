@@ -1,0 +1,13 @@
+package tms.common.protocol.message;
+message Record {
+  enum Type {
+    kString = 0;
+    kInt = 1;
+    kFloat = 2;
+  }
+  optional string name = 1;
+  optional Type type = 2 [default = kString];
+  optional uint32 int_value = 3;
+  optional double float_value = 4;
+  optional string string_value = 5;
+}

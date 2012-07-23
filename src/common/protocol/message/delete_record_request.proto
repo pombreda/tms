@@ -1,0 +1,4 @@
+package tms.common.protocol.message;
+message DeleteRecordRequest {
+  required uint32 id = 2;
+}

@@ -1,0 +1,4 @@
+package tms.common.protocol.message;
+message WriteRecordsResponse {
+  required uint32 id = 2;
+}

@@ -1,0 +1,5 @@
+package tms.common.protocol.message;
+import "record.proto"
+message ReadRecordsResponse {
+  repeated Record records = 1 [packed = true];
+}
