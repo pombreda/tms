@@ -2,6 +2,7 @@
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
 	<object class="wxFrame" name="GridFrame">
 		<title>Frame</title>
+		<centered>1</centered>
 		<size>300,300</size>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
@@ -9,15 +10,7 @@
 				<object class="wxBoxSizer">
 					<object class="sizeritem">
 						<object class="wxButton" name="ID_BUTTON1">
-							<label>Label</label>
-						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-						<option>1</option>
-					</object>
-					<object class="sizeritem">
-						<object class="wxButton" name="ID_BUTTON3">
-							<label>Label</label>
+							<label>Добавить</label>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -25,16 +18,24 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="ID_BUTTON2">
-							<label>Label</label>
+							<label>Выход</label>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxFIXED_MINSIZE|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Для добавления нового элемента нажмите &quot;Добавить&quot;.&#x0A;Для изменения или удаления уже существующего элемента дважды кликните по нему в таблице.</label>
+					<style>wxALIGN_LEFT|wxSUNKEN_BORDER</style>
+				</object>
+				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
 			</object>
 			<object class="sizeritem">
 				<object class="unknown" name="ID_CUSTOM1">

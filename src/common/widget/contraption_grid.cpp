@@ -61,12 +61,7 @@ void ContraptionGrid::BindListeners() {
 }
 
 ContraptionGrid::~ContraptionGrid() {
-  if (printer_) {
-    for (size_t i = 0; i < cols_.size(); i++) {
-      delete printer_[i];
-    }
-    delete printer_;
-  }
+  delete[] printer_;
 }
 
 void ContraptionGrid::SetOnCellClick(OnClickFunction on_cell_click) {
