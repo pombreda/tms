@@ -26,6 +26,10 @@ void LoginFrame::Init() {
 void LoginFrame::OnOKButtonClick(wxCommandEvent& event)
 {
   // smth like open new frame with grid
+  wxXmlResource::Get()->Load(_T("xrc/client/GridFrame.xrc"));
+ 	GridFrame *grid_frame = (GridFrame *)wxXmlResource::Get()->LoadFrame(NULL, _T("GridFrame"));
+ 	grid_frame->Init();
+  grid_frame->Show(true);
 }
 
 void LoginFrame::OnExitButtonClick(wxCommandEvent& event)

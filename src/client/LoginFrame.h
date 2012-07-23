@@ -8,6 +8,8 @@
 #include <wx/textctrl.h>
 //*)
 
+#include "GridFrame.h"
+
 class LoginFrame: public wxFrame
 {
 	public:

@@ -5,7 +5,8 @@ endif(WIN32)
 
 add_executable(client_app
                main
-               LoginFrame)
+               LoginFrame
+               GridFrame)
 
 find_package(wxWidgets COMPONENTS base core xrc REQUIRED)
 include( "${wxWidgets_USE_FILE}" )
