@@ -26,6 +26,8 @@ class StreamServer : public Server {
                ProtocolP protocol, 
                RequestProcessorP request_processor)
       throw();
+  ~StreamServer()
+      throw() {}
  private:
   StreamP stream_;
   ProtocolP protocol_;

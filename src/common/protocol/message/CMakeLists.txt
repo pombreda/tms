@@ -11,3 +11,6 @@ add_library (tms_message SHARED
   ${PROTO_SRCS}
   ${PROTO_HDRS}
   )
+target_link_libraries(tms_message
+  ${PROTOBUF_LIBRARY}
+)                    

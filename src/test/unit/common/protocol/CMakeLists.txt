@@ -14,6 +14,10 @@ target_link_libraries(protocol_test
   ${Boost_LIBRARIES} 
   ${PROTOBUF_LIBRARY}
 )
+if(WIN32)
+  target_link_libraries(protocol_test ws2_32 mswsock)
+endif(WIN32)
+
 add_test(protocol_test protocol_test)
 
 add_executable(server_client_test 
@@ -26,6 +30,11 @@ target_link_libraries(server_client_test
   ${Boost_LIBRARIES} 
   ${PROTOBUF_LIBRARY}
 )
+
+if(WIN32)
+  target_link_libraries(server_client_test ws2_32 mswsock)
+endif(WIN32)
+
 add_test(server_client_test server_client_test)
 
 find_package(Soci REQUIRED)
@@ -48,5 +57,10 @@ target_link_libraries(login_server_test
   ${SOCIDB_LIBRARY}
   ${PROTOBUF_LIBRARY}
 )
+
+if(WIN32)
+  target_link_libraries(login_server_test ws2_32 mswsock)
+endif(WIN32)
+
 add_test(login_server_test login_server_test)
 

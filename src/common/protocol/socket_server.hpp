@@ -27,6 +27,8 @@ class SocketServer : public Server {
                ProtocolP protocol, 
                RequestProcessorP request_processor)
       throw();
+  ~SocketServer()
+      throw() {}
  private:
   void ReadMessageHandler(MessageP message, ProtocolExceptionP exception);
   void WriteMessageHandler(ProtocolExceptionP exception);
