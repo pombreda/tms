@@ -106,6 +106,7 @@ void ContraptionGrid::OnUpdateView() {
   CalcUnscrolledPosition(0, h, &x, &y);
   int max_row = YToRow(y);
   if (max_row == -1) max_row = contraptions_->size();
+  std::cerr << "Visible rows are " << min_row << " to " << max_row << std::endl;
   DrawContent(min_row, max_row);
 }
 
@@ -118,7 +119,6 @@ void ContraptionGrid::OnPaint(wxPaintEvent &WXUNUSED(e)) {
 }
 
 void ContraptionGrid::OnSize(wxSizeEvent &WXUNUSED(e)) {
-//  parent_->GetSizer()->RecalcSizes();
   OnUpdateView();
 }
 
