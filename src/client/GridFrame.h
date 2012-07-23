@@ -28,6 +28,8 @@
 #include <vector>
 #include <iostream>
 
+#include "TestFrame.h"
+
 using namespace tms::common::widget;
 using namespace tms::common::contraption;
 
@@ -41,6 +43,11 @@ class GridFrame: public wxFrame {
   GridFrame& operator=(const GridFrame&);
 
 	ContraptionGrid* grid_;
+
+	void OnCellDClick(ContraptionP &contraption, FieldID field_id,
+                    ContraptionArrayP contraptions);
+	void OnAddClick(wxCommandEvent& WXUNUSED(event));
+	void OnExitClick(wxCommandEvent& WXUNUSED(event));
 
   DECLARE_EVENT_TABLE()
 };

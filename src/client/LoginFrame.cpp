@@ -17,6 +17,7 @@ void LoginFrame::Init() {
 void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
  	GridFrame *grid_frame = (GridFrame *)wxXmlResource::Get()->LoadFrame(NULL, _T("GridFrame"));
  	grid_frame->Init();
+  grid_frame->SetTitle("Журнал");
   grid_frame->Show(true);
   Close();
 }
