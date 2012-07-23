@@ -54,7 +54,7 @@ void Protocol::AddMessageClass()
     throw ProtocolException("Protocol::AddMessageClass called for protocol "
                             "which is already initialized.");
   }
-  helpers_by_type_info[rtti::TypeID<Message>()]
+  helpers_by_type_info_[rtti::TypeID<Message>()]
       =MessageHelperCP(new MessageHelperT<Message>(helpers_.size()));
   helpers_.push_back(
       MessageHelperCP(new MessageHelperT<Message>(helpers_.size())));
@@ -125,8 +125,9 @@ void Protocol::AsyncWriteMessage(AsyncWriteStream &stream,
                                  MessageP message,
                                  AsyncWriteHandler handler) {
   uint32_t *buff = new uint32_t[2];
-  HelpersMap::const_iterator it = helpers_by_type_info.find(rtti::TypeID(*message));
-  if (it == helpers_by_type_info.end()) {
+  HelpersMap::const_iterator it 
+      = helpers_by_type_info_.find(rtti::TypeID(*message));
+  if (it == helpers_by_type_info_.end()) {
     ostringstream msg;
     msg << "Unknown message type in Protocol::AsyncWriteMessage "
           << "type = '" << typeid(message).name() << "'.";

@@ -23,15 +23,13 @@ typedef boost::shared_ptr<SocketServer> SocketServerP;
 
 class SocketServer : public Server {
  public:
-  SocketServer(SocketP socket, ProtocolP protocol)
-      throw();
-  SocketServer(SocketP socket, ProtocolP protocol, HandlersMapP handlers_map)
+  SocketServer(SocketP socket, 
+               ProtocolP protocol, 
+               RequestProcessorP request_processor)
       throw();
  private:
   void ReadMessageHandler(MessageP message, ProtocolExceptionP exception);
   void WriteMessageHandler(ProtocolExceptionP exception);
-  MessageP Eval(const Message &message)
-      throw(ServerException);
   SocketP socket_;
   ProtocolP protocol_;
  protected:

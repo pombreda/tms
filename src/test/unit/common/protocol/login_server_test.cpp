@@ -1,5 +1,5 @@
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE testServerDecorator
+#define BOOST_TEST_MODULE testLoginServer
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
@@ -13,8 +13,8 @@
 #include <boost/asio.hpp>
 // common
 #include <protocol/protocol.hpp>
+#include <protocol/simple_request_processor.hpp>
 #include <protocol/tcp_server.hpp>
-#include <protocol/decorator_server.hpp>
 #include <protocol/stream_client.hpp>
 #include <protocol/message.hpp>
 #include "dummy.pb.h"
@@ -40,7 +40,7 @@ class Fixture {
 // Tests
 //------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE(testSuiteServerClient)
+BOOST_AUTO_TEST_SUITE(testSuiteLoginServer)
 
 MessageP DummyHandler(const DummyMessage &message) {
   boost::shared_ptr<DummyMessage> ret(new DummyMessage(message));
@@ -50,12 +50,10 @@ MessageP DummyHandler(const DummyMessage &message) {
 
 BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
 {
+  SimpleRequestProcessorP request_processor(new SimpleRequestProcessor());
+  request_processor->AddHandler(DummyHandler);
   ServerP server(
-      new DecoratorServer(
-      ServerP(
-          new TCPServer(tcp::endpoint(tcp::v4(), 3030), 
-                        ProtocolP(new DummyProtocol)))));  
-  server->AddHandler(DummyHandler);
+      new TCPServer(tcp::endpoint(tcp::v4(), 3030), ProtocolP(new DummyProtocol), request_processor));  
   server->Listen();
   ClientP client(
       new StreamClient(StreamP(new tcp::iostream("localhost", "3030")), 

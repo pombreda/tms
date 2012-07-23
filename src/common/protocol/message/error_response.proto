@@ -1,0 +1,9 @@
+package tms.common.protocol.message;
+message ErrorResponse {
+  enum Status {
+    kAccessViolation = 1;
+    kServerError = 2;
+    kConcurentModification = 3;
+  }
+  optional Status status = 1 [default = kAccessViolation];
+}

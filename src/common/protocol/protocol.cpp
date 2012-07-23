@@ -8,8 +8,14 @@ using namespace tms::common::protocol;
 Protocol::Protocol() 
     throw() :
     initialized_(false),
-    helpers_by_type_info(),
+    helpers_by_type_info_(),
     helpers_(0) {}
+
+Protocol::Protocol(const Protocol &other)
+    throw() :
+    initialized_(false),
+    helpers_by_type_info_(other.helpers_by_type_info_),
+    helpers_(other.helpers_) {}
 
 bool Protocol::IsInitialized() 
     throw() {
@@ -62,8 +68,9 @@ void Protocol::WriteMessage(std::ostream &sout,
                             "protocol.");
   }
   try {
-    HelpersMap::const_iterator it = helpers_by_type_info.find(rtti::TypeID(message));
-    if (it == helpers_by_type_info.end()) {
+    HelpersMap::const_iterator it 
+        = helpers_by_type_info_.find(rtti::TypeID(message));
+    if (it == helpers_by_type_info_.end()) {
       ostringstream msg;
       msg << "Unknown message type in Protocol::WriteMessage "
           << "type = '" << typeid(message).name() << "'.";

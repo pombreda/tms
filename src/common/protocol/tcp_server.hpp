@@ -14,7 +14,9 @@ namespace protocol {
 
 class TCPServer : public Server {
  public:
-  TCPServer(boost::asio::ip::tcp::endpoint endpoint, ProtocolP protocol)
+  TCPServer(boost::asio::ip::tcp::endpoint endpoint, 
+            ProtocolP protocol, 
+            RequestProcessorP request_processor)
       throw();
   virtual void Stop()
       throw(ServerException);

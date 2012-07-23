@@ -28,14 +28,15 @@ target_link_libraries(server_client_test
 )
 add_test(server_client_test server_client_test)
 
-add_executable(server_decorator_test 
-  server_decorator_test.cpp
+add_executable(login_server_test 
+  login_server_test.cpp
   ${PROTO_SRCS}
   ${PROTO_HDRS}
 )
-target_link_libraries(server_decorator_test 
+target_link_libraries(login_server_test 
   tms_protocol 
   ${Boost_LIBRARIES} 
   ${PROTOBUF_LIBRARY}
 )
-add_test(server_decorator_test server_decorator_test)
+add_test(login_server_test login_server_test)
+

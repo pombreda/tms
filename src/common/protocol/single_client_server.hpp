@@ -1,5 +1,5 @@
-#ifndef _TMS_COMMON_PROTOCOL__STREAM_SERVER_HPP_
-#define _TMS_COMMON_PROTOCOL__STREAM_SERVER_HPP_
+#ifndef _TMS_COMMON_PROTOCOL__SINGLE_CLIENT_SERVER_HPP_
+#define _TMS_COMMON_PROTOCOL__SINGLE_CLIENT_SERVER_HPP_
 
 // std
 #include <istream>
@@ -16,24 +16,18 @@
 namespace tms {
 namespace common {
 namespace protocol {
-class StreamServer;
 
-typedef boost::shared_ptr<StreamServer> StreamServerP;
 
-class StreamServer : public Server {
+class SingleClientServer : public Server {
  public:
-  StreamServer(StreamP stream, 
-               ProtocolP protocol, 
-               RequestProcessorP request_processor)
-      throw();
- private:
-  StreamP stream_;
-  ProtocolP protocol_;
+  SingleClientServer();
+  explicit SingleClientServer(HandlersMapP handlers_map);
  protected:
-  virtual void ListenThread()
-      throw();
+  virtual MessageP Eval(const Message &message)
+      throw(ServerException);
 };
 
+typedef boost::shared_ptr<SingleClientServer> SingleClientServerP;
 }
 }
 }  

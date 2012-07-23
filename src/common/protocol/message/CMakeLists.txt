@@ -1,0 +1,10 @@
+find_package(ProtocolBuffers REQUIRED)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${PROTOBUF_INCLUDE_DIRS})
+
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS PROTOFILES login_request.proto login_response.proto error_response.proto)
+
+add_library (tms_message SHARED
+  ${PROTO_SRCS}
+  ${PROTO_HDRS}
+  )
