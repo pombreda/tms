@@ -40,16 +40,16 @@ class Fixture {
       model() {
     string test_db("test.sqlite3");
     remove(test_db.c_str());
-    SOCIDBScheme scheme(soci::sqlite3, test_db);    
-    backend.reset(new SOCIModelBackend(scheme, "test"));    
+    SOCIDBScheme scheme(soci::sqlite3, test_db);
+    backend.reset(new SOCIModelBackend(scheme, "test"));
     vector<Field*> fields;
     fields.push_back(new SimpleFieldT<string>("name"));
     fields.push_back(new SimpleFieldT<int>("age"));
-    fields.push_back(new SimpleFieldT<int>("password", 
+    fields.push_back(new SimpleFieldT<int>("password",
                                            _is_readable = false));
-    fields.push_back(new SimpleFieldT<string>("Surname", 
+    fields.push_back(new SimpleFieldT<string>("Surname",
                                               _backend_name = "surname"));
-    model.reset(new Model(fields, backend));    
+    model.reset(new Model(fields, backend));
     model->InitSchema();
   }
 
@@ -75,20 +75,20 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   test_contraption->Set<string>("Surname", "Ymmud");
   test_contraption->Save();
   ContraptionArrayP contraptions = model->All();
-  BOOST_CHECK_EQUAL(contraptions->size(), 
+  BOOST_CHECK_EQUAL(contraptions->size(),
                     2);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Du'\"\\mmy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Ymmud");
   contraptions->erase(0);
   contraptions->Save();
   contraptions = model->All();
-  BOOST_CHECK_EQUAL(contraptions->size(), 
+  BOOST_CHECK_EQUAL(contraptions->size(),
                     1);
   test_contraption = model->New();
   test_contraption->Set<int>("age", 10);
@@ -96,12 +96,12 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   contraptions->push_back(test_contraption);
   contraptions->Save();
   contraptions = model->All();
-  BOOST_CHECK_EQUAL(contraptions->size(), 
-  2);  
+  BOOST_CHECK_EQUAL(contraptions->size(),
+  2);
 }
 
 BOOST_FIXTURE_TEST_CASE(testFilter, Fixture) {
-  const SimpleFieldT<int> *age 
+  const SimpleFieldT<int> *age
       = dynamic_cast<const SimpleFieldT<int>*>(
           model->GetField("age"));
   const SimpleFieldT<string> *surname
@@ -136,264 +136,264 @@ BOOST_FIXTURE_TEST_CASE(testFilter, Fixture) {
   FilterP filter = Compare(surname, kEqual, string("Dummy"));
   ContraptionArrayP contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 2);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
 
   // Simple int
   filter = Compare(age, kEqual, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 3);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
   filter = Compare(age, kNotLesser, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 4);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"),
                     14);
   filter = Compare(age, kGreater, 10);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 4);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"),
                     14);
   filter = Compare(age, kGreater, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 1);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     14);
   filter = Compare(age, kNotEqual, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 3);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     14);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     10);
   filter = Compare(age, kLesser, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 2);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     10);
   filter = Compare(age, kNotGreater, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 5);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<int>("age"),
                     10);
   // Not int
   filter = Not(Compare(age, kNotEqual, 12));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 3);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
   filter = Not(Compare(age, kLesser, 12));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 4);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"),
                     14);
   filter = Not(Compare(age, kNotGreater, 10));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 4);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"),
                     14);
   filter = Not(Compare(age, kNotGreater, 12));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 1);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     14);
   filter = Not(Compare(age, kEqual, 12));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 3);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     14);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     10);
   filter = Not(Compare(age, kNotLesser, 12));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 2);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     10);
   filter = Not(Compare(age, kGreater, 12));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 5);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"),
                     12);
-  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<string>("Surname"),
                     "Ymmud");
-  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(4)->Get<int>("age"),
                     10);
   // AND
-  filter = And(Compare(age, kNotGreater, 12), 
+  filter = And(Compare(age, kNotGreater, 12),
                Compare(surname, kEqual, string("Dummy")));
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 2);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
   // OR
   filter = Not(
       Or(
-          Not(Compare(age, kNotGreater, 12)), 
+          Not(Compare(age, kNotGreater, 12)),
           Not(Compare(surname, kEqual, string("Dummy")))
          )
                );
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 2);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"),
                     10);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"),
                     "Dummy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"),
                     12);
 }
 
