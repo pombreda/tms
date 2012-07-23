@@ -1,30 +1,11 @@
 #include "GridFrame.h"
 
-//(*InternalHeaders(GridFrame)
 #include <wx/xrc/xmlres.h>
-//*)
-
-//(*IdInit(GridFrame)
-//*)
 
 BEGIN_EVENT_TABLE(GridFrame,wxFrame)
-	//(*EventTable(GridFrame)
-	//*)
 END_EVENT_TABLE()
 
-GridFrame::GridFrame(wxWindow* parent)
-{
-	//(*Initialize(GridFrame)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("GridFrame"),_T("wxFrame"));
-	grid1 = (ContraptionGrid*)FindWindow(XRCID("ID_GRID1"));
-	//*)
-}
-
-GridFrame::~GridFrame()
-{
-	//(*Destroy(GridFrame)
-	//*)
-	delete grid1;
+GridFrame::~GridFrame() {
 }
 
 static void init(ModelBackendP &backend, ModelP &model) {
@@ -42,7 +23,7 @@ static void init(ModelBackendP &backend, ModelP &model) {
   model.reset(new Model(fields, backend));
   model->InitSchema();
   ContraptionP test_contraption;
-  for (int i = 0; i < 25; i++) {
+  for (int i = 0; i < 5; i++) {
     test_contraption = model->New();
     test_contraption->Set<std::string>("name", std::string("John") + boost::lexical_cast<std::string>(i % 100));
     test_contraption->Set<int>("age", i % 40 + 10);
@@ -57,10 +38,10 @@ static void init(ModelBackendP &backend, ModelP &model) {
 static void OnCellClick(ContraptionP &contraption, FieldID field_id,
                  ContraptionArrayP contraptions) {
   contraption->Set<std::string>("name", std::string("Ivan"));
-  contraptions->erase(contraptions->size() - 1);
 }
 
 void GridFrame::Init() {
+  Centre();
   ModelBackendP backend;
   ModelP model;
   init(backend, model);
@@ -69,11 +50,9 @@ void GridFrame::Init() {
   cols.push_back(Column(0, "Name", 70));
   cols.push_back(Column(3, "Surname", 100));
   cols.push_back(Column(1, "Age", 50));
-  grid1 = new ContraptionGrid(contraptions, cols, this,
-                             wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
+  grid_ = new ContraptionGrid(contraptions, cols, this,
+                              wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
+  wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);
   boost::function<void(ContraptionP, FieldID)> f = boost::bind(&OnCellClick, _1, _2, contraptions);
-  grid1->SetOnCellClick(f);
-  wxBoxSizer *topSizer = (wxBoxSizer*)GetSizer();
-  topSizer->Add(grid1, 20, wxEXPAND);
-  SetSize(200, 400);
+  grid_->SetOnCellClick(f);
 }

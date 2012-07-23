@@ -38,6 +38,9 @@ class ContraptionGrid : public wxGrid {
   void SetOnCellClick(boost::function<void(ContraptionP&, FieldID)> on_cell_click);
 
  private:
+  ContraptionGrid(const ContraptionGrid&);
+  ContraptionGrid& operator=(const ContraptionGrid&);
+
   ContraptionArrayP contraptions_;
   bool* contraprions_drawn_;
   ModelP model_;
@@ -46,6 +49,8 @@ class ContraptionGrid : public wxGrid {
   boost::function<void(ContraptionP& contraption, FieldID field_id)> on_cell_click_;
 
  private:
+  void LoadData();
+  void BindListeners();
   void DrawContent(int min_row, int max_row);
   void OnUpdateView(wxPaintEvent &e);
   void OnCellClick(wxGridEvent &e);
