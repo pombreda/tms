@@ -31,29 +31,18 @@
 using namespace tms::common::widget;
 using namespace tms::common::contraption;
 
-class GridFrame: public wxFrame
-{
-	public:
+class GridFrame: public wxFrame {
+ public:
+	virtual ~GridFrame();
+	void Init();
 
-		GridFrame(wxWindow* parent);
-		virtual ~GridFrame();
-		void Init();
+ private:
+  GridFrame(const GridFrame&);
+  GridFrame& operator=(const GridFrame&);
 
-		//(*Declarations(GridFrame)
-		ContraptionGrid* grid1;
-		//*)
+	ContraptionGrid* grid_;
 
-	protected:
-
-		//(*Identifiers(GridFrame)
-		//*)
-
-	private:
-
-		//(*Handlers(GridFrame)
-		//*)
-
-		DECLARE_EVENT_TABLE()
+  DECLARE_EVENT_TABLE()
 };
 
 #endif

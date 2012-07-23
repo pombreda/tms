@@ -52,6 +52,11 @@ public:
 // static object for many reasons) and also implements the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
 // not wxApp)
+//(*AppHeaders
+#include <wx/xrc/xmlres.h>
+#include <wx/image.h>
+//*)
+
 IMPLEMENT_APP(ExceptionTest)
 
 // ============================================================================
@@ -64,18 +69,29 @@ IMPLEMENT_APP(ExceptionTest)
 
 // 'Main program' equivalent: the program execution "starts" here
 bool ExceptionTest::OnInit() {
+	//(*AppInitialize
+  wxXmlResource::Get()->InitAllHandlers();
+	bool wxsOK = true;
+	wxInitAllImageHandlers();
+	wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/GridFrame.xrc"));
+	wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/LoginFrame.xrc"));
+	//*)
+
+	//return wxsOK;
+
   // call the base class initialization method, currently it only parses a
   // few common command-line options but it could be do more in the future
   try {
     if ( !wxApp::OnInit() )
       return false;
-    wxImage::AddHandler( new wxPNGHandler );
-    wxXmlResource::Get()->InitAllHandlers();
-    wxXmlResource::Get()->Load(_T("xrc/client/LoginFrame.xrc"));
+    //wxImage::AddHandler( new wxPNGHandler );
+    //wxXmlResource::Get()->InitAllHandlers();
+    //wxXmlResource::Get()->Load(_T("xrc/client/LoginFrame.xrc"));
    	LoginFrame *login_frame = (LoginFrame *)wxXmlResource::Get()->LoadFrame(NULL, _T("LoginFrame"));
    	login_frame->Init();
     login_frame->Show(true);
   } catch (tms::common::GUIException &e) {
     std::cerr << e.message() << std::endl;
   }
+  return wxsOK;
 }

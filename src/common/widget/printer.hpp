@@ -12,6 +12,7 @@ namespace widget {
 class Printer {
  public:
   virtual std::string ToString(contraption::FieldType &t) = 0;
+  virtual ~Printer() {};
 };
 
 template<class T>
