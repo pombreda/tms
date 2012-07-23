@@ -25,6 +25,9 @@ namespace widget {
 
 using namespace contraption;
 
+typedef boost::function<void(ContraptionP& contraption,
+                             FieldID field_id)> OnClickFunction;
+
 class ContraptionGrid : public wxGrid {
  public:
   ContraptionGrid(ContraptionArrayP &contraptions,
@@ -35,25 +38,33 @@ class ContraptionGrid : public wxGrid {
                   long style=wxWANTS_CHARS,
                   const wxString &name=wxGridNameStr);
   virtual ~ContraptionGrid();
-  void SetOnCellClick(boost::function<void(ContraptionP&, FieldID)> on_cell_click);
+  void SetOnCellClick(OnClickFunction on_cell_click);
+  void SetOnCellDClick(OnClickFunction on_cell_dclick);
 
  private:
   ContraptionGrid(const ContraptionGrid&);
   ContraptionGrid& operator=(const ContraptionGrid&);
 
+  wxWindow *parent_;
   ContraptionArrayP contraptions_;
   bool* contraprions_drawn_;
   ModelP model_;
   std::vector<Column> cols_;
   Printer** printer_;
-  boost::function<void(ContraptionP& contraption, FieldID field_id)> on_cell_click_;
+  OnClickFunction on_cell_click_;
+  OnClickFunction on_cell_dclick_;
 
  private:
   void LoadData();
   void BindListeners();
   void DrawContent(int min_row, int max_row);
-  void OnUpdateView(wxPaintEvent &e);
+  void OnUpdateView();
+  void OnMove(wxMoveEvent &e);
+  void OnPaint(wxPaintEvent &e);
+  void OnSize(wxSizeEvent &e);
+  void OnScrollWin(wxScrollWinEvent &e);
   void OnCellClick(wxGridEvent &e);
+  void OnCellDClick(wxGridEvent &e);
   void OnChange();
 };
 

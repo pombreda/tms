@@ -23,7 +23,7 @@ static void init(ModelBackendP &backend, ModelP &model) {
   model.reset(new Model(fields, backend));
   model->InitSchema();
   ContraptionP test_contraption;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 25; i++) {
     test_contraption = model->New();
     test_contraption->Set<std::string>("name", std::string("John") + boost::lexical_cast<std::string>(i % 100));
     test_contraption->Set<int>("age", i % 40 + 10);
@@ -36,6 +36,10 @@ static void init(ModelBackendP &backend, ModelP &model) {
 }
 
 static void OnCellClick(ContraptionP &contraption, FieldID field_id,
+                 ContraptionArrayP contraptions) {
+}
+
+static void OnCellDClick(ContraptionP &contraption, FieldID field_id,
                  ContraptionArrayP contraptions) {
   contraption->Set<std::string>("name", std::string("Ivan"));
 }
@@ -50,9 +54,9 @@ void GridFrame::Init() {
   cols.push_back(Column(0, "Name", 70));
   cols.push_back(Column(3, "Surname", 100));
   cols.push_back(Column(1, "Age", 50));
-  grid_ = new ContraptionGrid(contraptions, cols, this,
-                              wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
+  grid_ = new ContraptionGrid(contraptions, cols, this, wxID_ANY);
   wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);
-  boost::function<void(ContraptionP, FieldID)> f = boost::bind(&OnCellClick, _1, _2, contraptions);
-  grid_->SetOnCellClick(f);
+  grid_->SetOnCellClick(boost::bind(&OnCellClick, _1, _2, contraptions));
+  grid_->SetOnCellDClick(boost::bind(&OnCellDClick, _1, _2, contraptions));
+  GetSizer()->RecalcSizes();
 }
