@@ -13,6 +13,7 @@
 #include <boost/asio.hpp>
 // common
 #include <protocol/protocol.hpp>
+#include <protocol/simple_request_processor.hpp>
 #include <protocol/tcp_server.hpp>
 #include <protocol/stream_client.hpp>
 #include <protocol/message.hpp>
@@ -49,19 +50,19 @@ MessageP DummyHandler(const DummyMessage &message) {
 
 BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
 {
+  SimpleRequestProcessorP request_processor(new SimpleRequestProcessor());
+  request_processor->AddHandler(DummyHandler);
   ServerP server(
-      new TCPServer(tcp::endpoint(tcp::v4(), 3030), ProtocolP(new DummyProtocol)));  
-  server->AddHandler(DummyHandler);
+      new TCPServer(tcp::endpoint(tcp::v4(), 3030), ProtocolP(new DummyProtocol), request_processor));  
   server->Listen();
   ClientP client(
       new StreamClient(StreamP(new tcp::iostream("localhost", "3030")), 
                        ProtocolP(new DummyProtocol)));
   boost::shared_ptr<DummyMessage> message(new DummyMessage());
   message->set_name("huricane bla bla bla");
-  cerr << message->name() << endl;  
   message = boost::dynamic_pointer_cast<DummyMessage>(client->EvalRequest(*message));
+  BOOST_CHECK(message);
   server->Stop();
-  cerr << message->name() << endl;
   BOOST_CHECK_EQUAL("Evaled: huricane bla bla bla", message->name());
 }
 

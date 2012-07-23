@@ -6,17 +6,12 @@
 using namespace std;
 using namespace tms::common::protocol;
 
-Server::Server() 
+Server::Server(RequestProcessorP request_processor) 
     throw():
     running_(false),
     listen_thread_(0),
-    handlers_map_(new HandlersMap) {}  
-
-Server::Server(HandlersMapP handlers_map) 
-    throw():
-    running_(false),
-    listen_thread_(0),
-    handlers_map_(handlers_map) {}  
+    request_processor_(request_processor) {
+}  
 
 void Server::Listen() 
     throw(ServerException) {
@@ -28,13 +23,6 @@ void Server::Listen()
     throw ServerException(&e);
   }
 }
-
-void Server::AddHandler(boost::function<MessageP (const Message&)> handler, 
-                        const rtti::TypeInfo &typeinfo) 
-    throw() {
-  (*handlers_map_)[typeinfo] = handler;
-}
-
 
 void Server::Stop()
     throw(ServerException) {

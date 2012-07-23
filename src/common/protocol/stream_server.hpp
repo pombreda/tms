@@ -22,13 +22,13 @@ typedef boost::shared_ptr<StreamServer> StreamServerP;
 
 class StreamServer : public Server {
  public:
-  StreamServer(StreamP stream, ProtocolP protocol)
+  StreamServer(StreamP stream, 
+               ProtocolP protocol, 
+               RequestProcessorP request_processor)
       throw();
-  StreamServer(StreamP stream, ProtocolP protocol, HandlersMapP handlers_map)
-      throw();
+  ~StreamServer()
+      throw() {}
  private:
-  MessageP Eval(const Message &message)
-      throw(ServerException);
   StreamP stream_;
   ProtocolP protocol_;
  protected:

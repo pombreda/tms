@@ -1,19 +1,17 @@
 #include "socket_server.hpp"
+// std
+#include <iostream> //oops
+#include <typeinfo> //oops
 // boost 
 #include <boost/bind.hpp>
 
 using namespace std;
 using namespace tms::common::protocol;
-SocketServer::SocketServer(SocketP socket, ProtocolP protocol)
-    throw()  :
-    Server(),
-    socket_(socket),
-    protocol_(protocol) {}
-
-SocketServer::SocketServer(SocketP socket, ProtocolP protocol, 
-                           HandlersMapP handlers_map)
-    throw()  :
-    Server(handlers_map),
+SocketServer::SocketServer(SocketP socket, 
+                           ProtocolP protocol, 
+                           RequestProcessorP request_processor)
+    throw()  :    
+    Server(request_processor),
     socket_(socket),
     protocol_(protocol) {}
 
@@ -37,7 +35,8 @@ void SocketServer::WriteMessageHandler(ProtocolExceptionP exception) {
 void SocketServer::ReadMessageHandler(MessageP message, 
                                       ProtocolExceptionP exception) {
   if (!exception) {
-    MessageP ret = Eval(*message);
+    MessageP ret = request_processor_->Eval(*message);
+    cerr << "Returning: " << typeid(*ret).name() << endl;
     protocol_->AsyncWriteMessage(*socket_, ret,
                                  boost::bind(&SocketServer::WriteMessageHandler,
                                              this,
@@ -47,12 +46,4 @@ void SocketServer::ReadMessageHandler(MessageP message,
   }
 }
 
-MessageP SocketServer::Eval(const Message &message) 
-    throw(ServerException) {
-  HandlersMap::iterator it = handlers_map_->find(rtti::TypeID(message));
-  if (it == handlers_map_->end()) {
-    throw(ServerException("Unsupported Message in SocketServer::Eval."));
-  }
-  return (it->second)(message);
-}
 

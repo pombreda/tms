@@ -1,5 +1,9 @@
 #ifndef _TMS_COMMON_PROTOCOL__PROTOCOL_HPP_
 #define _TMS_COMMON_PROTOCOL__PROTOCOL_HPP_
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 // std
 #include <istream>
 #include <ostream>
@@ -29,6 +33,8 @@ class Protocol {
  public:
   Protocol()
       throw();
+  Protocol(const Protocol &other)
+      throw();
   template<class Message>
   // Do not add several MessageClass multiple times;
   void AddMessageClass()
@@ -49,10 +55,12 @@ class Protocol {
                          AsyncWriteHandler handler);
   void WriteMessage(std::ostream &sout, 
                     const Message &message)
-      throw(ProtocolException);
+      throw(ProtocolException);  
+    
   virtual ~Protocol() 
       throw() {}
  private:
+  Protocol& operator= (const Protocol &other);
   template <class AsyncReadStream>
   void AsyncReadHeader(const boost::system::error_code &ec,
                        AsyncReadStream &stream, uint32_t *buff,
@@ -86,7 +94,7 @@ class Protocol {
   typedef boost::shared_ptr<const MessageHelper> MessageHelperCP;
   bool initialized_;
   typedef boost::unordered_map<rtti::TypeInfo, MessageHelperCP> HelpersMap;
-  HelpersMap helpers_by_type_info;
+  HelpersMap helpers_by_type_info_;
   std::vector<MessageHelperCP> helpers_;
 };
 
