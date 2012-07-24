@@ -32,18 +32,16 @@ void ContraptionGrid::LoadData() {
   model_ = contraptions_->model();
 
   CreateGrid(rows_number, cols_number, wxGridSelectRows);
-  contraprions_drawn_ = new bool[rows_number];
   for (size_t i = 0; i < rows_number; ++i) {
-    contraprions_drawn_[i] = false;
+    contraprions_drawn_.push_back(false);
   }
 
-  printer_ = new Printer*[cols_number];
   for (size_t j = 0; j < cols_number; j++) {
     FieldID i = cols_[j].field_id;
     if (dynamic_cast<const FieldT<int>*>(model_->GetField(i)) != 0) {
-      printer_[j] = new PrinterT<int>();
+      printer_.push_back(boost::shared_ptr<Printer>(new PrinterT<int>()));
     } else if (dynamic_cast<const FieldT<std::string>*>(model_->GetField(i)) != 0) {
-      printer_[j] = new PrinterT<std::string>();
+      printer_.push_back(boost::shared_ptr<Printer>(new PrinterT<std::string>()));
     }
     SetColLabelValue(j, cols_[j].name);
     SetColSize(j, cols_[j].width);
@@ -61,15 +59,14 @@ void ContraptionGrid::BindListeners() {
 }
 
 ContraptionGrid::~ContraptionGrid() {
-  delete[] printer_;
 }
 
 void ContraptionGrid::SetOnCellClick(OnClickFunction on_cell_click) {
-  on_cell_click_ = on_cell_click;
+  on_cell_click_.connect(on_cell_click);
 }
 
 void ContraptionGrid::SetOnCellDClick(OnClickFunction on_cell_dclick) {
-  on_cell_dclick_ = on_cell_dclick;
+  on_cell_dclick_.connect(on_cell_dclick);
 }
 
 void ContraptionGrid::DrawContent(int min_row, int max_row) {
@@ -125,8 +122,7 @@ void ContraptionGrid::OnCellClick(wxGridEvent &e) {
   size_t col = e.GetCol();
   ContraptionP &contraption = contraptions_->at(row);
   FieldID field_id = cols_[col].field_id;
-  if (on_cell_click_ != 0)
-    on_cell_click_(contraption, field_id);
+  on_cell_click_(contraption, field_id);
 }
 
 void ContraptionGrid::OnCellDClick(wxGridEvent &e) {
@@ -134,15 +130,14 @@ void ContraptionGrid::OnCellDClick(wxGridEvent &e) {
   size_t col = e.GetCol();
   ContraptionP &contraption = contraptions_->at(row);
   FieldID field_id = cols_[col].field_id;
-  if (on_cell_dclick_ != 0)
-    on_cell_dclick_(contraption, field_id);
+  on_cell_dclick_(contraption, field_id);
 }
 
 void ContraptionGrid::OnChange() {
   size_t rows_number = contraptions_->size();
-  contraprions_drawn_ = new bool[rows_number];
+  contraprions_drawn_.clear();
   for (size_t i = 0; i < rows_number; ++i) {
-    contraprions_drawn_[i] = false;
+    contraprions_drawn_.push_back(false);
   }
   int delta = rows_number - GetNumberRows();
   if (delta > 0) {

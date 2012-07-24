@@ -82,7 +82,6 @@ bool ExceptionTest::OnInit() {
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/TestFrame.xrc"));
     if (!wxApp::OnInit())
       return false;
-   	//LoginFrame *login_frame = (LoginFrame *)wxXmlResource::Get()->LoadFrame(NULL, _T("LoginFrame"));
    	login_frame = new LoginFrame();
    	wxXmlResource::Get()->LoadFrame(login_frame, NULL, _T("LoginFrame"));
    	login_frame->Init();

@@ -716,21 +716,6 @@
 		<Unit filename="ext/CMakeModules/FindSoci.cmake">
 			<Option virtualFolder="CMake Files/ext/CMakeModules/" />
 		</Unit>
-		<Unit filename="ext/CMakeModules/FindSoci.cmake">
-			<Option virtualFolder="CMake Files/ext/CMakeModules/" />
-		</Unit>
-		<Unit filename="ext/CMakeModules/FindSoci.cmake">
-			<Option virtualFolder="CMake Files/ext/CMakeModules/" />
-		</Unit>
-		<Unit filename="ext/CMakeModules/FindSoci.cmake">
-			<Option virtualFolder="CMake Files/ext/CMakeModules/" />
-		</Unit>
-		<Unit filename="ext/CMakeModules/FindSqlite3.cmake">
-			<Option virtualFolder="CMake Files/ext/CMakeModules/" />
-		</Unit>
-		<Unit filename="ext/CMakeModules/FindSqlite3.cmake">
-			<Option virtualFolder="CMake Files/ext/CMakeModules/" />
-		</Unit>
 		<Unit filename="ext/CMakeModules/FindSqlite3.cmake">
 			<Option virtualFolder="CMake Files/ext/CMakeModules/" />
 		</Unit>
@@ -747,6 +732,8 @@
 		<Unit filename="src/client/GridFrame.h" />
 		<Unit filename="src/client/LoginFrame.cpp" />
 		<Unit filename="src/client/LoginFrame.h" />
+		<Unit filename="src/client/TestFrame.cpp" />
+		<Unit filename="src/client/TestFrame.h" />
 		<Unit filename="src/client/main.cpp" />
 		<Unit filename="src/common/CMakeLists.txt">
 			<Option virtualFolder="CMake Files/src/common/" />
@@ -856,33 +843,6 @@
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
 		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeSystemSpecificInformation.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
 		</Unit>
@@ -898,91 +858,10 @@
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
 		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindBoost.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
 		</Unit>
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindPackageMessage.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
 		</Unit>
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/FindwxWidgets.cmake">
@@ -999,18 +878,6 @@
 		</Unit>
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/Platform/UnixPaths.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/Platform/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
-		</Unit>
-		<Unit filename="../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
-			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
 		</Unit>
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/UsewxWidgets.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />
