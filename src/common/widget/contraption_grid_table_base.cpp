@@ -21,7 +21,6 @@ ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraption
 }
 
 wxString ContraptionGridTableBase::GetValue(int row, int col) {
-  std::cerr << "Getting value at " << row << ", " << col << std::endl;
   if (model_->GetField(cols_[col].field_id)->IsReadable()) {
     return printer_[col]->ToString(*(contraptions_->at(row)->
                                      GetFieldValue(cols_[col].field_id)));
@@ -31,8 +30,7 @@ wxString ContraptionGridTableBase::GetValue(int row, int col) {
 }
 
 void ContraptionGridTableBase::SetValue(int row, int col, const wxString &value) {
-  std::cerr << "Setting value " << value.ToStdString() << " at " <<
-    row << ", " << col << std::endl;
+  // ignore
 }
 
 int ContraptionGridTableBase::GetNumberCols() {
@@ -45,6 +43,16 @@ int ContraptionGridTableBase::GetNumberRows() {
 
 wxString ContraptionGridTableBase::GetColLabelValue(int col) {
   return cols_[col].name;
+}
+
+bool ContraptionGridTableBase::AppendRows(size_t numRows) {
+  wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_APPENDED, numRows);
+  GetView()->ProcessTableMessage(msg);
+}
+
+bool ContraptionGridTableBase::DeleteRows(size_t pos, size_t numRows) {
+  wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, numRows);
+  GetView()->ProcessTableMessage(msg);
 }
 
 }

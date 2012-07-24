@@ -13,16 +13,16 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP contraptions,
                                  const wxPoint &pos, const wxSize &size,
                                  long style, const wxString &name) :
     wxGrid(parent, id, pos, size, style, name),
-    contraptions_(contraptions), cols_(cols),
+    base_(), contraptions_(contraptions), cols_(cols),
     on_cell_click_(), on_cell_dclick_() {
   EnableDragColSize();
   EnableDragColMove();
   EnableDragRowSize();
   DisableCellEditControl();
   EnableEditing(false);
-  ContraptionGridTableBase *base =
-    new ContraptionGridTableBase(contraptions_, cols_);
-  SetTable(base, true, wxGridSelectRows);
+  old_size_ = contraptions_->size();
+  base_ = new ContraptionGridTableBase(contraptions_, cols_);
+  SetTable(base_, true, wxGridSelectRows);
   for (size_t j = 0; j < cols.size(); j++) {
     SetColSize(j, cols_[j].width);
   }
@@ -61,7 +61,13 @@ void ContraptionGrid::OnCellDClick(wxGridEvent &e) {
 }
 
 void ContraptionGrid::OnChange() {
-  ForceRefresh();
+  int delta = old_size_ - contraptions_->size();
+  if (delta < 0) {
+    AppendRows(-delta);
+  } else if (delta > 0) {
+    DeleteRows(contraptions_->size(), delta);
+  }
+  old_size_ = contraptions_->size();
 }
 
 }

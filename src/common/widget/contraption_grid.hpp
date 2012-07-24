@@ -47,12 +47,14 @@ class ContraptionGrid : public wxGrid {
   ContraptionGrid(const ContraptionGrid&);
   ContraptionGrid& operator=(const ContraptionGrid&);
 
+  ContraptionGridTableBase *base_;
   ContraptionArrayP contraptions_;
   std::vector<Column> cols_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_click_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_dclick_;
+  int old_size_;
 
  private:
   void OnCellClick(wxGridEvent &e);
