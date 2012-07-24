@@ -15,14 +15,21 @@ add_library (tms_protocol SHARED
   socket_server
   request_processor
   simple_request_processor
-  login_request_processor
+  login_request_processor  
+  model_backend_request_processor
   login_protocol
   client
   message
   )
 
 find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)
-target_link_libraries(tms_protocol tms_exception tms_message tms_contraption crypto ${Boost_LIBRARIES})
+target_link_libraries(tms_protocol 
+  tms_exception 
+  tms_message 
+  tms_contraption 
+  tms_soci_contraption
+  crypto 
+  ${Boost_LIBRARIES})
 if(WIN32)
   target_link_libraries(tms_protocol ws2_32 mswsock)
 endif(WIN32)

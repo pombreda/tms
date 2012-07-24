@@ -5,7 +5,7 @@ message Record {
     kInt = 1;
     kFloat = 2;
   }
-  optional string name = 1;
+  optional string field = 1;
   optional Type type = 2 [default = kString];
   optional uint32 int_value = 3;
   optional double float_value = 4;

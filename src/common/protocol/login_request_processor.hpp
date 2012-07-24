@@ -26,10 +26,11 @@ class LoginRequestProcessor : public RequestProcessor {
   virtual RequestProcessorP Duplicate();
   virtual MessageP Eval(const Message&);
   virtual ~LoginRequestProcessor() {}
- private:  
+ protected:
   RequestProcessorP request_processor_;
   contraption::ModelP users_;
   contraption::ContraptionP user_;
+ private:  
   const contraption::SimpleFieldT<std::string>* name_;
   const contraption::SimpleFieldT<std::string>* password_hash_;
 };
