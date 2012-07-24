@@ -43,7 +43,7 @@ class GridFrame: public wxFrame {
   GridFrame(const GridFrame&);
   GridFrame& operator=(const GridFrame&);
 
-	boost::shared_ptr<ContraptionGrid> grid_;
+	ContraptionGrid* grid_;
 	TestFrame* test_frame;
 
 	void OnCellDClick(ContraptionP contraption, FieldID field_id,

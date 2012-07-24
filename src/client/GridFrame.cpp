@@ -23,11 +23,13 @@ static void init(ModelBackendP &backend, ModelP &model) {
   model.reset(new Model(fields, backend));
   model->InitSchema();
   ContraptionP test_contraption;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 25; i++) {
     test_contraption = model->New();
-    test_contraption->Set<std::string>("name", std::string("John") + boost::lexical_cast<std::string>(i % 100));
+    test_contraption->Set<std::string>("name", std::string("John") +
+                                       boost::lexical_cast<std::string>(i % 100));
     test_contraption->Set<int>("age", i % 40 + 10);
-    test_contraption->Set<std::string>("Surname", std::string("Smith") + boost::lexical_cast<std::string>(i % 100));
+    test_contraption->Set<std::string>("Surname", std::string("Smith") +
+                                       boost::lexical_cast<std::string>(i % 100));
     test_contraption->Save();
     if ((i + 1) % 5 == 0)
       std::cout << i + 1 << " records are written." << std::endl;
@@ -53,8 +55,8 @@ void GridFrame::Init() {
   cols.push_back(Column(0, "Name", 70));
   cols.push_back(Column(3, "Surname", 100));
   cols.push_back(Column(1, "Age", 50));
-  grid_.reset(new ContraptionGrid(contraptions, cols, this, wxID_ANY));
-  wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_.get());
+  grid_ = new ContraptionGrid(contraptions, cols, this, wxID_ANY);
+  wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);
   grid_->SetOnCellClick(boost::bind(&OnCellClick, _1, _2, contraptions));
   grid_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2, contraptions));
   GetSizer()->RecalcSizes();

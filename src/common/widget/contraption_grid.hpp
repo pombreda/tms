@@ -8,6 +8,7 @@
 #include <boost/signals.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
 // std
 #include <cstdio>
 #include <vector>
@@ -47,12 +48,14 @@ class ContraptionGrid : public wxGrid {
 
   wxWindow *parent_;
   ContraptionArrayP contraptions_;
-  bool* contraprions_drawn_;
+  std::vector<bool> contraprions_drawn_;
   ModelP model_;
   std::vector<Column> cols_;
-  Printer** printer_;
-  OnClickFunction on_cell_click_;
-  OnClickFunction on_cell_dclick_;
+  std::vector<boost::shared_ptr<Printer> > printer_;
+  boost::signal<void(ContraptionP contraption,
+                     FieldID field_id)> on_cell_click_;
+  boost::signal<void(ContraptionP contraption,
+                     FieldID field_id)> on_cell_dclick_;
 
  private:
   void LoadData();

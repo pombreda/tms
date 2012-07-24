@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="grid_exe" />
-	<File name="CMakeLists.txt" open="1" top="0" tabpos="7">
+	<ActiveTarget name="client_app" />
+	<File name="CMakeLists.txt" open="0" top="0" tabpos="7">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="src/CMakeLists.txt" open="1" top="1" tabpos="8">
+	<File name="src/CMakeLists.txt" open="0" top="0" tabpos="8">
 		<Cursor position="73" topLine="0" />
 	</File>
-	<File name="src/client/CMakeLists.txt" open="1" top="0" tabpos="5">
+	<File name="src/client/CMakeLists.txt" open="0" top="0" tabpos="5">
 		<Cursor position="391" topLine="0" />
+	</File>
+	<File name="src/client/GridFrame.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="3037" topLine="52" />
+	</File>
+	<File name="src/client/GridFrame.h" open="1" top="0" tabpos="1">
+		<Cursor position="1112" topLine="24" />
+	</File>
+	<File name="src/client/LoginFrame.cpp" open="1" top="0" tabpos="7">
+		<Cursor position="620" topLine="0" />
+	</File>
+	<File name="src/client/LoginFrame.h" open="0" top="0" tabpos="0">
+		<Cursor position="145" topLine="0" />
+	</File>
+	<File name="src/client/TestFrame.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="920" topLine="3" />
+	</File>
+	<File name="src/client/TestFrame.h" open="1" top="0" tabpos="6">
+		<Cursor position="656" topLine="5" />
+	</File>
+	<File name="src/client/main.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="3063" topLine="63" />
 	</File>
 	<File name="src/common/CMakeLists.txt" open="0" top="0" tabpos="8">
 		<Cursor position="114" topLine="0" />
@@ -22,7 +43,7 @@
 	<File name="src/common/contraption/contraption.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="3669" topLine="99" />
 	</File>
-	<File name="src/common/contraption/contraption_array.cpp" open="1" top="0" tabpos="1">
+	<File name="src/common/contraption/contraption_array.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="1352" topLine="43" />
 	</File>
 	<File name="src/common/contraption/contraption_array.hpp" open="0" top="0" tabpos="0">
@@ -49,11 +70,11 @@
 	<File name="src/common/widget/CMakeLists.txt" open="0" top="0" tabpos="5">
 		<Cursor position="234" topLine="0" />
 	</File>
-	<File name="src/common/widget/contraption_grid.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="3641" topLine="95" />
+	<File name="src/common/widget/contraption_grid.cpp" open="1" top="1" tabpos="8">
+		<Cursor position="3240" topLine="74" />
 	</File>
-	<File name="src/common/widget/contraption_grid.hpp" open="0" top="0" tabpos="2">
-		<Cursor position="1524" topLine="20" />
+	<File name="src/common/widget/contraption_grid.hpp" open="1" top="0" tabpos="2">
+		<Cursor position="1305" topLine="22" />
 	</File>
 	<File name="src/common/widget/printer.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="335" topLine="10" />
@@ -64,10 +85,10 @@
 	<File name="src/test/unit/common/contraption/soci_contraption_test.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="2729" topLine="72" />
 	</File>
-	<File name="src/test/visual/grid/CMakeLists.txt" open="1" top="0" tabpos="6">
+	<File name="src/test/visual/grid/CMakeLists.txt" open="0" top="0" tabpos="6">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="src/test/visual/grid/main.cpp" open="1" top="0" tabpos="2">
+	<File name="src/test/visual/grid/main.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="0" topLine="22" />
 	</File>
 </CodeBlocks_layout_file>
