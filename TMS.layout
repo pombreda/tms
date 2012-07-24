@@ -10,10 +10,10 @@
 	<File name="src/client/CMakeLists.txt" open="0" top="0" tabpos="5">
 		<Cursor position="391" topLine="0" />
 	</File>
-	<File name="src/client/GridFrame.cpp" open="1" top="0" tabpos="2">
-		<Cursor position="899" topLine="17" />
+	<File name="src/client/GridFrame.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="899" topLine="14" />
 	</File>
-	<File name="src/client/GridFrame.h" open="1" top="0" tabpos="1">
+	<File name="src/client/GridFrame.h" open="0" top="0" tabpos="1">
 		<Cursor position="434" topLine="0" />
 	</File>
 	<File name="src/client/LoginFrame.cpp" open="0" top="0" tabpos="7">
@@ -22,8 +22,8 @@
 	<File name="src/client/LoginFrame.h" open="0" top="0" tabpos="0">
 		<Cursor position="145" topLine="4" />
 	</File>
-	<File name="src/client/TestFrame.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="1810" topLine="32" />
+	<File name="src/client/TestFrame.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="1810" topLine="31" />
 	</File>
 	<File name="src/client/TestFrame.h" open="0" top="0" tabpos="6">
 		<Cursor position="507" topLine="18" />
@@ -68,13 +68,19 @@
 		<Cursor position="41" topLine="0" />
 	</File>
 	<File name="src/common/widget/CMakeLists.txt" open="0" top="0" tabpos="5">
-		<Cursor position="234" topLine="0" />
+		<Cursor position="109" topLine="0" />
 	</File>
-	<File name="src/common/widget/contraption_grid.cpp" open="0" top="0" tabpos="8">
-		<Cursor position="4176" topLine="45" />
+	<File name="src/common/widget/contraption_grid.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="2362" topLine="53" />
 	</File>
 	<File name="src/common/widget/contraption_grid.hpp" open="0" top="0" tabpos="2">
-		<Cursor position="1832" topLine="47" />
+		<Cursor position="1515" topLine="47" />
+	</File>
+	<File name="src/common/widget/contraption_grid_table_base.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1215" topLine="0" />
+	</File>
+	<File name="src/common/widget/contraption_grid_table_base.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1163" topLine="32" />
 	</File>
 	<File name="src/common/widget/printer.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="335" topLine="10" />

@@ -3,7 +3,7 @@
 	<object class="wxFrame" name="GridFrame">
 		<title>Frame</title>
 		<centered>1</centered>
-		<size>300,300</size>
+		<size>699,400</size>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
@@ -25,7 +25,7 @@
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxFIXED_MINSIZE|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxFIXED_MINSIZE|wxALIGN_RIGHT|wxALIGN_TOP</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -37,13 +37,21 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="unknown" name="ID_CUSTOM1">
-					<style></style>
-					<size>-1,100</size>
-					<style></style>
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="unknown" name="ID_CUSTOM1">
+							<style></style>
+							<size>679,200</size>
+							<style></style>
+						</object>
+						<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
+				<option>1</option>
 			</object>
 		</object>
 	</object>

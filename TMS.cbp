@@ -792,6 +792,8 @@
 		</Unit>
 		<Unit filename="src/common/widget/contraption_grid.cpp" />
 		<Unit filename="src/common/widget/contraption_grid.hpp" />
+		<Unit filename="src/common/widget/contraption_grid_table_base.cpp" />
+		<Unit filename="src/common/widget/contraption_grid_table_base.hpp" />
 		<Unit filename="src/common/widget/printer.hpp" />
 		<Unit filename="src/test/CMakeLists.txt">
 			<Option virtualFolder="CMake Files/src/test/" />
