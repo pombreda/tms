@@ -44,7 +44,12 @@ public:
     // this one is called on application startup and is a good place for the app
     // initialization (doing it here and not in the ctor allows to have an error
     // return: if OnInit() returns false, the application terminates)
+    ExceptionTest()
+      : login_frame() {}
     virtual bool OnInit();
+
+ private:
+  LoginFrame *login_frame;
 };
 
 // Create a new application object: this macro will allow wxWidgets to create
@@ -77,7 +82,9 @@ bool ExceptionTest::OnInit() {
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/TestFrame.xrc"));
     if (!wxApp::OnInit())
       return false;
-   	LoginFrame *login_frame = (LoginFrame *)wxXmlResource::Get()->LoadFrame(NULL, _T("LoginFrame"));
+   	//LoginFrame *login_frame = (LoginFrame *)wxXmlResource::Get()->LoadFrame(NULL, _T("LoginFrame"));
+   	login_frame = new LoginFrame();
+   	wxXmlResource::Get()->LoadFrame(login_frame, NULL, _T("LoginFrame"));
    	login_frame->Init();
     login_frame->Show(true);
   } catch (tms::common::GUIException &e) {

@@ -1,12 +1,10 @@
 #ifndef GRIDFRAME_H
 #define GRIDFRAME_H
 
-//(*Headers(GridFrame)
 #include <wx/frame.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/grid.h>
 #include <wx/sizer.h>
-//*)
 
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>
@@ -23,6 +21,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <string>
 #include <vector>
@@ -35,6 +34,8 @@ using namespace tms::common::contraption;
 
 class GridFrame: public wxFrame {
  public:
+  GridFrame() :
+    wxFrame(), grid_(), test_frame() {}
 	virtual ~GridFrame();
 	void Init();
 
@@ -42,9 +43,10 @@ class GridFrame: public wxFrame {
   GridFrame(const GridFrame&);
   GridFrame& operator=(const GridFrame&);
 
-	ContraptionGrid* grid_;
+	boost::shared_ptr<ContraptionGrid> grid_;
+	TestFrame* test_frame;
 
-	void OnCellDClick(ContraptionP &contraption, FieldID field_id,
+	void OnCellDClick(ContraptionP contraption, FieldID field_id,
                     ContraptionArrayP contraptions);
 	void OnAddClick(wxCommandEvent& WXUNUSED(event));
 	void OnExitClick(wxCommandEvent& WXUNUSED(event));
