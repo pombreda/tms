@@ -830,6 +830,7 @@
 		<Unit filename="src/test/visual/grid/main.cpp" />
 		<Unit filename="xrc/client/GridFrame.xrc" />
 		<Unit filename="xrc/client/LoginFrame.xrc" />
+		<Unit filename="xrc/client/TestFrame.xrc" />
 		<Unit filename="xrc/common/gui_exception/gui_exception_report_dialog.xrc" />
 		<Unit filename="../../../usr/share/cmake-2.8/Modules/CMakeCXXInformation.cmake">
 			<Option virtualFolder="CMake Files/../../../usr/share/cmake-2.8/Modules/" />

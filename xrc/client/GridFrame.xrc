@@ -39,7 +39,7 @@
 			<object class="sizeritem">
 				<object class="unknown" name="ID_CUSTOM1">
 					<style></style>
-					<size>-1,200</size>
+					<size>-1,100</size>
 					<style></style>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
