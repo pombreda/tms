@@ -37,6 +37,8 @@ class ContraptionGridTableBase : public wxGridTableBase {
   int GetNumberCols();
   int GetNumberRows();
   wxString GetColLabelValue(int col);
+  bool AppendRows(size_t numRows = 1);
+  bool DeleteRows(size_t pos = 0, size_t numRows = 1);
 
  private:
   ContraptionArrayP contraptions_;
