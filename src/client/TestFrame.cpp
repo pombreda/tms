@@ -15,6 +15,7 @@ void TestFrame::Init() {
           (wxObjectEventFunction)&TestFrame::OnDeleteClick);
   Connect(XRCID("ID_BUTTON3"), wxEVT_COMMAND_BUTTON_CLICKED,
           (wxObjectEventFunction)&TestFrame::OnExitClick);
+  Bind(wxEVT_CLOSE_WINDOW, &TestFrame::OnTryClose, this);
 }
 
 void TestFrame::SetUpValues(ContraptionP contraption, ContraptionArrayP contraptions) {
@@ -45,5 +46,10 @@ void TestFrame::OnDeleteClick(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void TestFrame::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
+  Hide();
+}
+
+void TestFrame::OnTryClose(wxCloseEvent& event) {
+  event.Veto();
   Hide();
 }

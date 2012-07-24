@@ -120,6 +120,7 @@ void ContraptionGrid::OnScrollWin(wxScrollWinEvent &WXUNUSED(e)) {
 void ContraptionGrid::OnCellClick(wxGridEvent &e) {
   size_t row = e.GetRow();
   size_t col = e.GetCol();
+  SelectRow(row);
   ContraptionP &contraption = contraptions_->at(row);
   FieldID field_id = cols_[col].field_id;
   on_cell_click_(contraption, field_id);
@@ -128,6 +129,7 @@ void ContraptionGrid::OnCellClick(wxGridEvent &e) {
 void ContraptionGrid::OnCellDClick(wxGridEvent &e) {
   size_t row = e.GetRow();
   size_t col = e.GetCol();
+  SelectRow(row);
   ContraptionP &contraption = contraptions_->at(row);
   FieldID field_id = cols_[col].field_id;
   on_cell_dclick_(contraption, field_id);
