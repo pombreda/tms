@@ -34,6 +34,7 @@ class TestFrame: public wxFrame {
 	void OnSaveClick(wxCommandEvent& WXUNUSED(event));
 	void OnDeleteClick(wxCommandEvent& WXUNUSED(event));
 	void OnExitClick(wxCommandEvent& WXUNUSED(event));
+  void OnTryClose(wxCloseEvent& event);
 
 	DECLARE_EVENT_TABLE()
 };
