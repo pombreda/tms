@@ -30,6 +30,7 @@ class ContraptionArray : private std::vector<ContraptionP> {
   ModelP model() {return model_;}
   friend class Model;
 
+  void Refresh();
   void push_back(const ContraptionP& contraption);
   void erase(size_t position);
   ContraptionP& at(size_t position);

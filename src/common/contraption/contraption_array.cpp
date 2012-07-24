@@ -37,12 +37,19 @@ ContraptionArray::ContraptionArray(
     model_(model) {
   for (size_t i = 0; i < size(); i++) {
     at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this));
+    at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i));
   }
+}
+
+void ContraptionArray::Refresh() {
+  vector::operator= (*(model_->All()));
+  OnChange();
 }
 
 void ContraptionArray::push_back(const ContraptionP& contraption) {
   vector::push_back(contraption);
   contraption->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this));
+  contraption->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, size() - 1));
 }
 
 void ContraptionArray::erase(size_t position) {

@@ -114,7 +114,8 @@ class Contraption {
  private:
   size_t ptr_count_;
   bool in_array_;
-  boost::signal<void ()>  on_change_;
+  boost::signal<void ()> on_change_;
+  boost::signal<void ()> on_delete_;
   ModelP model_;
   FieldTypeArray values_;
   ContraptionID id_;

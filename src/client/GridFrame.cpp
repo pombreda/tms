@@ -37,10 +37,6 @@ static void init(ModelBackendP &backend, ModelP &model) {
   std::cout << "All records are written!" << std::endl;
 }
 
-static void OnCellClick(ContraptionP contraption, FieldID field_id,
-                 ContraptionArrayP contraptions) {
-}
-
 void GridFrame::Init() {
   Connect(XRCID("ID_BUTTON1"), wxEVT_COMMAND_BUTTON_CLICKED,
           (wxObjectEventFunction)&GridFrame::OnAddClick, this);
@@ -50,31 +46,31 @@ void GridFrame::Init() {
   ModelBackendP backend;
   ModelP model;
   init(backend, model);
-  ContraptionArrayP contraptions = model->All();
+  contraptions_ = model->All();
   std::vector<Column> cols;
   cols.push_back(Column(0, "Name", 70));
   cols.push_back(Column(3, "Surname", 100));
   cols.push_back(Column(1, "Age", 50));
-  grid_ = new ContraptionGrid(contraptions, cols, this, wxID_ANY);
+  grid_ = new ContraptionGrid(contraptions_, cols, this, wxID_ANY);
   wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);
-  grid_->SetOnCellClick(boost::bind(&OnCellClick, _1, _2, contraptions));
-  grid_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2, contraptions));
+  grid_->SetOnCellClick(boost::bind(&GridFrame::OnCellClick, this, _1, _2));
+  grid_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2));
   GetSizer()->RecalcSizes();
   test_frame = new TestFrame();
   wxXmlResource::Get()->LoadFrame(test_frame, this, _T("TestFrame"));
   test_frame->Init();
 }
 
-void GridFrame::OnCellDClick(ContraptionP contraption, FieldID field_id,
-                             ContraptionArrayP contraptions) {
-  test_frame->SetUpValues(contraption->Get<std::string>("name"),
-                          contraption->Get<std::string>("Surname"),
-                          contraption->Get<int>("age"));
+void GridFrame::OnCellClick(ContraptionP contraption, FieldID field_id) {
+}
+
+void GridFrame::OnCellDClick(ContraptionP contraption, FieldID field_id) {
+  test_frame->SetUpValues(contraption, contraptions_);
   test_frame->Show(true);
 }
 
 void GridFrame::OnAddClick(wxCommandEvent& WXUNUSED(event)) {
-  test_frame->SetUpValues("", "", 0);
+  test_frame->SetUpValues(contraptions_->model()->New(), contraptions_);
   test_frame->Show(true);
 }
 

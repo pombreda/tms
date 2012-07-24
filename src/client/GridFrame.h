@@ -44,10 +44,11 @@ class GridFrame: public wxFrame {
   GridFrame& operator=(const GridFrame&);
 
 	ContraptionGrid* grid_;
+	ContraptionArrayP contraptions_;
 	TestFrame* test_frame;
 
-	void OnCellDClick(ContraptionP contraption, FieldID field_id,
-                    ContraptionArrayP contraptions);
+	void OnCellClick(ContraptionP contraption, FieldID field_id);
+	void OnCellDClick(ContraptionP contraption, FieldID field_id);
 	void OnAddClick(wxCommandEvent& WXUNUSED(event));
 	void OnExitClick(wxCommandEvent& WXUNUSED(event));
 
