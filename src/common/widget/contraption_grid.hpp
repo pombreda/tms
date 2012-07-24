@@ -19,6 +19,7 @@
 #include <contraption/field_type.hpp>
 #include "printer.hpp"
 #include "column.hpp"
+#include "contraption_grid_table_base.hpp"
 
 namespace tms {
 namespace common {
@@ -46,26 +47,14 @@ class ContraptionGrid : public wxGrid {
   ContraptionGrid(const ContraptionGrid&);
   ContraptionGrid& operator=(const ContraptionGrid&);
 
-  wxWindow *parent_;
   ContraptionArrayP contraptions_;
-  std::vector<bool> contraprions_drawn_;
-  ModelP model_;
   std::vector<Column> cols_;
-  std::vector<boost::shared_ptr<Printer> > printer_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_click_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_dclick_;
 
  private:
-  void LoadData();
-  void BindListeners();
-  void DrawContent(int min_row, int max_row);
-  void OnUpdateView();
-  void OnMove(wxMoveEvent &e);
-  void OnPaint(wxPaintEvent &e);
-  void OnSize(wxSizeEvent &e);
-  void OnScrollWin(wxScrollWinEvent &e);
   void OnCellClick(wxGridEvent &e);
   void OnCellDClick(wxGridEvent &e);
   void OnChange();

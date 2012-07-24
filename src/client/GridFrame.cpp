@@ -23,7 +23,7 @@ static void init(ModelBackendP &backend, ModelP &model) {
   model.reset(new Model(fields, backend));
   model->InitSchema();
   ContraptionP test_contraption;
-  for (int i = 0; i < 25; i++) {
+  for (int i = 0; i < 5; i++) {
     test_contraption = model->New();
     test_contraption->Set<std::string>("name", std::string("John") +
                                        boost::lexical_cast<std::string>(i % 100));
