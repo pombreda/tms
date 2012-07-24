@@ -25,12 +25,12 @@ namespace widget {
 
 using namespace contraption;
 
-typedef boost::function<void(ContraptionP& contraption,
-                             FieldID field_id)> OnClickFunction;
-
 class ContraptionGrid : public wxGrid {
  public:
-  ContraptionGrid(ContraptionArrayP &contraptions,
+  typedef boost::function<void(ContraptionP contraption,
+                               FieldID field_id)> OnClickFunction;
+
+  ContraptionGrid(ContraptionArrayP contraptions,
                   std::vector<Column> &cols,
                   wxWindow *parent, wxWindowID id,
                   const wxPoint &pos=wxDefaultPosition,

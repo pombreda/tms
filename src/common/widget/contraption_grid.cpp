@@ -7,7 +7,7 @@ namespace widget {
 
 using namespace contraption;
 
-ContraptionGrid::ContraptionGrid(ContraptionArrayP &contraptions,
+ContraptionGrid::ContraptionGrid(ContraptionArrayP contraptions,
                                  std::vector<Column> &cols,
                                  wxWindow *parent, wxWindowID id,
                                  const wxPoint &pos, const wxSize &size,
@@ -101,7 +101,6 @@ void ContraptionGrid::OnUpdateView() {
   CalcUnscrolledPosition(0, h, &x, &y);
   int max_row = YToRow(y);
   if (max_row == -1) max_row = contraptions_->size();
-  std::cerr << "Visible rows are " << min_row << " to " << max_row << std::endl;
   DrawContent(min_row, max_row);
 }
 
