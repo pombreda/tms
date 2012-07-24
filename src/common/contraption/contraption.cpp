@@ -15,13 +15,13 @@ FieldTypeP Contraption::GetFieldValue(size_t field_id)
     throw(FieldException, ModelBackendException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
-    msg << "Incorrect field_id in Contraption::GetFieldValue: '" 
+    msg << "Incorrect field_id in Contraption::GetFieldValue: '"
         << field_id << "'.";
     throw FieldException(msg.str());
   }
   if (!IsReadable(field_id)) {
     ostringstream msg;
-    msg << "Trying to read non-readable field in Contraption::GetFieldValue: '" 
+    msg << "Trying to read non-readable field in Contraption::GetFieldValue: '"
         << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
@@ -32,18 +32,18 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
     throw(FieldException) {
   if (field_id >= GetFieldNumber()) {
     ostringstream msg;
-    msg << "Incorrect field_id in Contraption::SetFieldValue: '" 
+    msg << "Incorrect field_id in Contraption::SetFieldValue: '"
         << field_id << "'.";
     throw FieldException(msg.str());
   }
   if (!IsWritable(field_id)) {
     ostringstream msg;
-    msg << "Trying to write non-writable field in Contraption::SetFieldValue: '" 
+    msg << "Trying to write non-writable field in Contraption::SetFieldValue: '"
         << GetName(field_id) << "'.";
     throw FieldException(msg.str());
   }
   model_->SetFieldValue(field_id, value, values_, id_);
-  on_change_();    
+  on_change_();
 }
 
 void Contraption::Save()
@@ -54,6 +54,7 @@ void Contraption::Save()
 void Contraption::Delete()
     throw(ModelBackendException) {
   model_->Delete(id_);
+  on_delete_();
 }
 
 void Contraption::Refresh()
@@ -109,7 +110,7 @@ Contraption& Contraption::operator=(const Contraption &other)
   return *this;
 }
 
-Contraption::Contraption(const Contraption &other) 
+Contraption::Contraption(const Contraption &other)
     throw() :
     ptr_count_(0),
     in_array_(false),
@@ -125,7 +126,7 @@ Contraption::Contraption(const Contraption &other)
   }
 }
 
-Contraption::Contraption(ModelP model) 
+Contraption::Contraption(ModelP model)
     throw():
     ptr_count_(0),
     in_array_(false),
