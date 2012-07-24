@@ -40,6 +40,7 @@ void TestFrame::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
 
 void TestFrame::OnDeleteClick(wxCommandEvent& WXUNUSED(event)) {
   contraption_->Delete();
+  contraptions_->Refresh();
   Hide();
 }
 
