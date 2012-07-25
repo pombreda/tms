@@ -16,11 +16,11 @@
 namespace tms {
 namespace client {
 
-class TestFrame: public wxFrame {
+class TestFrame : public wxFrame {
  public:
   TestFrame() :
-    wxFrame(), tc_name_(), tc_surname_(),
-    tc_age_(), contraption_() {}
+      wxFrame(), tc_name_(), tc_surname_(),
+      tc_age_(), contraption_(), contraptions_() {}
 	virtual ~TestFrame();
 	void Init();
 	void SetUpValues(tms::common::contraption::ContraptionP contraption,

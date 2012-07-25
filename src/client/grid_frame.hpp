@@ -30,10 +30,10 @@
 namespace tms {
 namespace client {
 
-class GridFrame: public wxFrame {
+class GridFrame : public wxFrame {
  public:
   GridFrame() :
-    wxFrame(), grid_(), test_frame() {}
+    wxFrame(), grid_(), contraptions_(), test_frame() {}
 	virtual ~GridFrame();
 	void Init();
 

@@ -27,23 +27,23 @@ BOOST_PARAMETER_NAME(default_value)
 // SimpleFieldT class. Represents a simple mapping to db.
 //------------------------------------------------------------
 template<class T>
-class SimpleFieldTImpl : public FieldT<T> {  
- public:  
+class SimpleFieldTImpl : public FieldT<T> {
+ public:
   using FieldT<T>::CheckType;
   template <class ArgPack>
-  SimpleFieldTImpl(ArgPack const &args) 
+  SimpleFieldTImpl(ArgPack const &args)
       throw(FieldException) :
-      FieldT<T>(args[_name], 
-                args[_is_readable | true], 
+      FieldT<T>(args[_name],
+                args[_is_readable | true],
                 args[_is_writable | true]),
       default_value_(args[_default_value | T()]),
       backend_name_(args[_backend_name | args[_name]]) {
   }
 
-  virtual void GetReadRecords(FieldTypeArray &values, 
+  virtual void GetReadRecords(FieldTypeArray &values,
                               ContraptionID id,
                               std::vector<RecordP> &out) const {
-    if (!values[(int)this->field_id_]) { 
+    if (!values[(int)this->field_id_]) {
       values[(int)this->field_id_].reset(new FieldTypeT<T>(default_value_));
       if (id != Contraption::kNewID) {
         out.push_back(RecordP(
@@ -53,10 +53,10 @@ class SimpleFieldTImpl : public FieldT<T> {
     }
   }
 
-  virtual void GetWriteRecords(FieldTypeArray &values, 
+  virtual void GetWriteRecords(FieldTypeArray &values,
                                ContraptionID id,
                                std::vector<RecordP> &out) const {
-    if (!values[(int)this->field_id_] 
+    if (!values[(int)this->field_id_]
         && id == Contraption::kNewID) {
       values[(int)this->field_id_].reset(new FieldTypeT<T>(default_value_));
     }
@@ -76,7 +76,7 @@ class SimpleFieldTImpl : public FieldT<T> {
 
  private:
   T default_value_;
-  const std::string backend_name_; 
+  const std::string backend_name_;
 };
 
 template <class T>
@@ -84,12 +84,12 @@ class SimpleFieldT : public SimpleFieldTImpl<T> {
  public:
   BOOST_PARAMETER_CONSTRUCTOR(
     SimpleFieldT, (SimpleFieldTImpl<T>),
-    tag, 
-    (required 
+    tag,
+    (required
       (name, (std::string))
-    ) 
-    (optional 
-      (is_readable, (bool))    
+    )
+    (optional
+      (is_readable, (bool))
       (is_writable, (bool))
       (backend_name, (std::string))
       (default_value, (T))

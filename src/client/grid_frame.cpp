@@ -65,10 +65,10 @@ void GridFrame::Init() {
   test_frame->Init();
 }
 
-void GridFrame::OnCellClick(ContraptionP contraption, FieldID field_id) {
+void GridFrame::OnCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
 }
 
-void GridFrame::OnCellDClick(ContraptionP contraption, FieldID field_id) {
+void GridFrame::OnCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
   test_frame->SetUpValues(contraption, contraptions_);
   test_frame->Show(true);
 }
