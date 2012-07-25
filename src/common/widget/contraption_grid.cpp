@@ -68,8 +68,6 @@ void ContraptionGrid::OnChange() {
     DeleteRows(contraptions_->size(), delta);
   }
   old_size_ = contraptions_->size();
-  //GetParent()->SetSize(GetParent()->GetEffectiveMinSize());
-  //GetParent()->FitInside();
 }
 
 }

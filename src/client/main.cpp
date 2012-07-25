@@ -28,7 +28,7 @@
 // common
 #include <gui_exception/gui_exception.hpp>
 // frames
-#include "LoginFrame.h"
+#include "login_frame.hpp"
 
 // ----------------------------------------------------------------------------
 // private classes

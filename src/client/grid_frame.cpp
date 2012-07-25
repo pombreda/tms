@@ -1,4 +1,4 @@
-#include "GridFrame.h"
+#include "grid_frame.hpp"
 
 #include <wx/xrc/xmlres.h>
 
