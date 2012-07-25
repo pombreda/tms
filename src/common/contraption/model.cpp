@@ -200,6 +200,9 @@ void Model::InitFields(const std::vector< Field* > &fields)
     Field *field = fields[field_id];
     fields_.push_back(boost::shared_ptr<Field>(field));
     if (fields_by_name_.count(field->name()) > 0) {
+      for (size_t i = field_id + 1, end = size; i < size; ++i) {
+        delete fields[i];
+      }
       ostringstream msg;
       msg << "Duplicate field name in Model::InitFields: '"
           << field->name() << "'";

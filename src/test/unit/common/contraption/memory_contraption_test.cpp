@@ -49,6 +49,10 @@ class Fixture {
     return ret;
   }
 
+  size_t fields_size() {
+    return 4;
+  }
+
   ModelP model() {
     return ModelP(new Model(fields(), backend()));    
   }
@@ -129,7 +133,7 @@ BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
   {
     ModelP test_model(new Model(fields(), 
                                 new MemoryModelBackend()));
-    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), fields().size());
+    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), fields_size());
   }
   {
     vector<Field*> test_fields;

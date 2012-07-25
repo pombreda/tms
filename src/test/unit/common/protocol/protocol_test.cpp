@@ -16,6 +16,7 @@
 // common
 #include <protocol/protocol.hpp>
 #include <protocol/message.hpp>
+#include <google/protobuf/stubs/common.h>
 #include "dummy.pb.h"
  
 using namespace std;

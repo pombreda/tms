@@ -8,6 +8,7 @@ add_library (tms_protocol SHARED
   crypto
   protocol
   protocol_impl
+  protobuf_clean
   server
   tcp_server
   server_impl
@@ -18,6 +19,7 @@ add_library (tms_protocol SHARED
   login_request_processor  
   model_backend_request_processor
   login_protocol
+  model_backend_protocol
   client
   message
   )

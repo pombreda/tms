@@ -41,7 +41,8 @@ ModelBackendRequestProcessor::GetBackend(const string &table) {
   return it->second;
 }
 
-ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(const ReadRecordsRequest &request) {
+ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(
+    const ReadRecordsRequest &request) {
   ReadRecordsResponseP response;
   FieldTypeArray values(new boost::scoped_ptr<FieldType>[request.record_size()]);
   vector<RecordP> records(static_cast<size_t>(request.record_size()));
@@ -51,11 +52,14 @@ ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(const ReadRecords
                values[static_cast<long int>(i)], 
                records[i]);
   }
+  SOCIModelBackendP backend = GetBackend(request.table());
+  backend->ReadRecords(records, request.id());
   for (size_t i = 0, end = static_cast<size_t>(request.record_size()); 
        i < end; ++i) {
-    *response->add_record() = request.record(static_cast<int>(i));
+    GetValue(*records[i], *response->add_record());;
   }
   assert(response->record_size() == request.record_size());  
+  return response;
 }
 
 MessageP ModelBackendRequestProcessor::Eval(const Message &message) {

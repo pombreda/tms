@@ -1,4 +1,4 @@
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework system chrono REQUIRED)
 
 add_executable(memory_contraption_test 
   memory_contraption_test.cpp
@@ -29,7 +29,24 @@ target_link_libraries(soci_contraption_test
   ${SOCIDB_LIBRARY}
   )
 
-message(${SOCI_sqlite3_PLUGIN} ${SQLITE3_LIBRARIES})
-
 add_test(soci_contraption_test soci_contraption_test)
+
+add_executable(server_contraption_test 
+  server_contraption_test.cpp
+  )
+
+target_link_libraries(server_contraption_test 
+  tms_soci_contraption 
+  tms_server_contraption
+  tms_protocol
+  tms_contraption 
+  tms_model
+  ${Boost_LIBRARIES}
+  ${SOCI_sqlite3_PLUGIN} 
+  ${SQLITE3_LIBRARIES} 
+  ${SOCIDB_LIBRARY}
+  )
+
+add_test(server_contraption_test server_contraption_test)
+
 
