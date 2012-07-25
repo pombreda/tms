@@ -1,5 +1,6 @@
 #ifndef _TMS_COMMON_RTTI__TYPEINFO_HPP_
 #define _TMS_COMMON_RTTI__TYPEINFO_HPP_
+#include <cxxabi.h>
 
 // std
 #include <string>
@@ -31,6 +32,14 @@ public:
   friend bool operator<=(const TypeInfo& a, const TypeInfo &b);
   size_t GetHash() const {
     return boost::hash_value(std::string(type_info_->name()));
+  }
+  std::string name() {
+    int status = -4;  
+    char *res = abi::__cxa_demangle(type_info_->name(), NULL, NULL, &status);
+    const char* const demangled_name = (status==0)?res:type_info_->name();
+    std::string ret_val(demangled_name);
+    free(res);
+    return ret_val;
   }
  private:
   const std::type_info *type_info_;

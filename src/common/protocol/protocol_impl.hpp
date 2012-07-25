@@ -149,7 +149,7 @@ class Protocol::AsyncHelper {
   void AsyncReadBody(const boost::system::error_code &ec,
                      uint32_t id, uint32_t size,
                      AsyncReadHandler handler,
-                     AsyncHelperP ptr) {
+                     AsyncHelperP /*ptr*/) {
     if (ec) {
       handler(MessageP(), ProtocolExceptionP(
           new ProtocolException("IO error in Protocol::"
@@ -197,7 +197,7 @@ class Protocol::AsyncHelper {
   void AsyncWriteBody(const boost::system::error_code &ec,
                       AsyncWriteStream &/*stream*/, 
                       AsyncWriteHandler handler,
-                      AsyncHelperP ptr) {
+                      AsyncHelperP /*ptr*/) {
     ProtocolExceptionP exception;
     if (ec) {
       exception.reset(new ProtocolException("IO error in Protocol::AsyncWriteBody"));

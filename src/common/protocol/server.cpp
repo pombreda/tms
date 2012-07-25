@@ -25,7 +25,9 @@ void Server::Listen()
   } catch(boost::thread_resource_error &e) {
     throw ServerException(&e);
   }
-  LOG4CXX_INFO(logger_, string("Server ") + typeid(*this).name() + " started.");
+  LOG4CXX_INFO(logger_, string("Server ") 
+               + rtti::TypeID(*this).name() 
+               + " started.");
 }
 
 void Server::Stop()
@@ -36,7 +38,9 @@ void Server::Stop()
     throw ServerException("Thread was interrupted in Server::Stop.");
   }
   running_ = false;
-  LOG4CXX_INFO(logger_, string("Server ") + typeid(*this).name() + " stopped.");
+  LOG4CXX_INFO(logger_, string("Server ") 
+               + rtti::TypeID(*this).name() 
+               + " stopped.");
 }
 
 void Server::Wait()
