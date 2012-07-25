@@ -13,6 +13,8 @@
 #include <boost/asio.hpp>
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
+// log4cxx
+#include <log4cxx/basicconfigurator.h>
 // common
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>
@@ -38,6 +40,14 @@ using namespace tms::common::contraption;
 using namespace tms::test;
 using namespace tms::common::model;
 using boost::asio::ip::tcp;
+using namespace log4cxx;
+
+struct LogConfigurator {
+ public:
+  LogConfigurator() {
+    BasicConfigurator::configure();
+  }
+} conf;
 
 //------------------------------------------------------------
 // Fixture
@@ -93,7 +103,6 @@ BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
                        protocol));
   boost::shared_ptr<DummyMessage> message(new DummyMessage());
   message->set_name("huricane bla bla bla");
-  cerr << message->name() << endl;    
   MessageP ret = client->EvalRequest(*message);
   BOOST_CHECK(boost::dynamic_pointer_cast<ErrorResponse>(ret));
   BOOST_CHECK(boost::dynamic_pointer_cast<ErrorResponse>(ret)->status()
@@ -119,7 +128,6 @@ BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
               == LoginResponse::kOk);
   message = boost::dynamic_pointer_cast<DummyMessage>(client->EvalRequest(*message));
   BOOST_CHECK(message);
-  server->Stop();
   BOOST_CHECK_EQUAL("Evaled: huricane bla bla bla", message->name());
   server->Stop();
 }

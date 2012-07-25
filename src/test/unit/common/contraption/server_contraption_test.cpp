@@ -15,6 +15,8 @@
 #include <iostream>//oops
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
+// log4cxx
+#include <log4cxx/basicconfigurator.h>
 // common
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>
@@ -46,7 +48,14 @@ using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
 using namespace tms::common::model;
 using boost::asio::ip::tcp;
+using namespace log4cxx;
 
+struct LogConfigurator {
+ public:
+  LogConfigurator() {
+    BasicConfigurator::configure();
+  }
+} conf;
 
 //------------------------------------------------------------
 // Fixture
@@ -64,9 +73,10 @@ class Fixture {
     string test_db("test.sqlite3");
     remove(test_db.c_str());
     SOCIDBScheme scheme(soci::sqlite3, test_db);    
-    // Users Model
-    users.reset(new User(ModelBackendP(new SOCIModelBackend(scheme, "users"))));
     // InitSchema
+    users.reset(new User(ModelBackendP(new SOCIModelBackend(scheme, "users"))));
+    users->InitSchema();
+    users.reset();
     vector<Field*> fields;
     fields.push_back(new SimpleFieldT<string>("name"));
     fields.push_back(new SimpleFieldT<int>("age"));
@@ -74,14 +84,31 @@ class Fixture {
                                            _is_readable = false));
     fields.push_back(new SimpleFieldT<string>("Surname", 
                                               _backend_name = "surname"));
-    model.reset(new Model(fields, new SOCIModelBackend(scheme, "test")));    
-    model->InitSchema();
+    soci_model.reset(new Model(fields, new SOCIModelBackend(scheme, "test")));    
+    soci_model->InitSchema();
+    soci_model.reset();
+    // Init Models
+    users.reset(new User(ModelBackendP(new SOCIModelBackend(scheme, "users"))));
+    fields.clear();
+    fields.push_back(new SimpleFieldT<string>("name"));
+    fields.push_back(new SimpleFieldT<int>("age"));
+    fields.push_back(new SimpleFieldT<int>("password", 
+                                           _is_readable = false));
+    fields.push_back(new SimpleFieldT<string>("Surname", 
+                                              _backend_name = "surname"));
+    soci_model.reset(new Model(fields, new SOCIModelBackend(scheme, "test")));    
+    // user added
+    ContraptionP user = users->New();
+    user->Set<string>("name", "adavydow");
+    user->Set<string>("password_hash", "Dummy");
+    user->Save();
     // Create Protocol
     ModelBackendProtocolP protocol(new ModelBackendProtocol());
     protocol->Initialize();
     // Create RequestProcessor
     SimpleRequestProcessorP request_processor(new SimpleRequestProcessor());
-    RequestProcessorP processor(new LoginRequestProcessor(request_processor, users));
+    RequestProcessorP processor(
+        new ModelBackendRequestProcessor(request_processor, users, scheme));
     // Create Server
     server.reset(
         new TCPServer(tcp::endpoint(tcp::v4(), 3030), 
@@ -89,16 +116,36 @@ class Fixture {
                       processor));  
     server->Listen();
     // Create Client
+    cerr << "Server started" << endl;
     client.reset(
         new StreamClient(StreamP(new tcp::iostream("localhost", "3030")), 
-                         protocol));    
+                         protocol)); 
+    cerr << "Client listening" << endl;
+    LoginRequestP login(new LoginRequest);
+    login->set_name("adavydow");
+    login->set_password_hash("Dummy");
+    MessageP ret = client->EvalRequest(*login);
+    BOOST_CHECK(boost::dynamic_pointer_cast<LoginResponse>(ret));
+    BOOST_CHECK(boost::dynamic_pointer_cast<LoginResponse>(ret)->status()
+                == LoginResponse::kOk);
+    cerr << "Login client" << endl;
     // Create Backend
     backend.reset(new ServerModelBackend(client, "test"));
-    //    backend.reset(new SOCIModelBackend(scheme, "test"));    
+    // Init model
+    fields.clear();
+    fields.push_back(new SimpleFieldT<string>("name"));
+    fields.push_back(new SimpleFieldT<int>("age"));
+    fields.push_back(new SimpleFieldT<int>("password", 
+                                           _is_readable = false));
+    fields.push_back(new SimpleFieldT<string>("Surname", 
+                                              _backend_name = "surname"));
+
+    model.reset(new Model(fields, backend));
   }
 
   ModelBackendP backend;
   ModelP model;
+  ModelP soci_model;
   ModelP users;
   ServerP server;
   ClientP client;
@@ -114,10 +161,42 @@ class Fixture {
 //------------------------------------------------------------
 BOOST_AUTO_TEST_SUITE(testServerContraption)
 
-BOOST_FIXTURE_TEST_CASE(testGet, Fixture) {
-  cerr << "Test" << endl;
+BOOST_FIXTURE_TEST_CASE(testWrite, Fixture) {
+  cerr << "Test inited" << endl;
+  ContraptionP test_contraption = model->New();
+  test_contraption->Set<int>("age", 10);
+  test_contraption->Set<string>("Surname", "Du'\"\\mmy");
+  test_contraption->Save();
+  test_contraption = soci_model->New();
+  test_contraption->Set<int>("age", 12);
+  test_contraption->Set<string>("Surname", "Ymmud");
+  test_contraption->Save();
+  cerr << "Test gone here" << endl;
+  ContraptionArrayP contraptions = soci_model->All();
+  BOOST_CHECK_EQUAL(contraptions->size(), 
+  2);
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
+  10);
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
+  "Du'\"\\mmy");
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
+  12);
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
+  "Ymmud");
+  contraptions->erase(contraptions->begin());
+  contraptions->Save();
+  contraptions = soci_model->All();
+  BOOST_CHECK_EQUAL(contraptions->size(), 
+  1);
+  test_contraption = soci_model->New();
+  test_contraption->Set<int>("age", 10);
+  test_contraption->Set<string>("Surname", "Dummy");
+  contraptions->push_back(test_contraption);
+  contraptions->Save();
+  contraptions = soci_model->All();
+  BOOST_CHECK_EQUAL(contraptions->size(), 
+  2);  
 }
-
 
 /*
   BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {

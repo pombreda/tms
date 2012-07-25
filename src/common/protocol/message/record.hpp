@@ -127,6 +127,13 @@ void GetFreeRecord(const contraption::Record &record, Record &out)
   GetName(record, out);
 }
 
+void GetRecord(const contraption::Record &record, Record &out)
+    throw(contraption::ModelBackendException) {
+  GetType(record, out);
+  GetName(record, out);
+  GetValue(record, out);
+}
+
 }
 }
 }

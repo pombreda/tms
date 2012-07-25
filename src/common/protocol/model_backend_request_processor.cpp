@@ -15,6 +15,10 @@ using tms::common::protocol::message::ReadRecordsResponse;
 using tms::common::protocol::message::ReadRecordsResponseP;
 using tms::common::protocol::message::ReadRecordsRequest;
 using tms::common::protocol::message::ReadRecordsRequestP;
+using tms::common::protocol::message::WriteRecordsResponse;
+using tms::common::protocol::message::WriteRecordsResponseP;
+using tms::common::protocol::message::WriteRecordsRequest;
+using tms::common::protocol::message::WriteRecordsRequestP;
 
 ModelBackendRequestProcessor
 ::ModelBackendRequestProcessor(RequestProcessorP request_processor, 
@@ -25,7 +29,7 @@ ModelBackendRequestProcessor
     backend_map_() {
 }
 
-RequestProcessorP ModelBackendRequestProcessor::Duplicate() {
+RequestProcessorP ModelBackendRequestProcessor::Duplicate() const {
   return RequestProcessorP(
       new ModelBackendRequestProcessor(request_processor_->Duplicate(), 
                                        users_, scheme_));
@@ -56,18 +60,42 @@ ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(
   backend->ReadRecords(records, request.id());
   for (size_t i = 0, end = static_cast<size_t>(request.record_size()); 
        i < end; ++i) {
-    GetValue(*records[i], *response->add_record());;
+    GetValue(*records[i], *response->add_record());
   }
   assert(response->record_size() == request.record_size());  
   return response;
 }
 
+WriteRecordsResponseP ModelBackendRequestProcessor::WriteRecords(
+    const WriteRecordsRequest &request) {
+  WriteRecordsResponseP response;
+  FieldTypeArray values(new boost::scoped_ptr<FieldType>[request.record_size()]);
+  vector<RecordP> records(static_cast<size_t>(request.record_size()));
+  for (size_t i = 0, end = static_cast<size_t>(request.record_size()); 
+       i < end; ++i) {
+    InitRecord(request.record(static_cast<int>(i)), 
+               values[static_cast<long int>(i)], 
+               records[i]);
+  }
+  SOCIModelBackendP backend = GetBackend(request.table());
+  ContraptionID id = static_cast<ContraptionID>(request.id());
+  backend->WriteRecords(records, id);
+  response->set_id(id);
+  return response;
+}
+
 MessageP ModelBackendRequestProcessor::Eval(const Message &message) {
+  assert(false);
   if (user_) {
     const ReadRecordsRequest *read_records_request 
         = dynamic_cast<const ReadRecordsRequest*>(&message);
     if (read_records_request) {
       return ReadRecords(*read_records_request);
+    }
+    const WriteRecordsRequest *write_records_request 
+        = dynamic_cast<const WriteRecordsRequest*>(&message);
+    if (write_records_request) {
+      return WriteRecords(*write_records_request);
     }
   }
   return LoginRequestProcessor::Eval(message);

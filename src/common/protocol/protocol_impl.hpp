@@ -71,6 +71,7 @@ class Protocol::AsyncHelper {
   AsyncHelper(Protocol &protocol) :
       buf(),
       protocol_(protocol) {}
+
   template <class AsyncReadStream>
   void AsyncReadMessage(AsyncReadStream &stream, 
                         AsyncReadHandler handler) {

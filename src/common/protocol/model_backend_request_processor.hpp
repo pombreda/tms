@@ -14,6 +14,8 @@
 #include <protocol/message.hpp>
 #include <protocol/message/read_records_request.hpp>
 #include <protocol/message/read_records_response.hpp>
+#include <protocol/message/write_records_request.hpp>
+#include <protocol/message/write_records_response.hpp>
 #include <protocol/server_exception.hpp>
 #include <protocol/request_processor.hpp>
 #include <protocol/login_request_processor.hpp>
@@ -28,12 +30,14 @@ class ModelBackendRequestProcessor : public LoginRequestProcessor {
   ModelBackendRequestProcessor(RequestProcessorP request_processor, 
                                contraption::ModelP users,
                                const contraption::SOCIDBScheme &scheme);
-  virtual RequestProcessorP Duplicate();
+  virtual RequestProcessorP Duplicate() const;
   virtual MessageP Eval(const Message&);
   virtual ~ModelBackendRequestProcessor() {}
  private:  
   message::ReadRecordsResponseP ReadRecords(
       const message::ReadRecordsRequest &request);
+  message::WriteRecordsResponseP WriteRecords(
+      const message::WriteRecordsRequest &request);
   contraption::SOCIModelBackendP GetBackend(const std::string &table);
   contraption::SOCIDBScheme scheme_;
   typedef boost::unordered_map<std::string, 

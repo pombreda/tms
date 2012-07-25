@@ -25,13 +25,16 @@ add_library (tms_protocol SHARED
   )
 
 find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)
+find_package(Log4Cxx REQUIRED)
+include_directories(${LOG4CXX_INCLUDE_DIR})
 target_link_libraries(tms_protocol 
   tms_exception 
   tms_message 
   tms_contraption 
   tms_soci_contraption
   crypto 
-  ${Boost_LIBRARIES})
+  ${Boost_LIBRARIES}
+  ${LOG4CXX_LIBRARIES})
 if(WIN32)
   target_link_libraries(tms_protocol ws2_32 mswsock)
 endif(WIN32)

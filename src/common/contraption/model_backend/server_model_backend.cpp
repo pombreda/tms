@@ -5,6 +5,8 @@
 #include <protocol/message/record.hpp>
 #include <protocol/message/read_records_request.hpp>
 #include <protocol/message/read_records_response.hpp>
+#include <protocol/message/write_records_request.hpp>
+#include <protocol/message/write_records_response.hpp>
 #include <contraption/contraption.hpp>
 #include <contraption/record.hpp>
 
@@ -35,10 +37,6 @@ void ServerModelBackend::ReadRecords(
   BOOST_FOREACH(RecordP record, records) {
     message::Record *new_record = request->add_record();
     GetFreeRecord(*record, *new_record);
-    ostringstream msg;
-    msg << "Unsupported record type int ServerModelBackend::ReadRecords. "
-        << "Type: '"  << typeid(*record).name() << "'.";
-    throw ModelBackendException(msg.str());    
   }
   try {
     message::ReadRecordsResponseP response
@@ -68,6 +66,29 @@ void ServerModelBackend::WriteRecords(
     const std::vector<RecordP> &records,
     ContraptionID &id)
     throw(ModelBackendException) {
+  if (records.empty()) {
+    return;
+  }
+
+  message::WriteRecordsRequestP request(new message::WriteRecordsRequest());
+  request->set_table(table_name_);
+  request->set_id(static_cast<google::protobuf::uint32>(id));
+  BOOST_FOREACH(RecordP record, records) {
+    message::Record *new_record = request->add_record();
+    GetRecord(*record, *new_record);
+  }
+  try {
+    message::WriteRecordsResponseP response
+        = boost::dynamic_pointer_cast<message::WriteRecordsResponse>(
+            client_->EvalRequest(*request));
+    if (!response) {
+      throw ModelBackendException("Unsupported response from client in "
+                                  "ServerModelBackend::WriteRecords.");
+    }
+    id = response->id();
+  } catch (ProtocolException &e) {
+    throw ModelBackendException(&e);
+  }
 }
 
 void ServerModelBackend::InitSchema(

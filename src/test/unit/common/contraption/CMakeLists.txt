@@ -1,4 +1,6 @@
 find_package(Boost COMPONENTS unit_test_framework system chrono REQUIRED)
+find_package(Log4Cxx REQUIRED)
+include_directories(${LOG4CXX_INCLUDE_DIR})
 
 add_executable(memory_contraption_test 
   memory_contraption_test.cpp
@@ -36,6 +38,7 @@ add_executable(server_contraption_test
   )
 
 target_link_libraries(server_contraption_test 
+  ${LOG4CXX_LIBRARIES}
   tms_soci_contraption 
   tms_server_contraption
   tms_protocol
