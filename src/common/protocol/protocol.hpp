@@ -63,20 +63,6 @@ class Protocol {
   class AsyncHelper;
   Protocol& operator= (const Protocol &other);
 
-  template <class AsyncWriteStream>
-  void AsyncWriteHeader(const boost::system::error_code &ec,
-                        AsyncWriteStream &stream, 
-                        MessageP message,
-                        uint32_t *buff,
-                        AsyncWriteHandler handler);
-
-
-  template <class AsyncWriteStream>
-  void AsyncWriteBody(const boost::system::error_code &ec,
-                      AsyncWriteStream &stream, 
-                      char *buff,
-                      AsyncWriteHandler handler);
-
   class MessageHelper;
 
   template <class Message>
