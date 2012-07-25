@@ -6,7 +6,7 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
-#include "GridFrame.h"
+#include "grid_frame.hpp"
 
 class LoginFrame: public wxFrame {
  public:

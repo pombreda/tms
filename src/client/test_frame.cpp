@@ -1,4 +1,4 @@
-#include "TestFrame.h"
+#include "test_frame.hpp"
 
 #include <wx/xrc/xmlres.h>
 

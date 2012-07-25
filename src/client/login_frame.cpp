@@ -1,4 +1,4 @@
-#include "LoginFrame.h"
+#include "login_frame.hpp"
 
 #include <wx/xrc/xmlres.h>
 
