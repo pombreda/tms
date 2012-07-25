@@ -1,11 +1,22 @@
-#ifndef GRIDFRAME_H
-#define GRIDFRAME_H
+#ifndef _TMS_CLIENT__GRID_FRAME_HPP_
+#define _TMS_CLIENT__GRID_FRAME_HPP_
 
+// wxWidgets
 #include <wx/frame.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/grid.h>
 #include <wx/sizer.h>
-
+// soci
+#include <soci/sqlite3/soci-sqlite3.h>
+// boost
+#include <boost/lexical_cast.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+// std
+#include <string>
+#include <vector>
+// common
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>
 #include <contraption/model_backend.hpp>
@@ -14,23 +25,10 @@
 #include <contraption/field/simple_field.hpp>
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
-
-// soci
-#include <soci/sqlite3/soci-sqlite3.h>
-// boost
-#include <boost/lexical_cast.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
-
-#include <string>
-#include <vector>
-#include <iostream>
-
 #include "test_frame.hpp"
 
-using namespace tms::common::widget;
-using namespace tms::common::contraption;
+namespace tms {
+namespace client {
 
 class GridFrame: public wxFrame {
  public:
@@ -43,16 +41,21 @@ class GridFrame: public wxFrame {
   GridFrame(const GridFrame&);
   GridFrame& operator=(const GridFrame&);
 
-	ContraptionGrid* grid_;
-	ContraptionArrayP contraptions_;
+	tms::common::widget::ContraptionGrid* grid_;
+	tms::common::contraption::ContraptionArrayP contraptions_;
 	TestFrame* test_frame;
 
-	void OnCellClick(ContraptionP contraption, FieldID field_id);
-	void OnCellDClick(ContraptionP contraption, FieldID field_id);
+	void OnCellClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
+	void OnCellDClick(tms::common::contraption::ContraptionP contraption,
+                    tms::common::contraption::FieldID field_id);
 	void OnAddClick(wxCommandEvent& WXUNUSED(event));
 	void OnExitClick(wxCommandEvent& WXUNUSED(event));
 
   DECLARE_EVENT_TABLE()
 };
 
-#endif
+}
+}
+
+#endif // _TMS_CLIENT__GRID_FRAME_HPP_
