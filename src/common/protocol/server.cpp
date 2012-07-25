@@ -5,9 +5,7 @@
 
 using namespace std;
 using namespace tms::common::protocol;
-using namespace log4cxx;
 
-LoggerPtr Server::logger_(Logger::getLogger("tms::common::protocol::Server"));
 
 Server::Server(RequestProcessorP request_processor) 
     throw():
@@ -25,9 +23,6 @@ void Server::Listen()
   } catch(boost::thread_resource_error &e) {
     throw ServerException(&e);
   }
-  LOG4CXX_INFO(logger_, string("Server ") 
-               + rtti::TypeID(*this).name() 
-               + " started.");
 }
 
 void Server::Stop()
@@ -38,9 +33,6 @@ void Server::Stop()
     throw ServerException("Thread was interrupted in Server::Stop.");
   }
   running_ = false;
-  LOG4CXX_INFO(logger_, string("Server ") 
-               + rtti::TypeID(*this).name() 
-               + " stopped.");
 }
 
 void Server::Wait()

@@ -13,8 +13,6 @@
 #include <boost/asio.hpp>
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
-// log4cxx
-#include <log4cxx/basicconfigurator.h>
 // common
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>
@@ -40,14 +38,6 @@ using namespace tms::common::contraption;
 using namespace tms::test;
 using namespace tms::common::model;
 using boost::asio::ip::tcp;
-using namespace log4cxx;
-
-struct LogConfigurator {
- public:
-  LogConfigurator() {
-    BasicConfigurator::configure();
-  }
-} conf;
 
 //------------------------------------------------------------
 // Fixture
