@@ -2,6 +2,7 @@
 // boost
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
+#include <glog/logging.h>
 
 using namespace std;
 using namespace tms::common::protocol;
@@ -23,6 +24,7 @@ void Server::Listen()
   } catch(boost::thread_resource_error &e) {
     throw ServerException(&e);
   }
+  LOG(INFO) << "Server " << rtti::TypeID(*this).name() << " started";
 }
 
 void Server::Stop()
