@@ -60,31 +60,8 @@ class Protocol {
   virtual ~Protocol() 
       throw() {}
  private:
+  class AsyncHelper;
   Protocol& operator= (const Protocol &other);
-  template <class AsyncReadStream>
-  void AsyncReadHeader(const boost::system::error_code &ec,
-                       AsyncReadStream &stream, uint32_t *buff,
-                       AsyncReadHandler handler);
-
-  template <class AsyncWriteStream>
-  void AsyncWriteHeader(const boost::system::error_code &ec,
-                        AsyncWriteStream &stream, 
-                        MessageP message,
-                        uint32_t *buff,
-                        AsyncWriteHandler handler);
-
-
-  template <class AsyncReadStream>
-  void AsyncReadBody(const boost::system::error_code &ec,
-                     char *buff,
-                     uint32_t id, uint32_t size,
-                     AsyncReadHandler handler);
-
-  template <class AsyncWriteStream>
-  void AsyncWriteBody(const boost::system::error_code &ec,
-                      AsyncWriteStream &stream, 
-                      char *buff,
-                      AsyncWriteHandler handler);
 
   class MessageHelper;
 

@@ -16,27 +16,11 @@
 
 namespace tms {
 namespace common {
-namespace contraption {
-
-struct SOCIDBScheme {
-  const soci::backend_factory &factory;
-  const std::string connection_string;
-  SOCIDBScheme(const soci::backend_factory &factory, 
-               const std::string &connection_string) 
-      throw():
-      factory(factory),
-      connection_string(connection_string) {}
-};
-
+namespace prototol {
 //------------------------------------------------------------
-// SOCIModelBackend class.
-// It is not thread-safe. Moreover It'll breake if any
-// other process will write to the db.
-// While it is possible to rewrite it to be thread-safe
-// it'll require special functions of concrete sql realization
-// like sqlite3_last_insert_rowid.
+// ServerModelBackend class.
 //------------------------------------------------------------
-class SOCIModelBackend : public ModelBackend {
+class ServerModelBackend : public contraption::ModelBackend {
  public:
   virtual void ReadRecords(
       const std::vector<RecordP> &records,
@@ -76,8 +60,6 @@ class SOCIModelBackend : public ModelBackend {
   std::string id_column_;
   std::string init_column_;
 };
-
-typedef boost::shared_ptr<SOCIModelBackend> SOCIModelBackendP;
 
 }
 }

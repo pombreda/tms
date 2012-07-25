@@ -19,12 +19,12 @@ TCPServer::~TCPServer()
     throw() {}
 
 void TCPServer::Stop() 
-    throw(ServerException){
+    throw(ServerException) {
+  io_service_.stop();
+  Server::Stop(); 
   BOOST_FOREACH(ServerP listener, listeners_) {
     listener->Stop();
   }
-  io_service_.stop();
-  Server::Stop();
 }
 
 void TCPServer::HandleAccept(SocketP socket, 

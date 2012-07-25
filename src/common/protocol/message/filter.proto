@@ -1,0 +1,36 @@
+package tms.common.protocol.message;
+import "record.proto";
+
+message AndFilter {
+  required Filter left = 2;
+  required Filter right = 1;
+}
+
+message OrFilter {
+  required Filter left = 2;
+  required Filter right = 1;      
+}
+
+message NotFilter {
+  required Filter filter = 1;
+}
+
+message CompareFilter {
+  enum CompareID {
+    kEqual = 1;
+    kNotEqual = 2;
+    kLesser = 3;
+    kNotLesser = 4;
+    kGreater = 5;
+    kNotGreater = 6;
+  }
+  required CompareID type = 1;
+  required Record record = 2;
+}
+
+message Filter {
+  optional CompareFilter logical_filter = 1;
+  optional AndFilter and_filter = 2;
+  optional OrFilter or_filter = 3;
+  optional NotFilter not_filter = 4;
+}

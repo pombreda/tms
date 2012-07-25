@@ -40,6 +40,7 @@ class FieldTypeT : public FieldType {
   FieldTypeT(T data) : data_(data) {}
   virtual ~FieldTypeT(){}
   T data() const { return data_; }
+  T& data() { return data_; }
   void set_data(const T & data) {data_ = data;}
   virtual FieldTypeT<T>* Duplicate() const { return new FieldTypeT<T>(data_); } 
   friend class SimpleFieldTImpl<T>;

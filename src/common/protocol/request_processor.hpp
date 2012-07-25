@@ -21,7 +21,7 @@ typedef boost::shared_ptr<HandlersMap> HandlersMapP;
 
 class RequestProcessor {
  public:
-  virtual RequestProcessorP Duplicate() = 0;
+  virtual RequestProcessorP Duplicate() const = 0;
   virtual MessageP Eval(const Message&) = 0;
   virtual ~RequestProcessor() {}
 };

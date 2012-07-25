@@ -22,7 +22,7 @@ LoginRequestProcessor::LoginRequestProcessor(RequestProcessorP request_processor
             users->GetField("password_hash"))) {
 }
 
-RequestProcessorP LoginRequestProcessor::Duplicate() {
+RequestProcessorP LoginRequestProcessor::Duplicate() const {
   return RequestProcessorP(
       new LoginRequestProcessor(request_processor_->Duplicate(), 
                                 users_));
@@ -43,6 +43,5 @@ MessageP LoginRequestProcessor::Eval(const Message &message) {
       return request_processor_->Eval(message);
     }
   }
-  cerr << "authentication error" << endl;
   return MessageP(new ErrorResponse());
 }

@@ -29,24 +29,20 @@ class Protocol::MessageHelperT : public MessageHelper  {
   }
   virtual MessageP ReadMessage(std::istream &sin, uint32_t size) const {
     MessageP ret(new Message());
-    cerr << "Reading: " << typeid(*ret).name() << endl;
     if (size) {
       google::protobuf::io::IstreamInputStream stream(&sin, static_cast<int>(size));
       ret->ParseFromBoundedZeroCopyStream(&stream, static_cast<int>(size));
     }
-    cerr << "Read: " << typeid(*ret).name() << endl;
     return ret;
   }
 
   virtual MessageP ReadMessage(const void *data, uint32_t size) const {
     MessageP ret(new Message());
-    cerr << "Reading: " << typeid(*ret).name() << endl;
     if (size) {
       google::protobuf::io::ArrayInputStream stream(data, static_cast<int>(size), 
                                                     static_cast<int>(size));
       ret->ParseFromZeroCopyStream(&stream);
     }
-    cerr << "Read: " << typeid(*ret).name() << endl;
     return ret;
   }
 };
@@ -68,134 +64,162 @@ void Protocol::AddMessageClass()
       MessageHelperCP(new MessageHelperT<Message>(helpers_.size())));
 }
 
-// memleak here if io_service is turning off.
+
+class Protocol::AsyncHelper {
+  typedef boost::shared_ptr<Protocol::AsyncHelper> AsyncHelperP;
+ public:
+  AsyncHelper(Protocol &protocol) :
+      buf(),
+      protocol_(protocol) {}
+  template <class AsyncReadStream>
+  void AsyncReadMessage(AsyncReadStream &stream, 
+                        AsyncReadHandler handler) {
+    AsyncHelperP ptr(this);
+    buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
+    boost::asio::async_read(stream, boost::asio::buffer(&buf[0], 
+                                                        sizeof(uint32_t) * 2),
+                            boost::bind(&AsyncHelper
+                                        ::AsyncReadHeader<AsyncReadStream>, 
+                                        this, 
+                                        boost::asio::placeholders::error, 
+                                        boost::ref(stream),
+                                        handler,
+                                        ptr));
+  }
+
+  template <class AsyncWriteStream>
+  void AsyncWriteMessage(AsyncWriteStream &stream,
+                         MessageP message,
+                         AsyncWriteHandler handler) {
+    AsyncHelperP ptr(this);
+    buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
+    HelpersMap::const_iterator it 
+        = protocol_.helpers_by_type_info_.find(rtti::TypeID(*message));
+    if (it == protocol_.helpers_by_type_info_.end()) {
+      ostringstream msg;
+      msg << "Unknown message type in Protocol::AsyncWriteMessage "
+          << "type = '" << typeid(*message).name() << "'.";
+      throw ProtocolException(msg.str());
+    }
+  
+    reinterpret_cast<uint32_t*>(&buf[0])[0] 
+        = static_cast<uint32_t>(it->second->id());
+    reinterpret_cast<uint32_t*>(&buf[0])[1] 
+        = static_cast<uint32_t>(message->ByteSize());
+    boost::asio::async_write(stream, boost::asio::buffer(&buf[0], 
+                                                         sizeof(uint32_t) * 2),
+                             boost::bind(&AsyncHelper
+                                         ::AsyncWriteHeader<AsyncWriteStream>, 
+                                         this, 
+                                         boost::asio::placeholders::error, 
+                                         boost::ref(stream),
+                                         message,
+                                         handler,
+                                         ptr));
+  }
+
+ private:
+  template <class AsyncReadStream>
+  void AsyncReadHeader(const boost::system::error_code &ec,
+                       AsyncReadStream &stream,
+                       AsyncReadHandler handler,
+                       AsyncHelperP ptr) {
+    if (ec) {
+      handler(MessageP(), ProtocolExceptionP(
+          new ProtocolException("IO error in Protocol::"
+                                "AsyncHelper::AsyncReadHeader.")));
+    } else {
+      uint32_t id = reinterpret_cast<uint32_t*>(&buf[0])[0];
+      uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
+      buf.reset(new uint8_t[size]);
+      boost::asio::async_read(stream, boost::asio::buffer(&buf[0], size),
+                              boost::bind(&AsyncHelper
+                                          ::AsyncReadBody<AsyncReadStream>, 
+                                          this,
+                                          boost::asio::placeholders::error, 
+                                          id,
+                                          size,
+                                          handler,
+                                          ptr));
+    }
+  }
+
+  template <class AsyncReadStream>
+  void AsyncReadBody(const boost::system::error_code &ec,
+                     uint32_t id, uint32_t size,
+                     AsyncReadHandler handler,
+                     AsyncHelperP ptr) {
+    if (ec) {
+      handler(MessageP(), ProtocolExceptionP(
+          new ProtocolException("IO error in Protocol::"
+                                "AsyncHelper::AsyncReadBody.")));
+    } else {
+      ProtocolExceptionP exception;
+      MessageP message;
+      try {
+        message = protocol_.helpers_[id]->ReadMessage(&buf[0], size);
+      } catch (ProtocolException &e) {
+        exception.reset(new ProtocolException(e));
+      }
+      handler(message, exception);
+    }
+  }
+  
+
+  template <class AsyncWriteStream>
+  void AsyncWriteHeader(const boost::system::error_code &ec,
+                        AsyncWriteStream &stream, 
+                        MessageP message,
+                        AsyncWriteHandler handler,
+                        AsyncHelperP ptr) {
+    if (ec) {
+      handler(ProtocolExceptionP(
+          new ProtocolException("IO error in Protocol::AsyncWriteHeader.")));
+    } else {
+      uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
+      buf.reset(new uint8_t[size]);
+      google::protobuf::io::ArrayOutputStream gstream(&buf[0], 
+                                                      static_cast<int>(size));
+      message->SerializeToZeroCopyStream(&gstream);
+      boost::asio::async_write(stream, boost::asio::buffer(&buf[0], size),
+                               boost::bind(&AsyncHelper
+                                           ::AsyncWriteBody<AsyncWriteStream>, 
+                                           this,
+                                           boost::asio::placeholders::error, 
+                                           boost::ref(stream),
+                                           handler,
+                                           ptr));
+    }
+  } 
+
+  template <class AsyncWriteStream>
+  void AsyncWriteBody(const boost::system::error_code &ec,
+                      AsyncWriteStream &/*stream*/, 
+                      AsyncWriteHandler handler,
+                      AsyncHelperP ptr) {
+    ProtocolExceptionP exception;
+    if (ec) {
+      exception.reset(new ProtocolException("IO error in Protocol::AsyncWriteBody"));
+    }
+    handler(exception);
+  }
+
+ private:
+  boost::scoped_array<uint8_t> buf;
+  Protocol &protocol_;
+};
+
 template <class AsyncReadStream>
 void Protocol::AsyncReadMessage(AsyncReadStream &stream, 
                                 AsyncReadHandler handler) {
-  uint32_t *buff = new uint32_t[2];
-  boost::asio::async_read(stream, boost::asio::buffer(buff, sizeof(uint32_t) * 2),
-                          boost::bind(&Protocol::AsyncReadHeader<AsyncReadStream>, 
-                                      this, 
-                                      boost::asio::placeholders::error, 
-                                      boost::ref(stream),
-                                      buff, 
-                                      handler));
-}
-
-template <class AsyncReadStream>
-void Protocol::AsyncReadHeader(const boost::system::error_code &ec,
-                               AsyncReadStream &stream, uint32_t *buff,
-                               AsyncReadHandler handler) {
-  if (ec) {
-    delete[] buff;
-    handler(MessageP(), ProtocolExceptionP(
-        new ProtocolException("IO error in Protocol::AsyncReadHeader.")));
-  } else {
-    uint32_t id = buff[0];
-    uint32_t size = buff[1];
-    delete[] buff;
-    char *newbuff = new char[size];
-    boost::asio::async_read(stream, boost::asio::buffer(newbuff, size),
-                            boost::bind(&Protocol::AsyncReadBody<AsyncReadStream>, 
-                                        this,
-                                        boost::asio::placeholders::error, 
-                                        newbuff, 
-                                        id,
-                                        size,
-                                        handler));
-  }
-}
-
-template <class AsyncReadStream>
-void Protocol::AsyncReadBody(const boost::system::error_code &ec,
-                             char *buff,
-                             uint32_t id, uint32_t size,
-                             AsyncReadHandler handler) {
-  if (ec) {
-    delete[] buff;
-    handler(MessageP(), ProtocolExceptionP(
-        new ProtocolException("IO error in Protocol::AsyncReadBody.")));
-  } else {
-    ProtocolExceptionP exception;
-    MessageP message;
-    try {
-      message = helpers_[id]->ReadMessage(buff, size);
-    } catch (ProtocolException &e) {
-      exception.reset(new ProtocolException(e));
-    }
-    delete[] buff;
-    handler(message, exception);
-  }
+  (new AsyncHelper(*this))->AsyncReadMessage(stream, handler);
 }
 
 template <class AsyncWriteStream>
 void Protocol::AsyncWriteMessage(AsyncWriteStream &stream,
                                  MessageP message,
                                  AsyncWriteHandler handler) {
-  cerr << "Writing: " << typeid(*message).name() << endl;
-  uint32_t *buff = new uint32_t[2];
-  HelpersMap::const_iterator it 
-      = helpers_by_type_info_.find(rtti::TypeID(*message));
-  if (it == helpers_by_type_info_.end()) {
-    ostringstream msg;
-    msg << "Unknown message type in Protocol::AsyncWriteMessage "
-        << "type = '" << typeid(*message).name() << "'.";
-    throw ProtocolException(msg.str());
-  }
-  
-  buff[0] = static_cast<uint32_t>(it->second->id());
-  buff[1] = static_cast<uint32_t>(message->ByteSize());
-  boost::asio::async_write(stream, boost::asio::buffer(buff, sizeof(uint32_t) * 2),
-                           boost::bind(&Protocol::AsyncWriteHeader<AsyncWriteStream>, 
-                                       this, 
-                                       boost::asio::placeholders::error, 
-                                       boost::ref(stream),
-                                       message,
-                                       buff, 
-                                       handler));
-}
-
-template <class AsyncWriteStream>
-void Protocol::AsyncWriteHeader(const boost::system::error_code &ec,
-                                AsyncWriteStream &stream, 
-                                MessageP message,
-                                uint32_t *buff,
-                                AsyncWriteHandler handler) {
-  cerr << "Headers: " << typeid(*message).name() << endl;
-  cerr << "Size: " << buff[1] << endl;
-  if (ec) {
-    delete[] buff;
-    handler(ProtocolExceptionP(
-        new ProtocolException("IO error in Protocol::AsyncWriteHeader.")));
-  } else {
-    uint32_t size = buff[1];
-    delete[] buff;
-    char *newbuff = new char[size];
-    google::protobuf::io::ArrayOutputStream gstream(newbuff, 
-                                                    static_cast<int>(size));
-    message->SerializeToZeroCopyStream(&gstream);
-    boost::asio::async_write(stream, boost::asio::buffer(newbuff, size),
-                             boost::bind(&Protocol::AsyncWriteBody<AsyncWriteStream>, 
-                                         this,
-                                         boost::asio::placeholders::error, 
-                                         boost::ref(stream),
-                                         newbuff, 
-                                         handler));
-  }
-} 
-
-template <class AsyncWriteStream>
-void Protocol::AsyncWriteBody(const boost::system::error_code &ec,
-                              AsyncWriteStream &/*stream*/, 
-                              char *buff,
-                              AsyncWriteHandler handler) {
-  cerr << "Body written." << endl;
-  delete[] buff;
-  ProtocolExceptionP exception;
-  if (ec) {
-    exception.reset(new ProtocolException("IO error in Protocol::AsyncWriteBody"));
-  }
-  handler(exception);
+  (new AsyncHelper(*this))->AsyncWriteMessage(stream, message, handler);
 }
 
 
