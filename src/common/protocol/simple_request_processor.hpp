@@ -23,7 +23,7 @@ typedef boost::shared_ptr<HandlersMap> HandlersMapP;
 class SimpleRequestProcessor : public RequestProcessor {
  public:
   SimpleRequestProcessor();
-  RequestProcessorP Duplicate();
+  RequestProcessorP Duplicate() const;
   MessageP Eval(const Message&)
       throw(ServerException);
   template<class Message>

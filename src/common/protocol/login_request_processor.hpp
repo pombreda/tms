@@ -23,7 +23,7 @@ class LoginRequestProcessor : public RequestProcessor {
   // Users must have "string name" and "string password_hash" fields.
   LoginRequestProcessor(RequestProcessorP request_processor, 
                         contraption::ModelP users);
-  virtual RequestProcessorP Duplicate();
+  virtual RequestProcessorP Duplicate() const;
   virtual MessageP Eval(const Message&);
   virtual ~LoginRequestProcessor() {}
  protected:

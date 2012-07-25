@@ -29,24 +29,20 @@ class Protocol::MessageHelperT : public MessageHelper  {
   }
   virtual MessageP ReadMessage(std::istream &sin, uint32_t size) const {
     MessageP ret(new Message());
-    cerr << "Reading: " << typeid(*ret).name() << endl;
     if (size) {
       google::protobuf::io::IstreamInputStream stream(&sin, static_cast<int>(size));
       ret->ParseFromBoundedZeroCopyStream(&stream, static_cast<int>(size));
     }
-    cerr << "Read: " << typeid(*ret).name() << endl;
     return ret;
   }
 
   virtual MessageP ReadMessage(const void *data, uint32_t size) const {
     MessageP ret(new Message());
-    cerr << "Reading: " << typeid(*ret).name() << endl;
     if (size) {
       google::protobuf::io::ArrayInputStream stream(data, static_cast<int>(size), 
                                                     static_cast<int>(size));
       ret->ParseFromZeroCopyStream(&stream);
     }
-    cerr << "Read: " << typeid(*ret).name() << endl;
     return ret;
   }
 };
@@ -96,7 +92,6 @@ class Protocol::AsyncHelper {
                          MessageP message,
                          AsyncWriteHandler handler) {
     AsyncHelperP ptr(this);
-    cerr << "Writing: " << typeid(*message).name() << endl;
     buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
     HelpersMap::const_iterator it 
         = protocol_.helpers_by_type_info_.find(rtti::TypeID(*message));
@@ -177,8 +172,6 @@ class Protocol::AsyncHelper {
                         MessageP message,
                         AsyncWriteHandler handler,
                         AsyncHelperP ptr) {
-    cerr << "Headers: " << typeid(*message).name() << endl;
-    cerr << "Size: " << reinterpret_cast<uint32_t*>(&buf[0])[1] << endl;
     if (ec) {
       handler(ProtocolExceptionP(
           new ProtocolException("IO error in Protocol::AsyncWriteHeader.")));
@@ -204,7 +197,6 @@ class Protocol::AsyncHelper {
                       AsyncWriteStream &/*stream*/, 
                       AsyncWriteHandler handler,
                       AsyncHelperP ptr) {
-    cerr << "Body written." << endl;
     ProtocolExceptionP exception;
     if (ec) {
       exception.reset(new ProtocolException("IO error in Protocol::AsyncWriteBody"));
