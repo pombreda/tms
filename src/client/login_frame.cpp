@@ -1,6 +1,7 @@
 #include "login_frame.hpp"
 
-#include <wx/xrc/xmlres.h>
+namespace tms {
+namespace client {
 
 BEGIN_EVENT_TABLE(LoginFrame,wxFrame)
 END_EVENT_TABLE()
@@ -25,4 +26,7 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
 
 void LoginFrame::OnExitButtonClick(wxCommandEvent& WXUNUSED(event)) {
   Close();
+}
+
+}
 }

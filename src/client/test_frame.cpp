@@ -1,6 +1,9 @@
 #include "test_frame.hpp"
 
-#include <wx/xrc/xmlres.h>
+namespace tms {
+namespace client {
+
+using namespace tms::common::contraption;
 
 BEGIN_EVENT_TABLE(TestFrame,wxFrame)
 END_EVENT_TABLE()
@@ -52,4 +55,7 @@ void TestFrame::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
 void TestFrame::OnTryClose(wxCloseEvent& event) {
   event.Veto();
   Hide();
+}
+
+}
 }

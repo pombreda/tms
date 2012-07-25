@@ -1,6 +1,10 @@
 #include "grid_frame.hpp"
 
-#include <wx/xrc/xmlres.h>
+namespace tms{
+namespace client {
+
+using namespace tms::common::contraption;
+using namespace tms::common::widget;
 
 BEGIN_EVENT_TABLE(GridFrame,wxFrame)
 END_EVENT_TABLE()
@@ -76,4 +80,7 @@ void GridFrame::OnAddClick(wxCommandEvent& WXUNUSED(event)) {
 
 void GridFrame::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
   Close();
+}
+
+}
 }
