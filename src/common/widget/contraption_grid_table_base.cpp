@@ -21,7 +21,7 @@ ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraption
 }
 
 wxString ContraptionGridTableBase::GetValue(int row, int col) {
-  if (model_->GetField(cols_[col].field_id)->IsReadable()) {
+  if (model_->GetField(cols_[static_cast<long unsigned>(col)].field_id)->IsReadable()) {
     return printer_[col]->ToString(*(contraptions_->at(row)->
                                      GetFieldValue(cols_[col].field_id)));
   } else {
@@ -29,30 +29,35 @@ wxString ContraptionGridTableBase::GetValue(int row, int col) {
   }
 }
 
-void ContraptionGridTableBase::SetValue(int row, int col, const wxString &value) {
+void ContraptionGridTableBase::SetValue(int /*row*/, int /*col*/,
+                                        const wxString &/*value*/) {
   // ignore
 }
 
 int ContraptionGridTableBase::GetNumberCols() {
-  return cols_.size();
+  return static_cast<int>(cols_.size());
 }
 
 int ContraptionGridTableBase::GetNumberRows() {
-  return contraptions_->size();
+  return static_cast<int>(contraptions_->size());
 }
 
 wxString ContraptionGridTableBase::GetColLabelValue(int col) {
-  return cols_[col].name;
+  return cols_[static_cast<long unsigned>(col)].name;
 }
 
 bool ContraptionGridTableBase::AppendRows(size_t numRows) {
-  wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_APPENDED, numRows);
+  wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_APPENDED,
+                         static_cast<int>(numRows));
   GetView()->ProcessTableMessage(msg);
+  return true;
 }
 
 bool ContraptionGridTableBase::DeleteRows(size_t pos, size_t numRows) {
-  wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED, pos, numRows);
+  wxGridTableMessage msg(this, wxGRIDTABLE_NOTIFY_ROWS_DELETED,
+                         static_cast<int>(pos), static_cast<int>(numRows));
   GetView()->ProcessTableMessage(msg);
+  return true;
 }
 
 }

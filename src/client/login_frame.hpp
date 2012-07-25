@@ -12,14 +12,17 @@
 namespace tms {
 namespace client{
 
-class LoginFrame: public wxFrame {
+class LoginFrame : public wxFrame {
  public:
   LoginFrame() :
-    wxFrame(), grid_frame() {}
+      wxFrame(), grid_frame() {}
 	virtual ~LoginFrame();
   void Init();
 
  private:
+  LoginFrame(const LoginFrame&);
+  LoginFrame& operator=(const LoginFrame&);
+
   GridFrame *grid_frame;
 
   void OnOKButtonClick(wxCommandEvent& event);

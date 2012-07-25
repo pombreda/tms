@@ -54,7 +54,7 @@ class ContraptionGrid : public wxGrid {
                      FieldID field_id)> on_cell_click_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_dclick_;
-  int old_size_;
+  size_t old_size_;
 
  private:
   void OnCellClick(wxGridEvent &e);

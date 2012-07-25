@@ -33,19 +33,22 @@
 
 using namespace tms::client;
 
-class ExceptionTest : public wxApp {
+class ClientApp : public wxApp {
  public:
-  ExceptionTest()
-      : login_frame() {}
+  ClientApp() :
+      login_frame() {}
   virtual bool OnInit();
 
  private:
+  ClientApp(const ClientApp&);
+  ClientApp& operator=(const ClientApp&);
+
   LoginFrame *login_frame;
 };
 
-IMPLEMENT_APP(ExceptionTest)
+IMPLEMENT_APP(ClientApp)
 
-bool ExceptionTest::OnInit() {
+bool ClientApp::OnInit() {
   bool wxsOK = true;
   try {
     wxXmlResource::Get()->InitAllHandlers();
