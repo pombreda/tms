@@ -26,7 +26,10 @@ add_library (tms_protocol SHARED
 
 find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)
 find_package(Log4Cxx REQUIRED)
-include_directories(${LOG4CXX_INCLUDE_DIR})
+find_package(APR REQUIRED)
+find_package(EXPAT REQUIRED)
+find_package(ICONV REQUIRED)
+include_directories(${LOG4CXX_INCLUDE_DIR} ${APR_INCLUDE_DIR} ${APRUTIL_INCLUDE_DIR} ${EXPAT_INCLUDE_DIR} ${ICONV_INCLUDE_DIR})
 target_link_libraries(tms_protocol 
   tms_exception 
   tms_message 
@@ -34,7 +37,12 @@ target_link_libraries(tms_protocol
   tms_soci_contraption
   crypto 
   ${Boost_LIBRARIES}
-  ${LOG4CXX_LIBRARIES})
+  ${LOG4CXX_LIBRARIES}
+  ${APR_LIBRARIES}
+  ${APRUTIL_LIBRARIES}
+  ${EXPAT_LIBRARIES}
+  ${ICONV_LIBRARIES})
+
 if(WIN32)
   target_link_libraries(tms_protocol ws2_32 mswsock)
 endif(WIN32)
