@@ -16,6 +16,10 @@
 #include <protocol/message/read_records_response.hpp>
 #include <protocol/message/write_records_request.hpp>
 #include <protocol/message/write_records_response.hpp>
+#include <protocol/message/delete_entry_request.hpp>
+#include <protocol/message/delete_entry_response.hpp>
+#include <protocol/message/select_request.hpp>
+#include <protocol/message/select_response.hpp>
 #include <protocol/server_exception.hpp>
 #include <protocol/request_processor.hpp>
 #include <protocol/login_request_processor.hpp>
@@ -38,6 +42,10 @@ class ModelBackendRequestProcessor : public LoginRequestProcessor {
       const message::ReadRecordsRequest &request);
   message::WriteRecordsResponseP WriteRecords(
       const message::WriteRecordsRequest &request);
+  message::DeleteEntryResponseP DeleteEntry(
+      const message::DeleteEntryRequest &request);
+  message::SelectResponseP Select(
+      const message::SelectRequest &request);
   contraption::SOCIModelBackendP GetBackend(const std::string &table);
   contraption::SOCIDBScheme scheme_;
   typedef boost::unordered_map<std::string, 

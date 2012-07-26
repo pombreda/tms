@@ -14,6 +14,10 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS PROTOFILES
   read_records_response.proto
   write_records_request.proto
   write_records_response.proto
+  delete_entry_request.proto
+  delete_entry_response.proto
+  select_request.proto
+  select_response.proto
   )
 add_library (tms_message SHARED
   login_response
@@ -24,6 +28,11 @@ add_library (tms_message SHARED
   read_records_request
   write_records_response
   write_records_request
+  delete_entry_response
+  delete_entry_request
+  filter
+  select_response
+  select_request
   ${PROTO_SRCS}
   ${PROTO_HDRS}
   )

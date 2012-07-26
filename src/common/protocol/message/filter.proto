@@ -2,17 +2,20 @@ package tms.common.protocol.message;
 import "record.proto";
 
 message AndFilter {
-  required Filter left = 2;
-  required Filter right = 1;
+  required Filter filter1 = 2;
+  required Filter filter2 = 1;
 }
 
 message OrFilter {
-  required Filter left = 2;
-  required Filter right = 1;      
+  required Filter filter1 = 2;
+  required Filter filter2 = 1;      
 }
 
 message NotFilter {
   required Filter filter = 1;
+}
+
+message AllFilter {
 }
 
 message CompareFilter {
@@ -29,8 +32,9 @@ message CompareFilter {
 }
 
 message Filter {
-  optional CompareFilter logical_filter = 1;
+  optional CompareFilter compare_filter = 1;
   optional AndFilter and_filter = 2;
   optional OrFilter or_filter = 3;
   optional NotFilter not_filter = 4;
+  optional AllFilter all_filter = 5;
 }

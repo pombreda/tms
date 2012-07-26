@@ -4,6 +4,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/unordered_map.hpp>
+// log4cplus
+#include <log4cplus/logger.h>
 // common
 #include <protocol/message.hpp>
 #include <protocol/server_exception.hpp>
@@ -24,6 +26,8 @@ class RequestProcessor {
   virtual RequestProcessorP Duplicate() const = 0;
   virtual MessageP Eval(const Message&) = 0;
   virtual ~RequestProcessor() {}
+ protected:
+  static log4cplus::Logger logger_;
 };
 
 }

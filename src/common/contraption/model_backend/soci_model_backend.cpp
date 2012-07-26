@@ -11,11 +11,12 @@
 #include <contraption/filter/all_filter.hpp>
 #include <contraption/filter/compare_filter.hpp>
 #include <contraption/filter/logical_connective.hpp>
+#include <rtti/typeinfo.hpp>
 //
 #include "soci_model_backend.hpp"
 
 
-
+using namespace tms::common::rtti;
 using namespace tms::common::contraption;
 using namespace std;
 
@@ -317,6 +318,7 @@ void SOCIModelBackend::DeleteEntry(
                                 "SOCIModelBackend::DeleteRecords.");
   }
   try {
+    id = Contraption::kNewID;
     CloseSession();
   } catch (const ModelBackendException &e) {
     throw;
@@ -445,7 +447,7 @@ static void WriteSelector(FilterCP filter,
     return;
   }
   ostringstream msg;
-  msg << "Unsupported filter '" << typeid(*filter).name()
+  msg << "Unsupported filter '" << TypeID(*filter).name()
       << "' in SOCIModelBackend::Select.";
   throw ModelBackendException(msg.str());
 }

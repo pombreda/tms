@@ -18,6 +18,7 @@ namespace contraption {
 class Filter {
  public:
   virtual ~Filter() {}
+  virtual std::string ToString() const {return "Abstract Filter";}
 };
 
 typedef boost::shared_ptr<Filter> FilterP;

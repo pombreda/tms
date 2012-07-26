@@ -4,6 +4,10 @@
 #include <protocol/message/read_records_response.hpp>
 #include <protocol/message/write_records_request.hpp>
 #include <protocol/message/write_records_response.hpp>
+#include <protocol/message/delete_entry_request.hpp>
+#include <protocol/message/delete_entry_response.hpp>
+#include <protocol/message/select_response.hpp>
+#include <protocol/message/select_request.hpp>
 using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
 
@@ -25,4 +29,8 @@ void ModelBackendProtocol::AddClasses()
   AddMessageClass<ReadRecordsRequest>();
   AddMessageClass<WriteRecordsResponse>();
   AddMessageClass<WriteRecordsRequest>();
+  AddMessageClass<DeleteEntryResponse>();
+  AddMessageClass<DeleteEntryRequest>();
+  AddMessageClass<SelectResponse>();
+  AddMessageClass<SelectRequest>();
 }

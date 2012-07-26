@@ -1,0 +1,5 @@
+package tms.common.protocol.message;
+message DeleteEntryRequest {
+  required string table = 1;
+  required uint32 id = 2;
+}

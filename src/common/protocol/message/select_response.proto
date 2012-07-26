@@ -1,0 +1,5 @@
+package tms.common.protocol.message;
+import "filter.proto";
+message SelectResponse {
+  repeated uint32 contraption_id = 1;
+}

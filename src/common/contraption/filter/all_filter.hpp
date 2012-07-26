@@ -5,7 +5,9 @@ namespace common {
 namespace contraption {
 
 class AllFilter : public Filter {
-  
+  std::string ToString() const {
+    return "All";
+  }
 };
 
 FilterP All() {

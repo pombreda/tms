@@ -1,0 +1,6 @@
+package tms.common.protocol.message;
+import "filter.proto";
+message SelectRequest {
+  required string table = 1;
+  required Filter filter = 2;
+}

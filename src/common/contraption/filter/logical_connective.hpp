@@ -17,11 +17,14 @@ class NotFilter : public Filter {
     return filter_;
   }
 
+  std::string ToString() const {
+    return "Not (" + filter_->ToString() + ")";
+  }
  private:
   FilterCP filter_;
 };
 
-FilterP Not(FilterCP filter) 
+inline FilterP Not(FilterCP filter) 
     throw() {
   return FilterP(new NotFilter(filter));
 }
@@ -42,13 +45,17 @@ class AndFilter : public Filter {
     return filter2_;
   }
 
+  std::string ToString() const {
+    return "(" + filter1_->ToString() + ") AND (" + filter2_->ToString() + ")";
+  }
+
  private:
   FilterCP filter1_;
   FilterCP filter2_;
 };
 
 
-FilterP And(FilterCP filter1, FilterCP filter2)
+inline FilterP And(FilterCP filter1, FilterCP filter2)
     throw() {
   return FilterP(new AndFilter(filter1, filter2));
 }
@@ -68,13 +75,18 @@ class OrFilter : public Filter {
   FilterCP filter2() const {
     return filter2_;
   }
+
+  std::string ToString() const {
+    return "(" + filter1_->ToString() + ") OR (" + filter2_->ToString();
+  }
+
  private:
   FilterCP filter1_;
   FilterCP filter2_;
 };
 
 
-FilterP Or(FilterCP filter1, FilterCP filter2) 
+inline FilterP Or(FilterCP filter1, FilterCP filter2) 
     throw() {
   return FilterP(new OrFilter(filter1, filter2));
 }

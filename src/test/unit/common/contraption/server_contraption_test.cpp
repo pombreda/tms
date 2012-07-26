@@ -163,11 +163,11 @@ BOOST_FIXTURE_TEST_CASE(testWrite, Fixture) {
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Du'\"\\mmy");
   test_contraption->Save();
-  test_contraption = soci_model->New();
+  test_contraption = model->New();
   test_contraption->Set<int>("age", 12);
   test_contraption->Set<string>("Surname", "Ymmud");
   test_contraption->Save();
-  ContraptionArrayP contraptions = soci_model->All();
+  ContraptionArrayP contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
   2);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
@@ -180,21 +180,21 @@ BOOST_FIXTURE_TEST_CASE(testWrite, Fixture) {
   "Ymmud");
   contraptions->erase(contraptions->begin());
   contraptions->Save();
-  contraptions = soci_model->All();
+  contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
   1);
-  test_contraption = soci_model->New();
+  test_contraption = model->New();
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Dummy");
   contraptions->push_back(test_contraption);
   contraptions->Save();
-  contraptions = soci_model->All();
+  contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
   2);  
 }
 
-/*
-  BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
+
+BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   ContraptionP test_contraption = model->New();
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Du'\"\\mmy");
@@ -525,5 +525,5 @@ BOOST_FIXTURE_TEST_CASE(testWrite, Fixture) {
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
                     12);
 }
-*/
+
 BOOST_AUTO_TEST_SUITE_END()

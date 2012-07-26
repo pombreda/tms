@@ -45,7 +45,6 @@ void Server::Stop()
                  LOG4CPLUS_TEXT("Server " 
                                 + rtti::TypeID(*this).name() 
                                 + " stopped"));
-
 }
 
 void Server::Wait()
