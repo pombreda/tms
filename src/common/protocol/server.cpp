@@ -2,11 +2,13 @@
 // boost
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
-#include <glog/logging.h>
-
+// log4cplus
+#include <log4cplus/loggingmacros.h>
 using namespace std;
 using namespace tms::common::protocol;
 
+log4cplus::Logger 
+Server::logger_ = log4cplus::Logger::getInstance(LOG4CPLUS_TEXT("tms::common::protocol::Server"));
 
 Server::Server(RequestProcessorP request_processor) 
     throw():
@@ -24,7 +26,7 @@ void Server::Listen()
   } catch(boost::thread_resource_error &e) {
     throw ServerException(&e);
   }
-  LOG(INFO) << "Server " << rtti::TypeID(*this).name() << " started";
+  LOG4CPLUS_INFO(logger_, LOG4CPLUS_TEXT("Server " + rtti::TypeID(*this).name() + " started"));
 }
 
 void Server::Stop()

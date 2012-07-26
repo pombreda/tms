@@ -6,6 +6,8 @@
 // boost 
 #include <boost/thread.hpp>
 #include <boost/shared_ptr.hpp>
+// log4cplus
+#include <log4cplus/logger.h>
 // common
 #include <protocol/protocol.hpp>
 #include <protocol/server_exception.hpp>
@@ -33,6 +35,7 @@ class Server {
   bool running_;
   std::auto_ptr<boost::thread> listen_thread_;
  protected:
+  static log4cplus::Logger logger_;
   RequestProcessorP request_processor_;
   virtual void ListenThread()
       throw() {};

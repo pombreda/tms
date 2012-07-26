@@ -25,8 +25,8 @@ add_library (tms_protocol SHARED
   )
 
 find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)
-find_package(Glog REQUIRED)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${GLOG_INCLUDE_DIRS})
+find_package(Log4cplus REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${LOG4CPLUS_INCLUDE_DIR})
 target_link_libraries(tms_protocol 
   tms_exception 
   tms_message 
@@ -34,7 +34,7 @@ target_link_libraries(tms_protocol
   tms_soci_contraption
   crypto 
   ${Boost_LIBRARIES}
-  ${GLOG_LIBRARY}
+  ${LOG4CPLUS_LIBRARIES}
 )
 
 
