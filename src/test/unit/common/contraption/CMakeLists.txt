@@ -18,7 +18,13 @@ add_executable(soci_contraption_test
 
 find_package(Soci REQUIRED)
 find_package(Sqlite3 REQUIRED)
-include_directories(${SOCI_INCLUDE_DIRS})
+find_package(Log4cplus REQUIRED)
+include_directories(SYSTEM 
+  ${SOCI_INCLUDE_DIRS} 
+  ${SQLITE3_INCLUDE_DIRS} 
+  ${Boost_INCLUDE_DIRS}
+  ${LOG4CPLUS_INCLUDE_DIRS}
+  )
 
 target_link_libraries(soci_contraption_test 
   tms_soci_contraption 
@@ -45,6 +51,7 @@ target_link_libraries(server_contraption_test
   ${SOCI_sqlite3_PLUGIN} 
   ${SQLITE3_LIBRARIES} 
   ${SOCIDB_LIBRARY}
+  ${LOG4CPLUS_LIBRARIES}
   )
 
 add_test(server_contraption_test server_contraption_test)

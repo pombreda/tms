@@ -40,10 +40,11 @@ using namespace tms::common::contraption;
 using namespace tms::test;
 using namespace tms::common::model;
 using boost::asio::ip::tcp;
+using namespace log4cplus;
 
 struct InitLog {
   InitLog() {
-    log4cplus::BasicConfigurator config;
+    PropertyConfigurator config("log.cfg");
     config.configure();
   }
 } init_log;

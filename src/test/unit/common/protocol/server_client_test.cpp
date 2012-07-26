@@ -11,6 +11,8 @@
 // boost
 #include <boost/test/unit_test.hpp>
 #include <boost/asio.hpp>
+// log4cplus
+#include <log4cplus/configurator.h>
 // common
 #include <protocol/protocol.hpp>
 #include <protocol/simple_request_processor.hpp>
@@ -24,6 +26,15 @@ using namespace std;
 using namespace tms::common::protocol;
 using namespace tms::test;
 using boost::asio::ip::tcp;
+using namespace log4cplus;
+
+struct InitLog {
+  InitLog() {
+    BasicConfigurator config;
+    config.configure();
+  }
+} init_log;
+
 //------------------------------------------------------------
 // Fixture
 //------------------------------------------------------------

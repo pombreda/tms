@@ -68,7 +68,7 @@ ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(
 
 WriteRecordsResponseP ModelBackendRequestProcessor::WriteRecords(
     const WriteRecordsRequest &request) {
-  WriteRecordsResponseP response;
+  WriteRecordsResponseP response(new WriteRecordsResponse());
   FieldTypeArray values(new boost::scoped_ptr<FieldType>[request.record_size()]);
   vector<RecordP> records(static_cast<size_t>(request.record_size()));
   for (size_t i = 0, end = static_cast<size_t>(request.record_size()); 
@@ -85,7 +85,6 @@ WriteRecordsResponseP ModelBackendRequestProcessor::WriteRecords(
 }
 
 MessageP ModelBackendRequestProcessor::Eval(const Message &message) {
-  assert(false);
   if (user_) {
     const ReadRecordsRequest *read_records_request 
         = dynamic_cast<const ReadRecordsRequest*>(&message);

@@ -1,7 +1,10 @@
 // boost
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <iostream>
+#include <boost/lexical_cast.hpp>
+// log4cplus
+#include <log4cplus/loggingmacros.h>
+#include <iostream> //oops
 using namespace std; //oops
 
 namespace tms {
@@ -75,6 +78,8 @@ class Protocol::AsyncHelper {
   template <class AsyncReadStream>
   void AsyncReadMessage(AsyncReadStream &stream, 
                         AsyncReadHandler handler) {
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Reading Message Asynchronously"));
     AsyncHelperP ptr(this);
     buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
     boost::asio::async_read(stream, boost::asio::buffer(&buf[0], 
@@ -92,6 +97,8 @@ class Protocol::AsyncHelper {
   void AsyncWriteMessage(AsyncWriteStream &stream,
                          MessageP message,
                          AsyncWriteHandler handler) {
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Writing Message Asynchronously"));
     AsyncHelperP ptr(this);
     buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
     HelpersMap::const_iterator it 
@@ -132,6 +139,11 @@ class Protocol::AsyncHelper {
     } else {
       uint32_t id = reinterpret_cast<uint32_t*>(&buf[0])[0];
       uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
+      LOG4CPLUS_DEBUG(logger_, 
+                      LOG4CPLUS_TEXT("Header read: id = " 
+                                   + boost::lexical_cast<string>(id)
+                                     + ", size = "
+                                     + boost::lexical_cast<string>(size)));      
       buf.reset(new uint8_t[size]);
       boost::asio::async_read(stream, boost::asio::buffer(&buf[0], size),
                               boost::bind(&AsyncHelper
@@ -159,6 +171,10 @@ class Protocol::AsyncHelper {
       MessageP message;
       try {
         message = protocol_.helpers_[id]->ReadMessage(&buf[0], size);
+        LOG4CPLUS_DEBUG(logger_, 
+                        LOG4CPLUS_TEXT("Message of type \"" 
+                                       + rtti::TypeID(*message).name()
+                                       + "\" read"));        
       } catch (ProtocolException &e) {
         exception.reset(new ProtocolException(e));
       }
@@ -177,6 +193,14 @@ class Protocol::AsyncHelper {
       handler(ProtocolExceptionP(
           new ProtocolException("IO error in Protocol::AsyncWriteHeader.")));
     } else {
+      LOG4CPLUS_DEBUG(logger_, 
+                      LOG4CPLUS_TEXT("Header written: id = " 
+                                     + boost::lexical_cast<string>(
+                                         reinterpret_cast<uint32_t*>(&buf[0])[0])
+                                     + ", size = "
+                                     + boost::lexical_cast<string>(
+                                         reinterpret_cast<uint32_t*>(&buf[0])[1])));
+
       uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
       buf.reset(new uint8_t[size]);
       google::protobuf::io::ArrayOutputStream gstream(&buf[0], 
@@ -188,6 +212,7 @@ class Protocol::AsyncHelper {
                                            this,
                                            boost::asio::placeholders::error, 
                                            boost::ref(stream),
+                                           message,
                                            handler,
                                            ptr));
     }
@@ -196,12 +221,19 @@ class Protocol::AsyncHelper {
   template <class AsyncWriteStream>
   void AsyncWriteBody(const boost::system::error_code &ec,
                       AsyncWriteStream &/*stream*/, 
+                      MessageP message,
                       AsyncWriteHandler handler,
                       AsyncHelperP /*ptr*/) {
     ProtocolExceptionP exception;
     if (ec) {
       exception.reset(new ProtocolException("IO error in Protocol::AsyncWriteBody"));
+    } else {
+      LOG4CPLUS_DEBUG(logger_, 
+                      LOG4CPLUS_TEXT("Message of type \"" 
+                                     + rtti::TypeID(*message).name()
+                                     + "\" written"));        
     }
+      
     handler(exception);
   }
 

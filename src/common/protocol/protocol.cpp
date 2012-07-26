@@ -1,9 +1,18 @@
 #include "protocol.hpp"
+// boost
+#include <boost/lexical_cast.hpp>
+// log4cplus
+#include <log4cplus/loggingmacros.h>
 // std
 #include <sstream>
 
 using namespace std;
 using namespace tms::common::protocol;
+
+log4cplus::Logger 
+Protocol::logger_ = log4cplus::Logger
+    ::getInstance(LOG4CPLUS_TEXT("tms::common::protocol::Protocol"));
+
 
 Protocol::Protocol() 
     throw() :
@@ -35,6 +44,8 @@ MessageP Protocol::ReadMessage(std::istream &sin)
                             "protocol.");
   }
   try {
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Reading Message Synchronously"));
     uint32_t id;
     sin.read(static_cast<char*>(static_cast<void*>(&id)), 4);  
     if (id >= helpers_.size()) {
@@ -51,7 +62,17 @@ MessageP Protocol::ReadMessage(std::istream &sin)
     if (!sin.good()) {
       throw(ProtocolException("Error while reading message."));
     }
-    return helpers_[id]->ReadMessage(sin, size);
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Header read: id = " 
+                                   + boost::lexical_cast<string>(id)
+                                   + ", size = "
+                                   + boost::lexical_cast<string>(size)));
+    MessageP ret = helpers_[id]->ReadMessage(sin, size);
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Message of type \"" 
+                    + rtti::TypeID(*ret).name()
+                    + "\" read"));
+    return ret;
   } catch (ProtocolException&) {
     throw;
   } catch (std::exception &e) {
@@ -68,6 +89,8 @@ void Protocol::WriteMessage(std::ostream &sout,
                             "protocol.");
   }
   try {
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Writing Message Synchronously"));
     HelpersMap::const_iterator it 
         = helpers_by_type_info_.find(rtti::TypeID(message));
     if (it == helpers_by_type_info_.end()) {
@@ -81,9 +104,18 @@ void Protocol::WriteMessage(std::ostream &sout,
     sout.write(static_cast<char*>(static_cast<void*>(&id)), 4);
     uint32_t size = static_cast<uint32_t>(message.ByteSize());
     sout.write(static_cast<char*>(static_cast<void*>(&size)), 4);
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Header written: id = " 
+                                   + boost::lexical_cast<string>(id)
+                                   + ", size = "
+                                   + boost::lexical_cast<string>(size)));
     google::protobuf::io::OstreamOutputStream stream(&sout);
     message.SerializeToZeroCopyStream(&stream);
     sout.flush();
+    LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Message of type \"" 
+                    + rtti::TypeID(message).name()
+                    + "\" written"));
   } catch (ProtocolException&) {
     throw;
   } catch (std::exception &e) {

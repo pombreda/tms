@@ -15,6 +15,8 @@
 #include <iostream>//oops
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
+// log4cplus
+#include <log4cplus/configurator.h>
 // common
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>
@@ -46,6 +48,14 @@ using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
 using namespace tms::common::model;
 using boost::asio::ip::tcp;
+using namespace log4cplus;
+
+struct InitLog {
+  InitLog() {
+    PropertyConfigurator config("log.cfg");
+    config.configure();
+  }
+} init_log;
 
 //------------------------------------------------------------
 // Fixture
@@ -106,11 +116,9 @@ class Fixture {
                       processor));  
     server->Listen();
     // Create Client
-    cerr << "Server started" << endl;
     client.reset(
         new StreamClient(StreamP(new tcp::iostream("localhost", "3030")), 
                          protocol)); 
-    cerr << "Client listening" << endl;
     LoginRequestP login(new LoginRequest);
     login->set_name("adavydow");
     login->set_password_hash("Dummy");
@@ -118,7 +126,6 @@ class Fixture {
     BOOST_CHECK(boost::dynamic_pointer_cast<LoginResponse>(ret));
     BOOST_CHECK(boost::dynamic_pointer_cast<LoginResponse>(ret)->status()
                 == LoginResponse::kOk);
-    cerr << "Login client" << endl;
     // Create Backend
     backend.reset(new ServerModelBackend(client, "test"));
     // Init model
@@ -152,7 +159,6 @@ class Fixture {
 BOOST_AUTO_TEST_SUITE(testServerContraption)
 
 BOOST_FIXTURE_TEST_CASE(testWrite, Fixture) {
-  cerr << "Test inited" << endl;
   ContraptionP test_contraption = model->New();
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Du'\"\\mmy");
@@ -161,7 +167,6 @@ BOOST_FIXTURE_TEST_CASE(testWrite, Fixture) {
   test_contraption->Set<int>("age", 12);
   test_contraption->Set<string>("Surname", "Ymmud");
   test_contraption->Save();
-  cerr << "Test gone here" << endl;
   ContraptionArrayP contraptions = soci_model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
   2);

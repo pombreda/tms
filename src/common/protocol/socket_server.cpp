@@ -1,7 +1,6 @@
 #include "socket_server.hpp"
-// std
-#include <iostream> //oops
-#include <typeinfo> //oops
+// log4cplus
+#include <log4cplus/loggingmacros.h>
 // boost 
 #include <boost/bind.hpp>
 
@@ -28,7 +27,8 @@ void SocketServer::WriteMessageHandler(ProtocolExceptionP exception) {
   if (!exception) {
     ListenThread();
   } else {
-    // oops
+    LOG4CPLUS_WARN(logger_, 
+                   LOG4CPLUS_TEXT(exception->message()));
   }
 }
 
@@ -41,7 +41,8 @@ void SocketServer::ReadMessageHandler(MessageP message,
                                              this,
                                              _1));
   } else {
-    //oops
+    LOG4CPLUS_WARN(logger_, 
+                   LOG4CPLUS_TEXT(exception->message()));
   }
 }
 

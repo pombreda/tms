@@ -18,6 +18,8 @@
 #include <boost/function.hpp>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+// log4cplus
+#include <log4cplus/logger.h>
 // protobuf
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 // common
@@ -60,6 +62,7 @@ class Protocol {
   virtual ~Protocol() 
       throw() {}
  private:
+  static log4cplus::Logger logger_;
   class AsyncHelper;
   Protocol& operator= (const Protocol &other);
 
