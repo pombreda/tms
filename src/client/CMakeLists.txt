@@ -7,7 +7,9 @@ add_executable(client_app
                main
                login_frame
                grid_frame
-               test_frame)
+               test_frame
+               options_model
+               options)
 
 find_package(wxWidgets COMPONENTS base core xrc REQUIRED)
 include( "${wxWidgets_USE_FILE}" )
