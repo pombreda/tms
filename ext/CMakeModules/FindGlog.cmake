@@ -68,6 +68,7 @@ else(MSVC)
   find_path(GLOG_INCLUDE_DIR NAMES raw_logging.h
     PATHS
     ${GLOG_ROOT}/include/glog
+    /mingw/include/glog
     )
 endif(MSVC)
 
