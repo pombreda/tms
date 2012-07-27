@@ -38,7 +38,7 @@ class Server {
   bool Check(const std::string &var) const
       throw();
   template<class T>
-  const T& Get(const std::string &var) const
+  T& Get(const std::string &var)
       throw(SessionException);
   template<class T>
   void Set(const std::string &var, const T &value)

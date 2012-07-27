@@ -19,7 +19,7 @@ RequestProcessorP SimpleRequestProcessor::Duplicate() const {
   return RequestProcessorP(new SimpleRequestProcessor(*this));
 }
 
-MessageP SimpleRequestProcessor::Eval(const Message &message)
+MessageP SimpleRequestProcessor::Eval(const Message &message, Server &server)
     throw(ServerException) {
   HandlersMap::const_iterator it = handlers_map_.find(rtti::TypeID(message));
   if (it == handlers_map_.end()) {
@@ -28,5 +28,5 @@ MessageP SimpleRequestProcessor::Eval(const Message &message)
           << "Type: '"  << typeid(message).name() << "'.";      
       throw(ServerException(msg.str()));
   }
-  return (it->second)(message);
+  return (it->second)(message, server);
 }

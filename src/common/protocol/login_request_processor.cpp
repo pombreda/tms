@@ -45,7 +45,7 @@ RequestProcessorP LoginRequestProcessor::Duplicate() const {
                                 users_));
 }
 
-MessageP LoginRequestProcessor::Eval(const Message &message) {
+MessageP LoginRequestProcessor::Eval(const Message &message, Server &server) {
   const LoginRequest* request = dynamic_cast<const LoginRequest*>(&message);
 
   if (request) {
@@ -68,7 +68,7 @@ MessageP LoginRequestProcessor::Eval(const Message &message) {
     }
   } else {
     if (server_->Check("user")) {
-      return request_processor_->Eval(message);
+      return request_processor_->Eval(message, server);
     }
   }
   return MessageP(new ErrorResponse());

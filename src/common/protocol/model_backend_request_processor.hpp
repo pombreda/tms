@@ -27,6 +27,8 @@
 namespace tms {
 namespace common {
 namespace protocol {
+typedef boost::unordered_map<std::string, 
+                             contraption::SOCIModelBackendP> BackendMap;
 
 class ModelBackendRequestProcessor : public LoginRequestProcessor {
  public:
@@ -39,21 +41,19 @@ class ModelBackendRequestProcessor : public LoginRequestProcessor {
                                contraption::ModelP users,
                                const contraption::SOCIDBScheme &scheme);
   virtual RequestProcessorP Duplicate() const;
-  virtual MessageP Eval(const Message&);
+  virtual MessageP Eval(const Message&, Server &server);
   virtual ~ModelBackendRequestProcessor() {}
  private:  
-  message::ReadRecordsResponseP ReadRecords(
+  MessageP ReadRecords(
       const message::ReadRecordsRequest &request);
-  message::WriteRecordsResponseP WriteRecords(
+  MessageP WriteRecords(
       const message::WriteRecordsRequest &request);
-  message::DeleteEntryResponseP DeleteEntry(
+  MessageP DeleteEntry(
       const message::DeleteEntryRequest &request);
-  message::SelectResponseP Select(
+  MessageP Select(
       const message::SelectRequest &request);
   contraption::SOCIModelBackendP GetBackend(const std::string &table);
   contraption::SOCIDBScheme scheme_;
-  typedef boost::unordered_map<std::string, 
-                               contraption::SOCIModelBackendP> BackendMap;
   BackendMap backend_map_;
 };
 

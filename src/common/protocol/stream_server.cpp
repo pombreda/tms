@@ -14,7 +14,7 @@ void StreamServer::ListenThread()
   while (IsListening()) {
     boost::this_thread::disable_interruption di;
     MessageP message = protocol_->ReadMessage(*stream_);
-    protocol_->WriteMessage(*stream_, *request_processor_->Eval(*message));
+    protocol_->WriteMessage(*stream_, *request_processor_->Eval(*message, *this));
   }
 }
 

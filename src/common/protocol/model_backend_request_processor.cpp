@@ -64,15 +64,15 @@ RequestProcessorP ModelBackendRequestProcessor::Duplicate() const {
 
 SOCIModelBackendP 
 ModelBackendRequestProcessor::GetBackend(const string &table) {
-  BackendMap::iterator it = backend_map_.find(table);
-  if (it == backend_map_.end()) {
-    return backend_map_[table] = SOCIModelBackendP(
+  BackendMap::iterator it = server_->Get<BackendMap>("backend_map").find(table);
+  if (it == server_->Get<BackendMap>("backend_map").end()) {
+    return (server_->Get<BackendMap>("backend_map"))[table] = SOCIModelBackendP(
         new SOCIModelBackend(scheme_, table));
   }
   return it->second;
 }
 
-ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(
+MessageP ModelBackendRequestProcessor::ReadRecords(
     const ReadRecordsRequest &request) {
   ReadRecordsResponseP response(new ReadRecordsResponse);
   FieldTypeArray values(new boost::scoped_ptr<FieldType>[request.record_size()]);
@@ -93,7 +93,7 @@ ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(
   return response;
 }
 
-WriteRecordsResponseP ModelBackendRequestProcessor::WriteRecords(
+MessageP ModelBackendRequestProcessor::WriteRecords(
     const WriteRecordsRequest &request) {
   LOG4CPLUS_INFO(logger_, 
                  LOG4CPLUS_TEXT("User " + server_->Get<ContraptionP>("user")
@@ -116,7 +116,7 @@ WriteRecordsResponseP ModelBackendRequestProcessor::WriteRecords(
   return response;
 }
 
-DeleteEntryResponseP ModelBackendRequestProcessor::DeleteEntry(
+MessageP ModelBackendRequestProcessor::DeleteEntry(
     const message::DeleteEntryRequest &request) {
   ContraptionID id = request.id();
   SOCIModelBackendP backend = GetBackend(request.table());
@@ -124,7 +124,7 @@ DeleteEntryResponseP ModelBackendRequestProcessor::DeleteEntry(
   return DeleteEntryResponseP(new DeleteEntryResponse());
 }
 
-message::SelectResponseP ModelBackendRequestProcessor::Select(
+MessageP ModelBackendRequestProcessor::Select(
     const message::SelectRequest &request) {  
   string s;
   google::protobuf::TextFormat::PrintToString(request, &s);
@@ -147,7 +147,7 @@ message::SelectResponseP ModelBackendRequestProcessor::Select(
 }
 
 
-MessageP ModelBackendRequestProcessor::Eval(const Message &message) {
+MessageP ModelBackendRequestProcessor::Eval(const Message &message, Server &server) {
   if (server_->Check("user")) {
     const ReadRecordsRequest *read_records_request 
         = dynamic_cast<const ReadRecordsRequest*>(&message);
@@ -170,5 +170,5 @@ MessageP ModelBackendRequestProcessor::Eval(const Message &message) {
       return Select(*select_request);
     }
   }
-  return LoginRequestProcessor::Eval(message);
+  return LoginRequestProcessor::Eval(message, server);
 }

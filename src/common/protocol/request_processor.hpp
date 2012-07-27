@@ -18,16 +18,12 @@ namespace protocol {
 class RequestProcessor;
 typedef boost::shared_ptr<RequestProcessor> RequestProcessorP;
 
-typedef boost::function<MessageP (const Message&)> HandlerFunction;
-typedef boost::unordered_map<rtti::TypeInfo, HandlerFunction> HandlersMap;
-typedef boost::shared_ptr<HandlersMap> HandlersMapP;
-
 class RequestProcessor {
  public:
   explicit RequestProcessor(Server &server_);
   RequestProcessor();
   virtual RequestProcessorP Duplicate() const = 0;
-  virtual MessageP Eval(const Message&) = 0;
+  virtual MessageP Eval(const Message&, Server &server) = 0;
   virtual ~RequestProcessor() {}
 
   Server& server() const

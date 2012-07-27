@@ -28,7 +28,7 @@ class LoginRequestProcessor : public RequestProcessor {
                         contraption::ModelP users);
   
   virtual RequestProcessorP Duplicate() const;
-  virtual MessageP Eval(const Message&);
+  virtual MessageP Eval(const Message&, Server &server);
   virtual ~LoginRequestProcessor() {}
  protected:
   RequestProcessorP request_processor_;

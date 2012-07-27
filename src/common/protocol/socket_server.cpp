@@ -42,7 +42,7 @@ void SocketServer::ReadMessageHandler(MessageP message,
       return;
     }
     ListenThread();
-    MessageP ret = request_processor_->Eval(*message);
+    MessageP ret = request_processor_->Eval(*message, *this);
     protocol_->AsyncWriteMessage(*socket_, ret,
                                  boost::bind(&SocketServer::WriteMessageHandler,
                                              this,
