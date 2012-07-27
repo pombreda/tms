@@ -18,6 +18,17 @@ TCPServer::TCPServer(tcp::endpoint endpoint, ProtocolP protocol, RequestProcesso
     listeners_(0),
     protocol_(protocol) {}
 
+TCPServer::TCPServer(string port, 
+                     ProtocolP protocol, 
+                     RequestProcessorP request_processor) 
+    throw():
+    Server(request_processor),
+    io_service_(),
+    acceptor_(io_service_, 
+              tcp::endpoint(tcp::v4(), boost::lexical_cast<int>(port))),
+    listeners_(0),
+    protocol_(protocol) {}
+
 TCPServer::~TCPServer() 
     throw() {}
 

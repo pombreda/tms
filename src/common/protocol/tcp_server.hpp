@@ -18,6 +18,10 @@ class TCPServer : public Server {
             ProtocolP protocol, 
             RequestProcessorP request_processor)
       throw();
+  TCPServer(std::string port, 
+            ProtocolP protocol, 
+            RequestProcessorP request_processor)
+      throw();
   virtual void Stop()
       throw(ServerException);
   virtual ~TCPServer()

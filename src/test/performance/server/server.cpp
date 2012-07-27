@@ -81,8 +81,8 @@ int main () {
       new ModelBackendRequestProcessor(request_processor, users, scheme));
   // Create Server
   ServerP server(
-      new TCPServer(tcp::endpoint(tcp::v4(), 3030), 
-                      protocol, 
+      new TCPServer("3030", 
+                    protocol, 
                     processor));  
   server->ListenHere();  
   return 0;
