@@ -111,7 +111,7 @@ class Fixture {
         new LoginRequestProcessor(request_processor, users));
     // Create Server
     server.reset(
-        new TCPServer(tcp::endpoint(tcp::v4(), 3030), 
+        new TCPServer("3030", 
                       protocol, 
                       processor));  
     server->Listen();

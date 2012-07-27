@@ -4,10 +4,14 @@
 #include <sstream>
 #include <openssl/sha.h>
 
-using namespace tms::common;
+using namespace tms::common::protocol;
 using namespace std;
 
-string tms::common::sha256(const string &str) {
+namespace tms {
+namespace common {
+namespace protocol {
+
+string sha256(const string &str) {
   unsigned char hash[SHA256_DIGEST_LENGTH];
   SHA256_CTX sha256;
   SHA256_Init(&sha256);
@@ -19,4 +23,8 @@ string tms::common::sha256(const string &str) {
     ret << hex << setw(2) << setfill('0') << static_cast<int>(hash[i]);
   }
   return ret.str();
+}
+
+}
+}
 }

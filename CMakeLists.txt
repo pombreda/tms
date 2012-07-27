@@ -19,6 +19,7 @@ include(ExternalProject)
 add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -Wextra -Weffc++ -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Wconversion -Wsign-conversion -Winit-self -Wunreachable-code -pedantic -DBOOST_THREAD_USE_LIB -D_WIN32_WINNT=0x0501)
 
 include_directories(src/common)
+include_directories(src)
 include_directories(SYSTEM bin/common)
 project (TMS CXX)
 

@@ -1,3 +1,5 @@
 add_subdirectory(common)
 add_subdirectory(test)
+add_subdirectory(project)
+add_subdirectory(server)
 add_subdirectory(client)
