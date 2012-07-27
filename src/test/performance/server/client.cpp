@@ -5,7 +5,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/asio.hpp>
-#include <iostream>//oops
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
 // log4cplus

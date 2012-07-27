@@ -85,7 +85,7 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
                     12);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
                     "Ymmud");
-  contraptions->erase(contraptions->begin());
+  contraptions->erase(0);
   contraptions->Save();
   contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
