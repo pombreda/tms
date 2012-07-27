@@ -15,6 +15,7 @@
 #include <contraption/contraption.hpp>
 #include <contraption/record.hpp>
 
+using namespace std;
 using namespace tms::common::contraption;
 using namespace tms::common::protocol;
 using tms::common::protocol::message::GetFreeRecord;
@@ -29,7 +30,7 @@ ServerModelBackend::ServerModelBackend(const protocol::ClientP client,
 }
 
 void ServerModelBackend::ReadRecords(
-    const std::vector<RecordP> &records,
+    const vector<RecordP> &records,
     ContraptionID id)
     throw(ModelBackendException) {
   if (id == Contraption::kNewID) {
@@ -37,6 +38,9 @@ void ServerModelBackend::ReadRecords(
                                 "ContraptionID::kNewID " 
                                 "in ServerModelBackend::ReadRecords.");
   }  
+  if (records.empty()) {
+    return;
+  }
   message::ReadRecordsRequestP request(new message::ReadRecordsRequest());
   request->set_table(table_name_);
   request->set_id(static_cast<google::protobuf::uint32>(id));
@@ -72,10 +76,10 @@ void ServerModelBackend::WriteRecords(
     const std::vector<RecordP> &records,
     ContraptionID &id)
     throw(ModelBackendException) {
-  if (records.empty()) {
+  if (records.empty() && id != Contraption::kNewID) {
     return;
   }
-
+  
   message::WriteRecordsRequestP request(new message::WriteRecordsRequest());
   request->set_table(table_name_);
   request->set_id(static_cast<google::protobuf::uint32>(id));
@@ -146,6 +150,5 @@ auto_ptr< vector<ContraptionID> > ServerModelBackend::Select(
   } catch (ProtocolException &e) {
     throw ModelBackendException(&e);
   }
-
 }
 

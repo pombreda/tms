@@ -1,4 +1,7 @@
 #include "login_request_processor.hpp"
+// log4cplus
+#include <log4cplus/loggingmacros.h>
+// common
 #include <protocol/message/login_request.hpp>
 #include <protocol/message/login_response.hpp>
 #include <protocol/message/error_response.hpp>
@@ -36,7 +39,15 @@ MessageP LoginRequestProcessor::Eval(const Message &message) {
         Compare(password_hash_, kEqual, request->password_hash())));
     if (users->size() > 0) {
       user_ = users->at(0);
+      LOG4CPLUS_INFO(logger_, 
+                     LOG4CPLUS_TEXT("User " + user_->Get<string>("name")
+                                    + " logged in"));  
+      
       return MessageP(new LoginResponse());      
+    } else {
+      LOG4CPLUS_INFO(logger_, 
+                     LOG4CPLUS_TEXT("User " + request->name()
+                                    + " was rejected"));  
     }
   } else {
     if (user_) {

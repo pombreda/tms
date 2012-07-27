@@ -49,8 +49,8 @@ void TCPServer::HandleAccept(SocketP socket,
 
 void TCPServer::StartAccept()
     throw() {
-  SocketP socket(new tcp::socket(io_service_));
-  acceptor_.async_accept(*socket,
+  SocketP socket(new Socket(io_service_));
+  acceptor_.async_accept(socket->lowest_layer(),
                          boost::bind(&TCPServer::HandleAccept, this, socket,
                                      boost::asio::placeholders::error));  
 }

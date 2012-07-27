@@ -18,6 +18,7 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS PROTOFILES
   delete_entry_response.proto
   select_request.proto
   select_response.proto
+  disconnect_request.proto
   )
 add_library (tms_message SHARED
   login_response
@@ -33,6 +34,7 @@ add_library (tms_message SHARED
   filter
   select_response
   select_request
+  disconnect_request
   ${PROTO_SRCS}
   ${PROTO_HDRS}
   )

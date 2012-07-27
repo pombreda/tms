@@ -4,9 +4,8 @@
 #include <boost/lexical_cast.hpp>
 // log4cplus
 #include <log4cplus/loggingmacros.h>
-#include <iostream> //oops
-using namespace std; //oops
-
+// common
+#include <protocol/message/disconnect_request.hpp>
 namespace tms {
 namespace common {
 namespace protocol {
@@ -104,7 +103,7 @@ class Protocol::AsyncHelper {
     HelpersMap::const_iterator it 
         = protocol_.helpers_by_type_info_.find(rtti::TypeID(*message));
     if (it == protocol_.helpers_by_type_info_.end()) {
-      ostringstream msg;
+      std::ostringstream msg;
       msg << "Unknown message type in Protocol::AsyncWriteMessage "
           << "type = '" << typeid(*message).name() << "'.";
       throw ProtocolException(msg.str());
@@ -133,17 +132,23 @@ class Protocol::AsyncHelper {
                        AsyncReadHandler handler,
                        AsyncHelperP ptr) {
     if (ec) {
-      handler(MessageP(), ProtocolExceptionP(
-          new ProtocolException("IO error in Protocol::"
-                                "AsyncHelper::AsyncReadHeader.")));
+      if (ec == boost::asio::error::eof) {
+        handler(MessageP(new(message::DisconnectRequest)), ProtocolExceptionP());
+      } else {
+        handler(MessageP(), ProtocolExceptionP(
+            new ProtocolException("IO error in Protocol::"
+                                  "AsyncHelper::AsyncReadHeader."
+                                  + boost::lexical_cast<std::string>(ec)
+                                  + boost::lexical_cast<std::string>(boost::asio::error::eof))));
+      }
     } else {
       uint32_t id = reinterpret_cast<uint32_t*>(&buf[0])[0];
       uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
       LOG4CPLUS_DEBUG(logger_, 
                       LOG4CPLUS_TEXT("Header read: id = " 
-                                   + boost::lexical_cast<string>(id)
+                                     + boost::lexical_cast<std::string>(id)
                                      + ", size = "
-                                     + boost::lexical_cast<string>(size)));      
+                                     + boost::lexical_cast<std::string>(size)));
       buf.reset(new uint8_t[size]);
       boost::asio::async_read(stream, boost::asio::buffer(&buf[0], size),
                               boost::bind(&AsyncHelper
@@ -195,10 +200,10 @@ class Protocol::AsyncHelper {
     } else {
       LOG4CPLUS_DEBUG(logger_, 
                       LOG4CPLUS_TEXT("Header written: id = " 
-                                     + boost::lexical_cast<string>(
+                                     + boost::lexical_cast<std::string>(
                                          reinterpret_cast<uint32_t*>(&buf[0])[0])
                                      + ", size = "
-                                     + boost::lexical_cast<string>(
+                                     + boost::lexical_cast<std::string>(
                                          reinterpret_cast<uint32_t*>(&buf[0])[1])));
 
       uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];

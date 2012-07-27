@@ -6,7 +6,8 @@
 namespace tms {
 namespace common {
 namespace protocol {
-typedef boost::shared_ptr<boost::asio::ip::tcp::socket> SocketP;
+typedef boost::asio::buffered_read_stream<boost::asio::ip::tcp::socket> Socket;
+typedef boost::shared_ptr<Socket> SocketP;
 }
 }
 }

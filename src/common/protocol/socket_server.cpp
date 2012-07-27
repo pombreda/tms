@@ -3,6 +3,8 @@
 #include <log4cplus/loggingmacros.h>
 // boost 
 #include <boost/bind.hpp>
+// common
+#include <protocol/message/disconnect_request.hpp>
 
 using namespace std;
 using namespace tms::common::protocol;
@@ -35,6 +37,10 @@ void SocketServer::WriteMessageHandler(ProtocolExceptionP exception) {
 void SocketServer::ReadMessageHandler(MessageP message, 
                                       ProtocolExceptionP exception) {
   if (!exception) {
+    if (dynamic_cast<message::DisconnectRequest*>(&*message)) {
+      Stop();
+      return;
+    }
     MessageP ret = request_processor_->Eval(*message);
     protocol_->AsyncWriteMessage(*socket_, ret,
                                  boost::bind(&SocketServer::WriteMessageHandler,

@@ -10,7 +10,6 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/test/unit_test.hpp>
 #include <boost/asio.hpp>
 #include <iostream>//oops
 // soci
