@@ -1,4 +1,5 @@
 add_subdirectory(gui_exception)
 add_subdirectory(protocol)
 add_subdirectory(contraption)
+add_subdirectory(widget)
 add_subdirectory(model)

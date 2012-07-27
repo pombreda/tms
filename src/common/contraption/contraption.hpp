@@ -51,7 +51,7 @@ class Contraption {
       throw(FieldException, ModelBackendException);
 
   // Field setters only change contraption object.
-  // To save changes there is a Save() method.  
+  // To save changes there is a Save() method.
 
   template<typename T>
   void Set(FieldID field_id, const T &value)
@@ -64,7 +64,7 @@ class Contraption {
       throw(FieldException);
   std::string GetName(FieldID field_id) const
       throw(FieldException);
- 
+
   size_t GetFieldNumber() const
       throw();
 
@@ -76,14 +76,14 @@ class Contraption {
       throw(FieldException);
   bool IsWritable(FieldID field_id) const
       throw(FieldException);
-  
+
   void Save()
       throw(ModelBackendException);
   void Delete()
       throw(ModelBackendException);
   void Refresh()
       throw();
-  
+
   // Copying will clone contraption and next save will create
   // a sepparate record for it.
   Contraption& operator=(const Contraption &other)
@@ -99,18 +99,19 @@ class Contraption {
       throw();
 
   static const ContraptionID kNewID; // for Model class
-  
+
   friend class ContraptionAccessor;
   friend class ContraptionArray;
   friend void boost::intrusive_ptr_add_ref(Contraption *contraption);
   friend void boost::intrusive_ptr_release(Contraption *contraption);
- private:
+
   FieldTypeP GetFieldValue(FieldID field_id)
       throw(FieldException, ModelBackendException);
-  
+
   void SetFieldValue(FieldID field_id, const FieldType& value)
       throw(FieldException);
 
+ private:
   size_t ptr_count_;
   bool in_array_;
   boost::signal<void ()>  on_change_;

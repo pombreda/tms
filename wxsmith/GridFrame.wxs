@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<resource_extra>
+		<object root="1" />
+		<object name="ID_GRID1" class="Custom" variable="Custom1" member="yes" />
+	</resource_extra>
+</wxsmith>
