@@ -4,7 +4,8 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
-
+// boost
+#include <boost/shared_ptr.hpp>
 // soci
 #include <soci/soci.h>
 // common
@@ -28,6 +29,7 @@ struct SOCIDBScheme {
       connection_string(connection_string) {}
 };
 
+typedef boost::shared_ptr<SOCIDBScheme> SOCIDBSchemeP;
 //------------------------------------------------------------
 // SOCIModelBackend class.
 // It is not thread-safe. Moreover It'll breake if any

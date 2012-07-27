@@ -22,6 +22,7 @@
 #include <protocol/message/select_response.hpp>
 #include <protocol/server_exception.hpp>
 #include <protocol/request_processor.hpp>
+#include <protocol/simple_request_processor.hpp>
 #include <protocol/login_request_processor.hpp>
 
 namespace tms {
@@ -43,18 +44,28 @@ class ModelBackendRequestProcessor : public LoginRequestProcessor {
   virtual RequestProcessorP Duplicate() const;
   virtual MessageP Eval(const Message&, Server &server);
   virtual ~ModelBackendRequestProcessor() {}
+  static void Register(SimpleRequestProcessor &processor, const contraption::SOCIDBScheme &scheme);
  private:  
-  MessageP ReadRecords(
-      const message::ReadRecordsRequest &request);
-  MessageP WriteRecords(
-      const message::WriteRecordsRequest &request);
-  MessageP DeleteEntry(
-      const message::DeleteEntryRequest &request);
-  MessageP Select(
-      const message::SelectRequest &request);
-  contraption::SOCIModelBackendP GetBackend(const std::string &table);
+  static MessageP ReadRecords(
+      const message::ReadRecordsRequest &request, 
+      Server &server,
+      contraption::SOCIDBSchemeP scheme);
+  static MessageP WriteRecords(
+      const message::WriteRecordsRequest &request,
+      Server &server,
+      contraption::SOCIDBSchemeP scheme);
+  static MessageP DeleteEntry(
+      const message::DeleteEntryRequest &request,
+      Server &server,
+      contraption::SOCIDBSchemeP scheme);
+  static MessageP Select(
+      const message::SelectRequest &request,
+      Server &server,
+      contraption::SOCIDBSchemeP scheme);
+  static contraption::SOCIModelBackendP GetBackend(const std::string &table, 
+                                                   Server &server,
+                                                   contraption::SOCIDBSchemeP scheme);
   contraption::SOCIDBScheme scheme_;
-  BackendMap backend_map_;
 };
 
 typedef boost::shared_ptr<ModelBackendRequestProcessor> 

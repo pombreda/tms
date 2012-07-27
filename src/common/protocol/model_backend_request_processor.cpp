@@ -41,8 +41,7 @@ ModelBackendRequestProcessor
                                ModelP users,
                                const SOCIDBScheme &scheme) :
     LoginRequestProcessor(server, request_processor, users),
-    scheme_(scheme),
-    backend_map_() {
+    scheme_(scheme) {
 }
 
 ModelBackendRequestProcessor
@@ -50,8 +49,7 @@ ModelBackendRequestProcessor
                                ModelP users,
                                const SOCIDBScheme &scheme) :
     LoginRequestProcessor(request_processor, users),
-    scheme_(scheme),
-    backend_map_() {
+    scheme_(scheme) {
 }
 
 RequestProcessorP ModelBackendRequestProcessor::Duplicate() const {
@@ -63,17 +61,21 @@ RequestProcessorP ModelBackendRequestProcessor::Duplicate() const {
 }
 
 SOCIModelBackendP 
-ModelBackendRequestProcessor::GetBackend(const string &table) {
-  BackendMap::iterator it = server_->Get<BackendMap>("backend_map").find(table);
-  if (it == server_->Get<BackendMap>("backend_map").end()) {
-    return (server_->Get<BackendMap>("backend_map"))[table] = SOCIModelBackendP(
-        new SOCIModelBackend(scheme_, table));
+    ModelBackendRequestProcessor::GetBackend(const string &table, 
+                                             Server &server, 
+                                             SOCIDBSchemeP scheme) {
+  BackendMap::iterator it = server.Get<BackendMap>("backend_map").find(table);
+  if (it == server.Get<BackendMap>("backend_map").end()) {
+    return (server.Get<BackendMap>("backend_map"))[table] = SOCIModelBackendP(
+        new SOCIModelBackend(*scheme, table));
   }
   return it->second;
 }
 
 MessageP ModelBackendRequestProcessor::ReadRecords(
-    const ReadRecordsRequest &request) {
+    const ReadRecordsRequest &request, 
+    Server &server, 
+    SOCIDBSchemeP scheme) {
   ReadRecordsResponseP response(new ReadRecordsResponse);
   FieldTypeArray values(new boost::scoped_ptr<FieldType>[request.record_size()]);
   vector<RecordP> records(static_cast<size_t>(request.record_size()));
@@ -83,7 +85,7 @@ MessageP ModelBackendRequestProcessor::ReadRecords(
                values[static_cast<long int>(i)], 
                records[i]);
   }
-  SOCIModelBackendP backend = GetBackend(request.table());
+  SOCIModelBackendP backend = GetBackend(request.table(), server, scheme);
   backend->ReadRecords(records, request.id());
   for (size_t i = 0, end = static_cast<size_t>(request.record_size()); 
        i < end; ++i) {
@@ -94,9 +96,9 @@ MessageP ModelBackendRequestProcessor::ReadRecords(
 }
 
 MessageP ModelBackendRequestProcessor::WriteRecords(
-    const WriteRecordsRequest &request) {
+    const WriteRecordsRequest &request, Server &server, SOCIDBSchemeP scheme) {
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("User " + server_->Get<ContraptionP>("user")
+                 LOG4CPLUS_TEXT("User " + server.Get<ContraptionP>("user")
                                 ->Get<string>("name")
                                 + " writes " + " to " + request.table()));  
 
@@ -109,7 +111,7 @@ MessageP ModelBackendRequestProcessor::WriteRecords(
                values[static_cast<long int>(i)], 
                records[i]);
   }
-  SOCIModelBackendP backend = GetBackend(request.table());
+  SOCIModelBackendP backend = GetBackend(request.table(), server, scheme);
   ContraptionID id = static_cast<ContraptionID>(request.id());
   backend->WriteRecords(records, id);
   response->set_id(id);
@@ -117,25 +119,27 @@ MessageP ModelBackendRequestProcessor::WriteRecords(
 }
 
 MessageP ModelBackendRequestProcessor::DeleteEntry(
-    const message::DeleteEntryRequest &request) {
+    const message::DeleteEntryRequest &request, 
+    Server &server, 
+    SOCIDBSchemeP scheme) {
   ContraptionID id = request.id();
-  SOCIModelBackendP backend = GetBackend(request.table());
+  SOCIModelBackendP backend = GetBackend(request.table(), server, scheme);
   backend->DeleteEntry(id);
   return DeleteEntryResponseP(new DeleteEntryResponse());
 }
 
 MessageP ModelBackendRequestProcessor::Select(
-    const message::SelectRequest &request) {  
-  string s;
-  google::protobuf::TextFormat::PrintToString(request, &s);
+    const message::SelectRequest &request,
+    Server &server, 
+    SOCIDBSchemeP scheme) {  
   FilterCP filter = GetFilter(request.filter());
 
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("User " + server_->Get<ContraptionP>("user")
+                 LOG4CPLUS_TEXT("User " + server.Get<ContraptionP>("user")
                                 ->Get<string>("name")
                                 + " selected " + filter->ToString()
                                 + " from " + request.table()));  
-  SOCIModelBackendP backend = GetBackend(request.table());
+  SOCIModelBackendP backend = GetBackend(request.table(), server, scheme);
   auto_ptr< vector<ContraptionID> > contraptions = backend->Select(filter);
   SelectResponseP response (new SelectResponse());
 
@@ -152,23 +156,56 @@ MessageP ModelBackendRequestProcessor::Eval(const Message &message, Server &serv
     const ReadRecordsRequest *read_records_request 
         = dynamic_cast<const ReadRecordsRequest*>(&message);
     if (read_records_request) {
-      return ReadRecords(*read_records_request);
+      return ReadRecords(*read_records_request,
+                         server,
+                         SOCIDBSchemeP(new SOCIDBScheme(scheme_)));
     }
     const WriteRecordsRequest *write_records_request 
         = dynamic_cast<const WriteRecordsRequest*>(&message);
     if (write_records_request) {
-      return WriteRecords(*write_records_request);
+      return WriteRecords(*write_records_request,
+                          server,
+                          SOCIDBSchemeP(new SOCIDBScheme(scheme_)));
     }
     const DeleteEntryRequest *delete_entry_request 
         = dynamic_cast<const DeleteEntryRequest*>(&message);
     if (delete_entry_request) {
-      return DeleteEntry(*delete_entry_request);
+      return DeleteEntry(*delete_entry_request,
+                         server,
+                         SOCIDBSchemeP(new SOCIDBScheme(scheme_)));
     }
     const SelectRequest *select_request 
         = dynamic_cast<const SelectRequest*>(&message);
     if (select_request) {
-      return Select(*select_request);
+      return Select(*select_request,
+                    server,
+                    SOCIDBSchemeP(new SOCIDBScheme(scheme_)));
     }
   }
   return LoginRequestProcessor::Eval(message, server);
+}
+
+void ModelBackendRequestProcessor::Register(SimpleRequestProcessor &processor, const contraption::SOCIDBScheme &scheme) {
+  SOCIDBSchemeP scheme_p(new SOCIDBScheme(scheme));
+  processor.AddHandler(static_cast< boost::function<MessageP (const SelectRequest&, Server &server)> >(
+      boost::bind(&ModelBackendRequestProcessor::Select,
+                  _1,
+                  _2, 
+                  scheme_p)));
+  processor.AddHandler(static_cast< boost::function<MessageP (const ReadRecordsRequest&, Server &server)> >(
+      boost::bind(&ModelBackendRequestProcessor::ReadRecords,
+                  _1,
+                  _2, 
+                  scheme_p)));
+  processor.AddHandler(static_cast< boost::function<MessageP (const WriteRecordsRequest&, Server &server)> >(
+      boost::bind(&ModelBackendRequestProcessor::WriteRecords,
+                  _1,
+                  _2, 
+                  scheme_p)));
+  processor.AddHandler(static_cast< boost::function<MessageP (const DeleteEntryRequest&, Server &server)> >(
+      boost::bind(&ModelBackendRequestProcessor::DeleteEntry,
+                  _1,
+                  _2, 
+                  scheme_p)));
+  
 }

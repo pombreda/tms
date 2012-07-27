@@ -106,8 +106,9 @@ class Fixture {
     protocol->Initialize();
     // Create RequestProcessor
     SimpleRequestProcessorP request_processor(new SimpleRequestProcessor());
+    ModelBackendRequestProcessor::Register(*request_processor, scheme);
     RequestProcessorP processor(
-        new ModelBackendRequestProcessor(request_processor, users, scheme));
+        new LoginRequestProcessor(request_processor, users));
     // Create Server
     server.reset(
         new TCPServer(tcp::endpoint(tcp::v4(), 3030), 
