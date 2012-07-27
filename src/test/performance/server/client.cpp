@@ -45,13 +45,12 @@ using namespace log4cplus;
 
 
 int main() {
-  // Configuse logger
+  // Configure logger
   PropertyConfigurator config("log.cfg");
   config.configure();
   ModelBackendProtocolP protocol(new ModelBackendProtocol());
   protocol->Initialize();
-  ClientP client(
-      new SocketClient("localhost", "3030", protocol)); 
+  ClientP client(new SocketClient("localhost", "3030", protocol)); 
   LoginRequestP login(new LoginRequest);
   login->set_name("adavydow");
   login->set_password_hash("Dummy");
