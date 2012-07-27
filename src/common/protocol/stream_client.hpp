@@ -18,7 +18,9 @@ class StreamClient : public Client {
   StreamClient(StreamP stream, ProtocolP protocol) 
       throw():
       stream_(stream), 
-      protocol_(protocol) {}
+      protocol_(protocol) {
+
+  }
   MessageP EvalRequest(Message &message) 
       throw (ProtocolException) {
     protocol_->WriteMessage(*stream_, message);

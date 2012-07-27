@@ -98,6 +98,7 @@ class Protocol::AsyncHelper {
                          AsyncWriteHandler handler) {
     LOG4CPLUS_DEBUG(logger_, 
                     LOG4CPLUS_TEXT("Writing Message Asynchronously"));
+
     AsyncHelperP ptr(this);
     buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
     HelpersMap::const_iterator it 
@@ -105,7 +106,7 @@ class Protocol::AsyncHelper {
     if (it == protocol_.helpers_by_type_info_.end()) {
       std::ostringstream msg;
       msg << "Unknown message type in Protocol::AsyncWriteMessage "
-          << "type = '" << typeid(*message).name() << "'.";
+          << "type = '" << typeid(message).name() << "'.";
       throw ProtocolException(msg.str());
     }
   
@@ -207,6 +208,17 @@ class Protocol::AsyncHelper {
                                          reinterpret_cast<uint32_t*>(&buf[0])[1])));
 
       uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
+      if (size == 0) {
+        LOG4CPLUS_DEBUG(logger_, 
+                        LOG4CPLUS_TEXT("0-size"));
+                
+        AsyncWriteBody<AsyncWriteStream>(boost::system::error_code(), 
+                                         stream,
+                                         message,
+                                         handler,
+                                         ptr);
+        return;
+      }
       buf.reset(new uint8_t[size]);
       google::protobuf::io::ArrayOutputStream gstream(&buf[0], 
                                                       static_cast<int>(size));
@@ -260,6 +272,88 @@ void Protocol::AsyncWriteMessage(AsyncWriteStream &stream,
   (new AsyncHelper(*this))->AsyncWriteMessage(stream, message, handler);
 }
 
+template <class AsyncWriteStream>
+void Protocol::AsyncWriteMessage(AsyncWriteStream &stream,
+                                 MessageP message) {
+  (new AsyncHelper(*this))->AsyncWriteMessage(stream, 
+                                              message, 
+                                              boost::bind(&Protocol::DummyHandler, 
+                                                          this, 
+                                                          _1));
+}
+
+template <class SyncWriteStream>
+void Protocol::SyncWriteMessage(SyncWriteStream &stream,
+                                const Message &message) {
+  boost::scoped_array<uint8_t> buf;
+  LOG4CPLUS_DEBUG(logger_, 
+                  LOG4CPLUS_TEXT("Writing Message Synchronously"));
+  buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
+  HelpersMap::const_iterator it 
+        = helpers_by_type_info_.find(rtti::TypeID(message));
+  if (it == helpers_by_type_info_.end()) {
+    std::ostringstream msg;
+    msg << "Unknown message type in Protocol::SyncWriteMessage "
+        << "type = '" << typeid(message).name() << "'.";
+    throw ProtocolException(msg.str());
+  }
+  
+  reinterpret_cast<uint32_t*>(&buf[0])[0] 
+      = static_cast<uint32_t>(it->second->id());
+  reinterpret_cast<uint32_t*>(&buf[0])[1] 
+      = static_cast<uint32_t>(message.ByteSize());
+  boost::asio::write(stream, boost::asio::buffer(&buf[0], 
+                                                 sizeof(uint32_t) * 2));
+  LOG4CPLUS_DEBUG(logger_, 
+                  LOG4CPLUS_TEXT("Header written: id = " 
+                                 + boost::lexical_cast<std::string>(
+                                     reinterpret_cast<uint32_t*>(&buf[0])[0])
+                                 + ", size = "
+                                 + boost::lexical_cast<std::string>(
+                                     reinterpret_cast<uint32_t*>(&buf[0])[1])));
+  
+  uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
+  if (size != 0) {
+    buf.reset(new uint8_t[size]);
+    google::protobuf::io::ArrayOutputStream gstream(&buf[0], 
+                                                    static_cast<int>(size));
+    message.SerializeToZeroCopyStream(&gstream);
+    boost::asio::write(stream, boost::asio::buffer(&buf[0], size));
+  }
+  LOG4CPLUS_DEBUG(logger_, 
+                  LOG4CPLUS_TEXT("Message of type \"" 
+                                 + rtti::TypeID(message).name()
+                                 + "\" written"));        
+
+}
+
+
+template <class SyncReadStream>
+MessageP Protocol::SyncReadMessage(SyncReadStream &stream) {
+  LOG4CPLUS_DEBUG(logger_, 
+                  LOG4CPLUS_TEXT("Reading Message Synchronously"));
+
+  boost::scoped_array<uint8_t> buf;
+  buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
+  boost::asio::read(stream, 
+                    boost::asio::buffer(&buf[0], sizeof(uint32_t) * 2));
+  uint32_t id = reinterpret_cast<uint32_t*>(&buf[0])[0];
+  uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
+  LOG4CPLUS_DEBUG(logger_, 
+                  LOG4CPLUS_TEXT("Header read: id = " 
+                                 + boost::lexical_cast<std::string>(id)
+                                 + ", size = "
+                                 + boost::lexical_cast<std::string>(size)));
+  buf.reset(new uint8_t[size]);
+  boost::asio::read(stream, boost::asio::buffer(&buf[0], size));
+  MessageP message;
+  message = helpers_[id]->ReadMessage(&buf[0], size);
+  LOG4CPLUS_DEBUG(logger_, 
+                    LOG4CPLUS_TEXT("Message of type \"" 
+                                   + rtti::TypeID(*message).name()
+                                   + "\" read"));          
+  return message;
+}
 
 }
 }

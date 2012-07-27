@@ -99,11 +99,13 @@ void Protocol::WriteMessage(std::ostream &sout,
           << "type = '" << typeid(message).name() << "'.";
       throw ProtocolException(msg.str());
     }
+    uint32_t buf[2];
     uint32_t id = static_cast<uint32_t>(it->second->id());
-
-    sout.write(static_cast<char*>(static_cast<void*>(&id)), 4);
+    buf[0] = id;
     uint32_t size = static_cast<uint32_t>(message.ByteSize());
-    sout.write(static_cast<char*>(static_cast<void*>(&size)), 4);
+    buf[1] = size;
+    sout.write(static_cast<char*>(static_cast<void*>(&buf[0])), sizeof(buf));
+    sout.flush();
     LOG4CPLUS_DEBUG(logger_, 
                     LOG4CPLUS_TEXT("Header written: id = " 
                                    + boost::lexical_cast<string>(id)
@@ -120,5 +122,12 @@ void Protocol::WriteMessage(std::ostream &sout,
     throw;
   } catch (std::exception &e) {
     throw ProtocolException(&e, "Exception in Protocol::WriteMessage.");
+  }
+}
+
+void Protocol::DummyHandler (ProtocolExceptionP exception) 
+    throw(ProtocolException){
+  if (exception) {
+    throw(*exception);
   }
 }

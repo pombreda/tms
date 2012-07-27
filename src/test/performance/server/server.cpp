@@ -84,7 +84,6 @@ int main () {
       new TCPServer(tcp::endpoint(tcp::v4(), 3030), 
                       protocol, 
                     processor));  
-  server->Listen();  
-  server->Wait();
+  server->ListenHere();  
   return 0;
 }

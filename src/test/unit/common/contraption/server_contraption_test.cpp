@@ -31,7 +31,7 @@
 #include <contraption/filter/compare_filter.hpp>
 #include <protocol/model_backend_protocol.hpp>
 #include <protocol/tcp_server.hpp>
-#include <protocol/stream_client.hpp>
+#include <protocol/socket_client.hpp>
 #include <protocol/message.hpp>
 #include <protocol/message/login_request.hpp>
 #include <protocol/message/login_response.hpp>
@@ -116,7 +116,7 @@ class Fixture {
     server->Listen();
     // Create Client
     client.reset(
-        new StreamClient(StreamP(new tcp::iostream("localhost", "3030")), 
+        new SocketClient("localhost", "3030", 
                          protocol)); 
     LoginRequestP login(new LoginRequest);
     login->set_name("adavydow");

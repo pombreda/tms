@@ -23,6 +23,7 @@ add_library (tms_protocol SHARED
   client
   message
   socket
+  socket_client
   )
 
 find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)

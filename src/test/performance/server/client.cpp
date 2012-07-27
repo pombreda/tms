@@ -25,7 +25,7 @@
 #include <contraption/filter/compare_filter.hpp>
 #include <protocol/model_backend_protocol.hpp>
 #include <protocol/tcp_server.hpp>
-#include <protocol/stream_client.hpp>
+#include <protocol/socket_client.hpp>
 #include <protocol/message.hpp>
 #include <protocol/message/login_request.hpp>
 #include <protocol/message/login_response.hpp>
@@ -51,12 +51,13 @@ int main() {
   ModelBackendProtocolP protocol(new ModelBackendProtocol());
   protocol->Initialize();
   ClientP client(
-      new StreamClient(StreamP(new tcp::iostream("localhost", "3030")), 
-                       protocol)); 
+      new SocketClient("localhost", "3030", protocol)); 
   LoginRequestP login(new LoginRequest);
   login->set_name("adavydow");
   login->set_password_hash("Dummy");
-  for (int i = 0; i < 100; ++i) {
+
+
+  for (int i = 0; i < 100000; ++i) {
     MessageP ret = client->EvalRequest(*login);  
   }
   return 0;

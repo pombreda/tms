@@ -35,10 +35,27 @@ void Server::Listen()
                                 + " started"));
 }
 
+void Server::ListenHere() 
+    throw(ServerException) {
+  try {
+    running_ = true;
+    ListenThread();
+  } catch(boost::thread_resource_error &e) {
+    throw ServerException(&e);
+  }
+  LOG4CPLUS_INFO(logger_, 
+                 LOG4CPLUS_TEXT("Server " 
+                                + rtti::TypeID(*this).name() 
+                                + " started"));
+}
+
+
 void Server::Stop()
     throw(ServerException) {
   try {
-    listen_thread_->join();
+    if (listen_thread_.get()) {
+      listen_thread_->join();
+    }
   } catch (boost::thread_interrupted e) {
     throw ServerException("Thread was interrupted in Server::Stop.");
   }

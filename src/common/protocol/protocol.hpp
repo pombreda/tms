@@ -52,9 +52,21 @@ class Protocol {
   typedef boost::function<void (ProtocolExceptionP exception)> AsyncWriteHandler;
   template <class AsyncReadStream>
   void AsyncReadMessage(AsyncReadStream &stream, AsyncReadHandler handler);
+ 
+  template <class SyncReadStream>
+  MessageP SyncReadMessage(SyncReadStream &stream);
+
   template <class AsyncWriteStream>
   void AsyncWriteMessage(AsyncWriteStream &stream, MessageP message, 
                          AsyncWriteHandler handler);
+
+  template <class AsyncWriteStream>
+  void AsyncWriteMessage(AsyncWriteStream &stream, MessageP message);
+
+  template <class SyncWriteStream>
+  void SyncWriteMessage(SyncWriteStream &stream, const Message &message);
+
+
   void WriteMessage(std::ostream &sout, 
                     const Message &message)
       throw(ProtocolException);  
@@ -62,6 +74,8 @@ class Protocol {
   virtual ~Protocol() 
       throw() {}
  private:
+  void DummyHandler (ProtocolExceptionP exception)
+      throw(ProtocolException);
   static log4cplus::Logger logger_;
   class AsyncHelper;
   Protocol& operator= (const Protocol &other);

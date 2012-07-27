@@ -34,6 +34,7 @@ void TCPServer::HandleAccept(SocketP socket,
                              const boost::system::error_code &ec) 
     throw() {
   if (!ec) {    
+    socket->lowest_layer().set_option(tcp::no_delay(true));
     listeners_.push_back(ServerP(
         new SocketServer(socket, protocol_, 
                          request_processor_->Duplicate())));
@@ -50,7 +51,7 @@ void TCPServer::HandleAccept(SocketP socket,
 void TCPServer::StartAccept()
     throw() {
   SocketP socket(new Socket(io_service_));
-  acceptor_.async_accept(socket->lowest_layer(),
+  acceptor_.async_accept(*socket,
                          boost::bind(&TCPServer::HandleAccept, this, socket,
                                      boost::asio::placeholders::error));  
 }

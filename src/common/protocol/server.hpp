@@ -25,6 +25,8 @@ class Server {
       throw();
   virtual void Listen()
       throw(ServerException);
+  virtual void ListenHere()
+      throw(ServerException);
   virtual void Stop()
       throw(ServerException);
   virtual void Wait()

@@ -27,7 +27,7 @@ void SocketServer::ListenThread()
 
 void SocketServer::WriteMessageHandler(ProtocolExceptionP exception) {
   if (!exception) {
-    ListenThread();
+    
   } else {
     LOG4CPLUS_WARN(logger_, 
                    LOG4CPLUS_TEXT(exception->message()));
@@ -41,6 +41,7 @@ void SocketServer::ReadMessageHandler(MessageP message,
       Stop();
       return;
     }
+    ListenThread();
     MessageP ret = request_processor_->Eval(*message);
     protocol_->AsyncWriteMessage(*socket_, ret,
                                  boost::bind(&SocketServer::WriteMessageHandler,
