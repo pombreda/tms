@@ -12,8 +12,11 @@ void Options::Init() {
   SOCIDBScheme scheme(soci::sqlite3, options_db);
   ModelBackendP backend(new SOCIModelBackend(scheme, "options"));
   ModelP model(new OptionsModel(backend));
-  model->InitSchema();
+  if (!boost::filesystem::exists(options_db)) {
+    model->InitSchema();
+  }
   ContraptionArrayP contraptions = model->All();
+  std::cerr << "options size = " << contraptions->size() << std::endl;
   if (contraptions->size() == 0) {
     contraption_ = model->New();
     contraption_->Set<std::string>("name", "admin");

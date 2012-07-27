@@ -36,18 +36,20 @@ ContraptionArray::ContraptionArray(
     back_up_(contraptions),
     model_(model) {
   for (size_t i = 0; i < size(); i++) {
-    at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this));
-    at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i));
+    connections_.push_back(SlotConnectionP(new SlotConnection(
+                           at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this)))));
+    connections_.push_back(SlotConnectionP(new SlotConnection(
+                           at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i)))));
   }
 }
 
 void ContraptionArray::Refresh() {
   swap(*(model_->All()));
   for (size_t i = 0; i < size(); i++) {
-    at(i)->on_change_.disconnect_all_slots();
-    at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this));
-    at(i)->on_delete_.disconnect_all_slots();
-    at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i));
+    connections_.push_back(SlotConnectionP(new SlotConnection(
+                           at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this)))));
+    connections_.push_back(SlotConnectionP(new SlotConnection(
+                           at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i)))));
   }
   OnChange();
 }

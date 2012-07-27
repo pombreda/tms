@@ -6,7 +6,9 @@
 // std
 #include <vector>
 // boost
+#include <boost/shared_ptr.hpp>
 #include <boost/signal.hpp>
+#include <boost/signals/connection.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 // common
@@ -52,6 +54,9 @@ class ContraptionArray : private std::vector<ContraptionP> {
   vector<ContraptionP> back_up_;
   ModelP model_;
   boost::signal<void ()>  on_change_;
+  typedef boost::signals::scoped_connection SlotConnection;
+  typedef boost::shared_ptr<SlotConnection> SlotConnectionP;
+  std::vector<SlotConnectionP> connections_;
 };
 }
 }

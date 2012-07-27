@@ -3,6 +3,8 @@
 
 // std
 #include <string>
+// boost
+#include <boost/filesystem.hpp>
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
 // common
@@ -25,7 +27,7 @@ class Options {
   static std::string name() {
     return contraption_->Get<std::string>("name");
   }
-  static void set_name(std::string &value) {
+  static void set_name(std::string value) {
     contraption_->Set<std::string>("name", value);
     contraption_->Save();
   }
@@ -33,7 +35,7 @@ class Options {
   static std::string password_hash() {
     return contraption_->Get<std::string>("password_hash");
   }
-  static void set_password_hash(std::string &value) {
+  static void set_password_hash(std::string value) {
     contraption_->Set<std::string>("password_hash", value);
     contraption_->Save();
   }
@@ -41,7 +43,7 @@ class Options {
   static std::string server() {
     return contraption_->Get<std::string>("server");
   }
-  static void set_server(std::string &value) {
+  static void set_server(std::string value) {
     contraption_->Set<std::string>("server", value);
     contraption_->Save();
   }
@@ -49,7 +51,7 @@ class Options {
   static std::string port() {
     return contraption_->Get<std::string>("port");
   }
-  static void set_port(std::string &value) {
+  static void set_port(std::string value) {
     contraption_->Set<std::string>("port", value);
     contraption_->Save();
   }

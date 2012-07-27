@@ -8,6 +8,7 @@
 #include <wx/textctrl.h>
 // common
 #include "grid_frame.hpp"
+#include "options.hpp"
 
 namespace tms {
 namespace client{
@@ -27,6 +28,8 @@ class LoginFrame : public wxFrame {
 
   void OnOKButtonClick(wxCommandEvent& event);
   void OnExitButtonClick(wxCommandEvent& event);
+  void LoadOptions();
+  void SaveOptions();
 
   DECLARE_EVENT_TABLE()
 };
