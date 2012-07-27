@@ -31,6 +31,10 @@ namespace protocol {
 class ModelBackendRequestProcessor : public LoginRequestProcessor {
  public:
   // Users must have "string name" and "string password_hash" fields.
+  ModelBackendRequestProcessor(Server &server,
+                               RequestProcessorP request_processor, 
+                               contraption::ModelP users,
+                               const contraption::SOCIDBScheme &scheme);
   ModelBackendRequestProcessor(RequestProcessorP request_processor, 
                                contraption::ModelP users,
                                const contraption::SOCIDBScheme &scheme);

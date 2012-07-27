@@ -214,3 +214,6 @@ void Model::InitFields(const std::vector< Field* > &fields)
     fields_[field_id]->Initialize(this);
   }
 }
+
+Model::~Model() {
+}

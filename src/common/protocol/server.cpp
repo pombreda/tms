@@ -15,7 +15,9 @@ Server::Server(RequestProcessorP request_processor)
     throw():
     running_(false),
     listen_thread_(0),
+    session_(),
     request_processor_(request_processor) {
+  request_processor->set_server(*this);
 }  
 
 void Server::Listen() 
@@ -59,6 +61,14 @@ void Server::Wait()
 bool Server::IsListening()
     throw() {  
   return running_;
+}
+
+bool Server::Check(const std::string &var) const
+    throw() {
+  LOG4CPLUS_DEBUG(logger_, 
+                  LOG4CPLUS_TEXT("Checking " + var));
+
+  return session_.count(var) != 0;
 }
 
 Server::~Server()

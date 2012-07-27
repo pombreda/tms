@@ -9,6 +9,7 @@
 #include <protocol/message/login_request.hpp>
 #include <protocol/message/record.hpp>
 #include <protocol/message/filter.hpp>
+#include <protocol/server.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/record.hpp>
 
@@ -35,6 +36,16 @@ using tms::common::protocol::message::SelectRequest;
 using tms::common::protocol::message::SelectRequestP;
 
 ModelBackendRequestProcessor
+::ModelBackendRequestProcessor(Server &server,
+                               RequestProcessorP request_processor, 
+                               ModelP users,
+                               const SOCIDBScheme &scheme) :
+    LoginRequestProcessor(server, request_processor, users),
+    scheme_(scheme),
+    backend_map_() {
+}
+
+ModelBackendRequestProcessor
 ::ModelBackendRequestProcessor(RequestProcessorP request_processor, 
                                ModelP users,
                                const SOCIDBScheme &scheme) :
@@ -45,8 +56,10 @@ ModelBackendRequestProcessor
 
 RequestProcessorP ModelBackendRequestProcessor::Duplicate() const {
   return RequestProcessorP(
-      new ModelBackendRequestProcessor(request_processor_->Duplicate(), 
-                                       users_, scheme_));
+      new ModelBackendRequestProcessor(*server_,
+                                       request_processor_->Duplicate(), 
+                                       users_, 
+                                       scheme_));
 }
 
 SOCIModelBackendP 
@@ -83,7 +96,8 @@ ReadRecordsResponseP ModelBackendRequestProcessor::ReadRecords(
 WriteRecordsResponseP ModelBackendRequestProcessor::WriteRecords(
     const WriteRecordsRequest &request) {
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("User " + user_->Get<string>("name")
+                 LOG4CPLUS_TEXT("User " + server_->Get<ContraptionP>("user")
+                                ->Get<string>("name")
                                 + " writes " + " to " + request.table()));  
 
   WriteRecordsResponseP response(new WriteRecordsResponse());
@@ -117,7 +131,8 @@ message::SelectResponseP ModelBackendRequestProcessor::Select(
   FilterCP filter = GetFilter(request.filter());
 
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("User " + user_->Get<string>("name")
+                 LOG4CPLUS_TEXT("User " + server_->Get<ContraptionP>("user")
+                                ->Get<string>("name")
                                 + " selected " + filter->ToString()
                                 + " from " + request.table()));  
   SOCIModelBackendP backend = GetBackend(request.table());
@@ -133,7 +148,7 @@ message::SelectResponseP ModelBackendRequestProcessor::Select(
 
 
 MessageP ModelBackendRequestProcessor::Eval(const Message &message) {
-  if (user_) {
+  if (server_->Check("user")) {
     const ReadRecordsRequest *read_records_request 
         = dynamic_cast<const ReadRecordsRequest*>(&message);
     if (read_records_request) {

@@ -9,7 +9,7 @@
 // common
 #include <protocol/message.hpp>
 #include <protocol/server_exception.hpp>
-#include <protocol/server.hpp>
+#include <protocol/server_fwd.hpp>
 #include <rtti/typeinfo.hpp>
 
 namespace tms {
@@ -24,13 +24,21 @@ typedef boost::shared_ptr<HandlersMap> HandlersMapP;
 
 class RequestProcessor {
  public:
-  RequestProcessor(ServerP server_);
+  explicit RequestProcessor(Server &server_);
+  RequestProcessor();
   virtual RequestProcessorP Duplicate() const = 0;
   virtual MessageP Eval(const Message&) = 0;
   virtual ~RequestProcessor() {}
+
+  Server& server() const
+      throw();
+
+  void set_server(Server &server) 
+      throw();
+
  protected:
   static log4cplus::Logger logger_;
-  ServerP server_;
+  Server *server_;
 };
 
 }

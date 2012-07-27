@@ -157,42 +157,6 @@ class Fixture {
 //------------------------------------------------------------
 BOOST_AUTO_TEST_SUITE(testServerContraption)
 
-BOOST_FIXTURE_TEST_CASE(testWrite, Fixture) {
-  ContraptionP test_contraption = model->New();
-  test_contraption->Set<int>("age", 10);
-  test_contraption->Set<string>("Surname", "Du'\"\\mmy");
-  test_contraption->Save();
-  test_contraption = model->New();
-  test_contraption->Set<int>("age", 12);
-  test_contraption->Set<string>("Surname", "Ymmud");
-  test_contraption->Save();
-  ContraptionArrayP contraptions = model->All();
-  BOOST_CHECK_EQUAL(contraptions->size(), 
-  2);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
-  10);
-  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
-  "Du'\"\\mmy");
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
-  12);
-  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
-  "Ymmud");
-  contraptions->erase(contraptions->begin());
-  contraptions->Save();
-  contraptions = model->All();
-  BOOST_CHECK_EQUAL(contraptions->size(), 
-  1);
-  test_contraption = model->New();
-  test_contraption->Set<int>("age", 10);
-  test_contraption->Set<string>("Surname", "Dummy");
-  contraptions->push_back(test_contraption);
-  contraptions->Save();
-  contraptions = model->All();
-  BOOST_CHECK_EQUAL(contraptions->size(), 
-  2);  
-}
-
-
 BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   ContraptionP test_contraption = model->New();
   test_contraption->Set<int>("age", 10);

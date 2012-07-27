@@ -23,7 +23,7 @@ namespace contraption {
 
 class FieldType {
  public:
-  virtual ~FieldType(){}
+  virtual ~FieldType() {}
   virtual FieldType* Duplicate() const = 0;
 };
                                                
@@ -41,7 +41,7 @@ class FieldTypeT : public FieldType {
   virtual ~FieldTypeT(){}
   T data() const { return data_; }
   T& data() { return data_; }
-  void set_data(const T & data) {data_ = data;}
+  void set_data(const T & data) { data_ = data; }
   virtual FieldTypeT<T>* Duplicate() const { return new FieldTypeT<T>(data_); } 
   friend class SimpleFieldTImpl<T>;
  private:

@@ -1,0 +1,3 @@
+package tms.common.protocol.message;
+message DisconnectRequest {
+}

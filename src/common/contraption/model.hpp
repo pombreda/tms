@@ -74,7 +74,8 @@ class Model {
   Model(const std::vector< Field* > &fields, 
         boost::shared_ptr<ModelBackend> backend)
       throw(FieldException);
-  
+
+  virtual ~Model();
   friend void boost::intrusive_ptr_add_ref(Model* model);
   friend void boost::intrusive_ptr_release(Model* model);
   friend class Contraption;

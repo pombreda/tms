@@ -22,6 +22,7 @@ typedef boost::shared_ptr<HandlersMap> HandlersMapP;
 
 class SimpleRequestProcessor : public RequestProcessor {
  public:
+  explicit SimpleRequestProcessor(Server &server);
   SimpleRequestProcessor();
   RequestProcessorP Duplicate() const;
   MessageP Eval(const Message&)

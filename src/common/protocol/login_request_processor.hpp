@@ -21,15 +21,18 @@ typedef boost::shared_ptr<LoginRequestProcessor> LoginRequestProcessorP;
 class LoginRequestProcessor : public RequestProcessor {
  public:
   // Users must have "string name" and "string password_hash" fields.
+  LoginRequestProcessor(Server &server,
+                        RequestProcessorP request_processor, 
+                        contraption::ModelP users);
   LoginRequestProcessor(RequestProcessorP request_processor, 
                         contraption::ModelP users);
+  
   virtual RequestProcessorP Duplicate() const;
   virtual MessageP Eval(const Message&);
   virtual ~LoginRequestProcessor() {}
  protected:
   RequestProcessorP request_processor_;
   contraption::ModelP users_;
-  contraption::ContraptionP user_;
  private:  
   const contraption::SimpleFieldT<std::string>* name_;
   const contraption::SimpleFieldT<std::string>* password_hash_;

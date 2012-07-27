@@ -5,7 +5,13 @@
 using namespace tms::common::protocol;
 using namespace std;
 
+SimpleRequestProcessor::SimpleRequestProcessor(Server &server) :
+    RequestProcessor(server),
+    handlers_map_() {
+}
+
 SimpleRequestProcessor::SimpleRequestProcessor() :
+    RequestProcessor(),
     handlers_map_() {
 }
 
