@@ -3,15 +3,17 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
+#include "field_type_fwd.hpp"
 // standart
 #include <cstdlib>
 // boost
 #include <boost/concept/assert.hpp>
 #include <boost/concept_check.hpp>
+#include <boost/lexical_cast.hpp>
 // 
 #include <contraption/field_fwd.hpp>
 #include <contraption/field/simple_field_fwd.hpp>
-#include "field_type_fwd.hpp"
+#include <rtti/typeinfo.hpp>
 
 namespace tms {
 namespace common {
@@ -25,6 +27,7 @@ class FieldType {
  public:
   virtual ~FieldType() {}
   virtual FieldType* Duplicate() const = 0;
+  virtual inline std::string ToString() const {return rtti::TypeID(*this).name();};
 };
                                                
 //------------------------------------------------------------
@@ -43,10 +46,27 @@ class FieldTypeT : public FieldType {
   T& data() { return data_; }
   void set_data(const T & data) { data_ = data; }
   virtual FieldTypeT<T>* Duplicate() const { return new FieldTypeT<T>(data_); } 
+  inline std::string ToString() const;
   friend class SimpleFieldTImpl<T>;
  private:
   T data_;
 };
+
+template<class T>
+inline std::string FieldTypeT<T>::ToString() const {
+  return rtti::TypeID(*this).name();;
+}
+
+template<>
+inline std::string FieldTypeT<std::string>::ToString() const {
+  return data_;
+}
+
+template<>
+inline std::string FieldTypeT<int>::ToString() const {
+  return boost::lexical_cast<std::string>(data_);
+}
+
 
 }
 }
