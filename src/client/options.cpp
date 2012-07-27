@@ -16,7 +16,6 @@ void Options::Init() {
     model->InitSchema();
   }
   ContraptionArrayP contraptions = model->All();
-  std::cerr << "options size = " << contraptions->size() << std::endl;
   if (contraptions->size() == 0) {
     contraption_ = model->New();
     contraption_->Set<std::string>("name", "admin");

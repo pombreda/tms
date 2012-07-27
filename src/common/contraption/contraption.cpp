@@ -43,12 +43,12 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
     throw FieldException(msg.str());
   }
   model_->SetFieldValue(field_id, value, values_, id_);
-  on_change_();
 }
 
 void Contraption::Save()
     throw(ModelBackendException) {
   model_->Save(values_, id_);
+  on_change_();
 }
 
 void Contraption::Delete()
