@@ -8,6 +8,7 @@
 #include <protocol/login_request_processor.hpp>
 #include <protocol/simple_request_processor.hpp>
 #include <model/user.hpp>
+#include <project/model/contact_person.hpp>
 #include <contraption/model_backend/soci_model_backend.hpp>
 #include <project/protocol.hpp>
 using namespace std;
@@ -15,6 +16,7 @@ using namespace tms::server;
 using namespace tms::common::protocol;
 using namespace tms::common::contraption;
 using namespace tms::project;
+using namespace tms::project::model;
 using namespace tms::common::model;
 namespace tms {
 namespace server {
@@ -44,6 +46,12 @@ void InitSchema(const std::string &db) {
     admin->Set<string>("name", "admin");
     admin->Set<string>("password_hash", sha256("admin"));
     admin->Save();  
+  }
+  {
+    ModelP contact_persons(
+        new ContactPerson(ModelBackendP(new SOCIModelBackend(scheme, 
+                                                             "contact_persons"))));
+    contact_persons->InitSchema();
   }
 }
 }

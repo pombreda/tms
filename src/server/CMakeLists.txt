@@ -19,6 +19,7 @@ target_link_libraries(server_app
   tms_protocol
   tms_contraption
   tms_model
+  tms_project_model
   tms_project
   ${SOCI_sqlite3_PLUGIN} 
   ${SQLITE3_LIBRARIES} 
