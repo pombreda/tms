@@ -1,7 +1,23 @@
 #include "login_frame.hpp"
+// common
+#include <protocol/client.hpp>
+#include <protocol/crypto.hpp>
+#include <protocol/message/login_request.hpp>
+#include <protocol/message/login_response.hpp>
+#include <contraption/model_backend/server_model_backend.hpp>
+#include <contraption/model.hpp>
+// client
+#include <client/client.hpp>
+// project
+#include <project/model/contact_person.hpp>
 
 namespace tms {
 namespace client {
+
+using namespace tms::common::protocol;
+using namespace tms::common::contraption;
+using namespace tms::common::protocol::message;
+using namespace tms::project::model;
 
 BEGIN_EVENT_TABLE(LoginFrame,wxFrame)
 END_EVENT_TABLE()
@@ -29,6 +45,8 @@ void LoginFrame::SaveOptions() {
   Options::set_name(text->GetValue().ToStdString());
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL2");
   // here should be setting password_hash
+  Options::set_password_hash(
+      sha256(text->GetValue().ToStdString()));
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL3");
   Options::set_server(text->GetValue().ToStdString());
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL4");
@@ -46,11 +64,28 @@ void LoginFrame::Init() {
 
 void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
   SaveOptions();
-  grid_frame = new GridFrame();
- 	wxXmlResource::Get()->LoadFrame(grid_frame, NULL, _T("GridFrame"));
- 	grid_frame->Init();
-  grid_frame->SetTitle(_T("Журнал"));
-  grid_frame->Show(true);
+  ClientP client = CreateClient(Options::server(), Options::port());
+  Options::set_client(client);
+  LoginRequestP login(new LoginRequest);
+  login->set_name(Options::name());
+  login->set_password_hash(Options::password_hash());
+  MessageP ret = client->EvalRequest(*login);
+  if (boost::dynamic_pointer_cast<LoginResponse>(ret)) {
+    std::vector<Column> cols;
+    cols.push_back(Column(0, "Имя", 70));
+    cols.push_back(Column(1, "Код", 100));
+    cols.push_back(Column(2, "Email", 50));
+    cols.push_back(Column(4, "Факс", 70));
+    cols.push_back(Column(5, "Телефон", 100));
+    cols.push_back(Column(3, "Заметки", 200));
+    ModelP model = new ContactPerson(ModelBackendP(
+        new ServerModelBackend(client, "contact_persons")));
+    grid_frame = new GridFrame();
+    wxXmlResource::Get()->LoadFrame(grid_frame, NULL, _T("GridFrame"));
+    grid_frame->Init(model, cols);
+    grid_frame->SetTitle(_T("Журнал"));
+    grid_frame->Show(true);    
+  } 
   Close();
 }
 

@@ -8,7 +8,7 @@ namespace widget {
 using namespace contraption;
 
 ContraptionGrid::ContraptionGrid(ContraptionArrayP contraptions,
-                                 std::vector<Column> &cols,
+                                 const std::vector<Column> &cols,
                                  wxWindow *parent, wxWindowID id,
                                  const wxPoint &pos, const wxSize &size,
                                  long style, const wxString &name) :
@@ -23,8 +23,8 @@ ContraptionGrid::ContraptionGrid(ContraptionArrayP contraptions,
   old_size_ = contraptions_->size();
   base_ = new ContraptionGridTableBase(contraptions_, cols_);
   SetTable(base_, true, wxGridSelectRows);
-  for (size_t j = 0; j < cols.size(); j++) {
-    SetColSize(j, cols[static_cast<int>(j)].width);
+  for (size_t j = 0; j < cols_.size(); j++) {
+    SetColSize(j, cols_[static_cast<int>(j)].width);
   }
   Bind(wxEVT_GRID_CELL_LEFT_CLICK, &ContraptionGrid::OnCellClick, this);
   Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &ContraptionGrid::OnCellDClick, this);

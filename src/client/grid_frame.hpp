@@ -33,24 +33,25 @@ namespace client {
 class GridFrame : public wxFrame {
  public:
   GridFrame() :
-    wxFrame(), grid_(), contraptions_(), test_frame() {}
-	virtual ~GridFrame();
-	void Init();
+      wxFrame(), grid_(), contraptions_(), test_frame() {}
+  virtual ~GridFrame();
+  void Init(tms::common::contraption::ModelP model, 
+            const std::vector<Column> &cols);
 
  private:
   GridFrame(const GridFrame&);
   GridFrame& operator=(const GridFrame&);
 
-	tms::common::widget::ContraptionGrid* grid_;
-	tms::common::contraption::ContraptionArrayP contraptions_;
-	TestFrame* test_frame;
+  tms::common::widget::ContraptionGrid* grid_;
+  tms::common::contraption::ContraptionArrayP contraptions_;
+  TestFrame* test_frame;
 
-	void OnCellClick(tms::common::contraption::ContraptionP contraption,
+  void OnCellClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
-	void OnCellDClick(tms::common::contraption::ContraptionP contraption,
+  void OnCellDClick(tms::common::contraption::ContraptionP contraption,
                     tms::common::contraption::FieldID field_id);
-	void OnAddClick(wxCommandEvent& WXUNUSED(event));
-	void OnExitClick(wxCommandEvent& WXUNUSED(event));
+  void OnAddClick(wxCommandEvent& WXUNUSED(event));
+  void OnExitClick(wxCommandEvent& WXUNUSED(event));
 
   DECLARE_EVENT_TABLE()
 };

@@ -5,6 +5,7 @@ endif(WIN32)
 
 add_executable(client_app
                main
+	       client
                login_frame
                grid_frame
                test_frame
@@ -25,6 +26,9 @@ target_link_libraries(client_app
   tms_soci_contraption
   tms_contraption
   tms_contraption_grid
+  tms_project
+  tms_server_contraption
+  tms_project_model
   ${Boost_LIBRARIES}
   ${SOCI_sqlite3_PLUGIN}
   ${SQLITE3_LIBRARIES}

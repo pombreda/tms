@@ -1,18 +1,25 @@
+#include <cstdarg> // for log4cplus
 #include "options.hpp"
 
 namespace tms {
 namespace client {
 
 using namespace tms::common::contraption;
+using namespace tms::common::protocol;
 
 ContraptionP Options::contraption_ = ContraptionP();
+ClientP Options::client_ = ClientP();
 
 void Options::Init() {
   std::string options_db("options.sqlite3");
+  bool need_initialization = false;
+  if (!boost::filesystem::exists(options_db)) {
+    need_initialization = true;
+  }
   SOCIDBScheme scheme(soci::sqlite3, options_db);
   ModelBackendP backend(new SOCIModelBackend(scheme, "options"));
   ModelP model(new OptionsModel(backend));
-  if (!boost::filesystem::exists(options_db)) {
+  if (need_initialization) {
     model->InitSchema();
   }
   ContraptionArrayP contraptions = model->All();

@@ -33,7 +33,7 @@ class ContraptionGrid : public wxGrid {
                                FieldID field_id)> OnClickFunction;
 
   ContraptionGrid(ContraptionArrayP contraptions,
-                  std::vector<Column> &cols,
+                  const std::vector<Column> &cols,
                   wxWindow *parent, wxWindowID id,
                   const wxPoint &pos=wxDefaultPosition,
                   const wxSize &size=wxDefaultSize,

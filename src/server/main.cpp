@@ -2,12 +2,20 @@
 #include <server/server.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
+// log4cplus
+#include <log4cplus/configurator.h>
+
 using namespace tms::server;
 using namespace tms::common::protocol;
 using namespace std;
+using namespace log4cplus;
+
 namespace po = boost::program_options;
 int main(int argc, char** argv){
   try {    
+    PropertyConfigurator config("log.cfg");
+    config.configure();
+
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help", "produce help message")

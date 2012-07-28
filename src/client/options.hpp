@@ -15,7 +15,10 @@
 #include <contraption/model_backend/soci_model_backend.hpp>
 #include <contraption/field.hpp>
 #include <contraption/field/simple_field.hpp>
+#include <protocol/client.hpp>
 #include "options_model.hpp"
+// client
+#include <client/client.hpp>
 
 namespace tms {
 namespace client {
@@ -56,8 +59,16 @@ class Options {
     contraption_->Save();
   }
 
+  static common::protocol::ClientP client() {
+    return client_;
+  }
+  static void set_client(common::protocol::ClientP client) {
+    client_ = client;
+  }
+
  private:
-  static tms::common::contraption::ContraptionP contraption_;
+  static common::protocol::ClientP client_;
+  static common::contraption::ContraptionP contraption_;
 };
 
 }
