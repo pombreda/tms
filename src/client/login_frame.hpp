@@ -25,6 +25,7 @@ class LoginFrame : public wxFrame {
   LoginFrame& operator=(const LoginFrame&);
 
   GridFrame *grid_frame;
+  tms::common::widget::ContraptionGridTableBase *base_;
 
   void OnOKButtonClick(wxCommandEvent& event);
   void OnExitButtonClick(wxCommandEvent& event);

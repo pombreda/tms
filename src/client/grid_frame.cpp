@@ -12,18 +12,19 @@ END_EVENT_TABLE()
 GridFrame::~GridFrame() {
 }
 
-void GridFrame::Init(ModelP model, 
-                     const std::vector<Column> &cols) {
+void GridFrame::Init(ContraptionGridTableBase *contact_person) {
   Connect(XRCID("ID_BUTTON1"), wxEVT_COMMAND_BUTTON_CLICKED,
           (wxObjectEventFunction)&GridFrame::OnAddClick);
   Connect(XRCID("ID_BUTTON2"), wxEVT_COMMAND_BUTTON_CLICKED,
           (wxObjectEventFunction)&GridFrame::OnExitClick);
   Centre();
-  contraptions_ = model->All();
-  grid_ = new ContraptionGrid(contraptions_, cols, this, wxID_ANY);
-  wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);
+  base_ = contact_person;
+  contraptions_ = base_->contraptions();
+  grid_ = new ContraptionGrid(this, wxID_ANY);
+  grid_->SetTable(base_, wxGrid::wxGridSelectRows);
   grid_->SetOnCellClick(boost::bind(&GridFrame::OnCellClick, this, _1, _2));
   grid_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2));
+  wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);
   GetSizer()->RecalcSizes();
   test_frame = new TestFrame();
   wxXmlResource::Get()->LoadFrame(test_frame, this, _T("TestFrame"));

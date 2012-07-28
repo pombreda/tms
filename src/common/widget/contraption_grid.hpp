@@ -32,9 +32,7 @@ class ContraptionGrid : public wxGrid {
   typedef boost::function<void(ContraptionP contraption,
                                FieldID field_id)> OnClickFunction;
 
-  ContraptionGrid(ContraptionArrayP contraptions,
-                  const std::vector<Column> &cols,
-                  wxWindow *parent, wxWindowID id,
+  ContraptionGrid(wxWindow *parent, wxWindowID id,
                   const wxPoint &pos=wxDefaultPosition,
                   const wxSize &size=wxDefaultSize,
                   long style=wxWANTS_CHARS,
@@ -42,24 +40,22 @@ class ContraptionGrid : public wxGrid {
   virtual ~ContraptionGrid();
   void SetOnCellClick(OnClickFunction on_cell_click);
   void SetOnCellDClick(OnClickFunction on_cell_dclick);
+  bool SetTable(ContraptionGridTableBase *table,
+                wxGridSelectionModes selmode = wxGridSelectCells);
 
  private:
   ContraptionGrid(const ContraptionGrid&);
   ContraptionGrid& operator=(const ContraptionGrid&);
 
   ContraptionGridTableBase *base_;
-  ContraptionArrayP contraptions_;
-  std::vector<Column> cols_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_click_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_dclick_;
-  size_t old_size_;
 
  private:
   void OnCellClick(wxGridEvent &e);
   void OnCellDClick(wxGridEvent &e);
-  void OnChange();
 };
 
 }

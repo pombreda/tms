@@ -39,12 +39,24 @@ class ContraptionGridTableBase : public wxGridTableBase {
   wxString GetColLabelValue(int col);
   bool AppendRows(size_t numRows = 1);
   bool DeleteRows(size_t pos = 0, size_t numRows = 1);
+  void RefreshViewColumns();
+  void OnChange();
+  const ContraptionArrayP contraptions() {
+    return contraptions_;
+  }
+  const ModelP model() {
+    return model_;
+  }
+  const std::vector<Column> cols() {
+    return cols_;
+  }
 
  private:
   ContraptionArrayP contraptions_;
   ModelP model_;
   std::vector<Column> cols_;
   std::vector<boost::shared_ptr<Printer> > printer_;
+  int old_size_;
 
 };
 

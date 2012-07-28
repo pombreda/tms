@@ -41,6 +41,7 @@
 #include <contraption/field/simple_field.hpp>
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
+#include <widget/contraption_grid_table_base.hpp>
 #include <gui_exception/gui_exception.hpp>
 
 using namespace std;
@@ -165,8 +166,10 @@ MyFrame::MyFrame(const wxString& title)
   cols.push_back(Column(0, "Name", 70));
   cols.push_back(Column(3, "Surname", 100));
   cols.push_back(Column(1, "Age", 50));
-  grid = new ContraptionGrid(contraptions, cols, this,
-                             wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
+  ContraptionGridTableBase *grid_base =
+    new ContraptionGridTableBase(contraptions, cols);
+  grid = new ContraptionGrid(this, wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
+  grid->SetTable(grid_base);
   function<void(ContraptionP, FieldID)> f = bind(&OnClick, _1, _2, contraptions);
   grid->SetOnCellClick(f);
   wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);

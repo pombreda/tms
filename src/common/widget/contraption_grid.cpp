@@ -7,32 +7,31 @@ namespace widget {
 
 using namespace contraption;
 
-ContraptionGrid::ContraptionGrid(ContraptionArrayP contraptions,
-                                 const std::vector<Column> &cols,
-                                 wxWindow *parent, wxWindowID id,
+ContraptionGrid::ContraptionGrid(wxWindow *parent, wxWindowID id,
                                  const wxPoint &pos, const wxSize &size,
                                  long style, const wxString &name) :
     wxGrid(parent, id, pos, size, style, name),
-    base_(), contraptions_(contraptions), cols_(cols),
-    on_cell_click_(), on_cell_dclick_(), old_size_(0) {
+    base_(), on_cell_click_(), on_cell_dclick_() {
   EnableDragColSize();
   EnableDragColMove();
   EnableDragRowSize();
   DisableCellEditControl();
   EnableEditing(false);
-  old_size_ = contraptions_->size();
-  base_ = new ContraptionGridTableBase(contraptions_, cols_);
-  SetTable(base_, true, wxGridSelectRows);
-  for (size_t j = 0; j < cols_.size(); j++) {
-    SetColSize(j, cols_[static_cast<int>(j)].width);
-  }
   Bind(wxEVT_GRID_CELL_LEFT_CLICK, &ContraptionGrid::OnCellClick, this);
   Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &ContraptionGrid::OnCellDClick, this);
-  contraptions_->SetOnChange(boost::bind(&ContraptionGrid::OnChange, this));
 }
 
 ContraptionGrid::~ContraptionGrid() {
 }
+
+bool ContraptionGrid::SetTable(ContraptionGridTableBase *table,
+                               wxGridSelectionModes selmode) {
+  bool res = wxGrid::SetTable(table, false, selmode);
+  base_ = table;
+  base_->RefreshViewColumns();
+  return res;
+}
+
 
 void ContraptionGrid::SetOnCellClick(OnClickFunction on_cell_click) {
   on_cell_click_.connect(on_cell_click);
@@ -46,8 +45,8 @@ void ContraptionGrid::OnCellClick(wxGridEvent &e) {
   int row = e.GetRow();
   int col = e.GetCol();
   SelectRow(row);
-  ContraptionP &contraption = contraptions_->at(static_cast<size_t>(row));
-  FieldID field_id = static_cast<FieldID>(cols_[col].field_id);
+  ContraptionP &contraption = base_->contraptions()->at(static_cast<size_t>(row));
+  FieldID field_id = static_cast<FieldID>(base_->cols()[col].field_id);
   on_cell_click_(contraption, field_id);
 }
 
@@ -55,20 +54,9 @@ void ContraptionGrid::OnCellDClick(wxGridEvent &e) {
   int row = e.GetRow();
   int col = e.GetCol();
   SelectRow(row);
-  ContraptionP &contraption = contraptions_->at(static_cast<size_t>(row));
-  FieldID field_id = static_cast<FieldID>(cols_[col].field_id);
+  ContraptionP &contraption = base_->contraptions()->at(static_cast<size_t>(row));
+  FieldID field_id = static_cast<FieldID>(base_->cols()[col].field_id);
   on_cell_dclick_(contraption, field_id);
-}
-
-void ContraptionGrid::OnChange() {
-  int delta = static_cast<int>(old_size_) -
-    static_cast<int>(contraptions_->size());
-  if (delta < 0) {
-    AppendRows(-delta);
-  } else if (delta > 0) {
-    DeleteRows(static_cast<int>(contraptions_->size()), delta);
-  }
-  old_size_ = contraptions_->size();
 }
 
 }

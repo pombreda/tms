@@ -26,6 +26,7 @@
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
 #include "test_frame.hpp"
+#include <wx/grid.h>
 
 namespace tms {
 namespace client {
@@ -35,15 +36,15 @@ class GridFrame : public wxFrame {
   GridFrame() :
       wxFrame(), grid_(), contraptions_(), test_frame() {}
   virtual ~GridFrame();
-  void Init(tms::common::contraption::ModelP model, 
-            const std::vector<Column> &cols);
+  void Init(tms::common::widget::ContraptionGridTableBase *contact_person);
 
  private:
   GridFrame(const GridFrame&);
   GridFrame& operator=(const GridFrame&);
 
-  tms::common::widget::ContraptionGrid* grid_;
+  tms::common::widget::ContraptionGrid *grid_;
   tms::common::contraption::ContraptionArrayP contraptions_;
+  tms::common::widget::ContraptionGridTableBase *base_;
   TestFrame* test_frame;
 
   void OnCellClick(tms::common::contraption::ContraptionP contraption,

@@ -6,10 +6,13 @@
 #include <protocol/message/login_response.hpp>
 #include <contraption/model_backend/server_model_backend.hpp>
 #include <contraption/model.hpp>
+#include <widget/contraption_grid_table_base.hpp>
 // client
 #include <client/client.hpp>
 // project
 #include <project/model/contact_person.hpp>
+
+#include <wx/grid.h>
 
 namespace tms {
 namespace client {
@@ -18,6 +21,7 @@ using namespace tms::common::protocol;
 using namespace tms::common::contraption;
 using namespace tms::common::protocol::message;
 using namespace tms::project::model;
+using namespace tms::common::widget;
 
 BEGIN_EVENT_TABLE(LoginFrame,wxFrame)
 END_EVENT_TABLE()
@@ -82,10 +86,11 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
         new ServerModelBackend(client, "contact_persons")));
     grid_frame = new GridFrame();
     wxXmlResource::Get()->LoadFrame(grid_frame, NULL, _T("GridFrame"));
-    grid_frame->Init(model, cols);
+    base_ = new ContraptionGridTableBase(model->All(), cols);
+    grid_frame->Init(base_);
     grid_frame->SetTitle(_T("Журнал"));
-    grid_frame->Show(true);    
-  } 
+    grid_frame->Show(true);
+  }
   Close();
 }
 
