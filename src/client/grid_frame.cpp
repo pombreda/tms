@@ -15,9 +15,9 @@ GridFrame::~GridFrame() {
 void GridFrame::Init(ModelP model, 
                      const std::vector<Column> &cols) {
   Connect(XRCID("ID_BUTTON1"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&GridFrame::OnAddClick, this);
+          (wxObjectEventFunction)&GridFrame::OnAddClick);
   Connect(XRCID("ID_BUTTON2"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&GridFrame::OnExitClick, this);
+          (wxObjectEventFunction)&GridFrame::OnExitClick);
   Centre();
   contraptions_ = model->All();
   grid_ = new ContraptionGrid(contraptions_, cols, this, wxID_ANY);
