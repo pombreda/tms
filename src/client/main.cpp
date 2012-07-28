@@ -55,7 +55,7 @@ bool ClientApp::OnInit() {
     wxInitAllImageHandlers();
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/GridFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/LoginFrame.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/TestFrame.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/ContactPersonsFrame.xrc"));
     if (!wxApp::OnInit())
       return false;
    	login_frame = new LoginFrame();

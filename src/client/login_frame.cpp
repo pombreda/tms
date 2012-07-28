@@ -76,11 +76,11 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
   MessageP ret = client->EvalRequest(*login);
   if (boost::dynamic_pointer_cast<LoginResponse>(ret)) {
     std::vector<Column> cols;
-    cols.push_back(Column(0, "Имя", 70));
+    cols.push_back(Column(0, "Имя", 150));
     cols.push_back(Column(1, "Код", 100));
     cols.push_back(Column(2, "Email", 50));
-    cols.push_back(Column(4, "Факс", 70));
-    cols.push_back(Column(5, "Телефон", 100));
+    cols.push_back(Column(4, "Телефон", 100));
+    cols.push_back(Column(5, "Факс", 100));
     cols.push_back(Column(3, "Заметки", 200));
     ModelP model = new ContactPerson(ModelBackendP(
         new ServerModelBackend(client, "contact_persons")));

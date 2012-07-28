@@ -14,8 +14,8 @@ vector<Field*> ContactPerson::fields() {
   ret.push_back(new SimpleFieldT<string>("code"));
   ret.push_back(new SimpleFieldT<string>("email"));
   ret.push_back(new SimpleFieldT<string>("note"));
-  ret.push_back(new SimpleFieldT<string>("fax"));
   ret.push_back(new SimpleFieldT<string>("phone"));
+  ret.push_back(new SimpleFieldT<string>("fax"));
   return ret;
 }
 

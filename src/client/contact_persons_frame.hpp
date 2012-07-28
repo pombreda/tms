@@ -16,23 +16,27 @@
 namespace tms {
 namespace client {
 
-class TestFrame : public wxFrame {
+class ContactPersonsFrame : public wxFrame {
  public:
-  TestFrame() :
-      wxFrame(), tc_name_(), tc_surname_(),
-      tc_age_(), contraption_(), contraptions_() {}
-	virtual ~TestFrame();
+  ContactPersonsFrame() :
+      wxFrame(), tc_name_(), tc_code_(), tc_email_(),
+      tc_phone_(), tc_fax_(), tc_notes_(),
+      contraption_(), contraptions_() {}
+	virtual ~ContactPersonsFrame();
 	void Init();
 	void SetUpValues(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::ContraptionArrayP contraptions);
 
  private:
-  TestFrame(const TestFrame&);
-  TestFrame& operator=(const TestFrame&);
+  ContactPersonsFrame(const ContactPersonsFrame&);
+  ContactPersonsFrame& operator=(const ContactPersonsFrame&);
 
   wxTextCtrl *tc_name_;
-  wxTextCtrl *tc_surname_;
-  wxTextCtrl *tc_age_;
+  wxTextCtrl *tc_code_;
+  wxTextCtrl *tc_email_;
+  wxTextCtrl *tc_phone_;
+  wxTextCtrl *tc_fax_;
+  wxTextCtrl *tc_notes_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;
 

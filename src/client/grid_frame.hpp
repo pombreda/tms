@@ -25,8 +25,7 @@
 #include <contraption/field/simple_field.hpp>
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
-#include "test_frame.hpp"
-#include <wx/grid.h>
+#include "contact_persons_frame.hpp"
 
 namespace tms {
 namespace client {
@@ -34,9 +33,9 @@ namespace client {
 class GridFrame : public wxFrame {
  public:
   GridFrame() :
-      wxFrame(), grid_(), contraptions_(), test_frame() {}
+      wxFrame(), grid_(), contraptions_(), contact_persons_frame() {}
   virtual ~GridFrame();
-  void Init(tms::common::widget::ContraptionGridTableBase *contact_person);
+  void Init(tms::common::widget::ContraptionGridTableBase *contact_persons);
 
  private:
   GridFrame(const GridFrame&);
@@ -45,7 +44,7 @@ class GridFrame : public wxFrame {
   tms::common::widget::ContraptionGrid *grid_;
   tms::common::contraption::ContraptionArrayP contraptions_;
   tms::common::widget::ContraptionGridTableBase *base_;
-  TestFrame* test_frame;
+  ContactPersonsFrame* contact_persons_frame;
 
   void OnCellClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
