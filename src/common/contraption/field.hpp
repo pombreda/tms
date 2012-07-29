@@ -7,6 +7,8 @@
 #include <string>
 #include <memory>
 #include <sstream>
+// boost
+#include <boost/parameter.hpp>
 // common
 #include <contraption/model.hpp>
 #include <contraption/filter.hpp>
@@ -51,23 +53,33 @@ class Field {
     field_id_ = model->GetFieldID(this->name());
   }
   
-  virtual void GetReadRecords(FieldTypeArray &values, 
-                              ContraptionID id,
-                              std::vector<RecordP> &out
-                              ) const = 0;
-  virtual void GetWriteRecords(FieldTypeArray &values, 
-                               ContraptionID id,
-                               std::vector<RecordP> &out
-                               ) const = 0;
+  virtual void GetReadRecords(FieldTypeArray &/*values*/, 
+                              ContraptionID /*id*/,
+                              std::vector<RecordP> &/*out*/
+                              ) const {
+  }
+
+  virtual void GetWriteRecords(FieldTypeArray &/*values*/, 
+                               ContraptionID /*id*/,
+                               std::vector<RecordP> &/*out*/
+                               ) const {
+  }
   
   virtual bool CheckType(const FieldType *type) const = 0;
+  virtual void FinalizeGet(FieldTypeArray &/*values*/, 
+                           ContraptionID /*id*/) const {
+  }
+  virtual void FinalizeSave(FieldTypeArray &/*values*/,
+                            ContraptionID /*id*/) const {
+  }
   virtual FieldTypeP GetValue(FieldTypeArray &values, ContraptionID /*id*/) {
-    return FieldTypeP(values[(int)this->field_id_]->Duplicate());
+    return FieldTypeP(values[static_cast<int>(this->field_id_)]->Duplicate());
   }
   virtual void SetValue(const FieldType &value, 
                         FieldTypeArray &values,
                         ContraptionID /*id*/) {
-    values[(int)this->field_id_].reset(value.Duplicate());
+    CheckType(&value);
+    values[static_cast<int>(this->field_id_)].reset(value.Duplicate());
   }
 
   virtual ~Field() {}
@@ -95,6 +107,10 @@ class FieldT : public Field {
   }
   virtual ~FieldT() {}
 };
+
+BOOST_PARAMETER_NAME(name)
+BOOST_PARAMETER_NAME(is_readable)
+BOOST_PARAMETER_NAME(is_writable)
 
 }
 }

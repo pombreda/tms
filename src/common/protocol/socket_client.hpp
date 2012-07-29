@@ -46,9 +46,9 @@ class SocketClient : public Client {
   virtual ~SocketClient() 
       throw(){}
  private:
-  boost::shared_ptr< boost::asio::io_service > ip_;
   SocketP socket_;
   ProtocolP protocol_;
+  boost::shared_ptr< boost::asio::io_service > ip_;
 };
 
 

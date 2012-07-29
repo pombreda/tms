@@ -17,9 +17,6 @@ namespace tms {
 namespace common {
 namespace contraption {
 
-BOOST_PARAMETER_NAME(name)
-BOOST_PARAMETER_NAME(is_readable)
-BOOST_PARAMETER_NAME(is_writable)
 BOOST_PARAMETER_NAME(backend_name)
 BOOST_PARAMETER_NAME(default_value)
 
@@ -43,12 +40,13 @@ class SimpleFieldTImpl : public FieldT<T> {
   virtual void GetReadRecords(FieldTypeArray &values,
                               ContraptionID id,
                               std::vector<RecordP> &out) const {
-    if (!values[(int)this->field_id_]) {
-      values[(int)this->field_id_].reset(new FieldTypeT<T>(default_value_));
+    if (!values[static_cast<int>(this->field_id_)]) {
+      values[static_cast<int>(this->field_id_)].reset(
+          new FieldTypeT<T>(default_value_));
       if (id != Contraption::kNewID) {
         out.push_back(RecordP(
             new RecordT<T>(backend_name_, &(dynamic_cast<FieldTypeT<T>*>(
-                values[(int)this->field_id_].get())->data_))));
+                values[static_cast<int>(this->field_id_)].get())->data_))));
       }
     }
   }
@@ -56,14 +54,15 @@ class SimpleFieldTImpl : public FieldT<T> {
   virtual void GetWriteRecords(FieldTypeArray &values,
                                ContraptionID id,
                                std::vector<RecordP> &out) const {
-    if (!values[(int)this->field_id_]
+    if (!values[static_cast<int>(this->field_id_)]
         && id == Contraption::kNewID) {
-      values[(int)this->field_id_].reset(new FieldTypeT<T>(default_value_));
+      values[static_cast<int>(this->field_id_)].reset(
+          new FieldTypeT<T>(default_value_));
     }
-    if (values[(int)this->field_id_]) {
+    if (values[static_cast<int>(this->field_id_)]) {
       out.push_back(RecordP(
           new RecordT<T>(backend_name_, &(dynamic_cast<FieldTypeT<T>*>(
-              values[(int)this->field_id_].get())->data_))));
+              values[static_cast<int>(this->field_id_)].get())->data_))));
     }
   }
 

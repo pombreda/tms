@@ -115,6 +115,7 @@ Contraption::Contraption(const Contraption &other)
     ptr_count_(0),
     in_array_(false),
     on_change_(),
+    on_delete_(),
     model_(other.model_),
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(other.id_) {
@@ -131,6 +132,7 @@ Contraption::Contraption(ModelP model)
     ptr_count_(0),
     in_array_(false),
     on_change_(),
+    on_delete_(),
     model_(model),
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(kNewID) {
