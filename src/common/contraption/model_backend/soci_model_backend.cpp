@@ -161,6 +161,12 @@ void SOCIModelBackend::WriteRecords(
     OpenSession();
     ostringstream query;
     soci::statement st(session_);
+    session_ << "SELECT " << id_column_ << " FROM " 
+             << table_name_ << " WHERE " << id_column_
+             << " = :v", soci::use(id), soci::into(id);
+    if (!session_.got_data()) {
+      id = Contraption::kNewID;
+    }
     if (id == Contraption::kNewID) {
       session_ << "SELECT COUNT(" << id_column_ << ") FROM " << table_name_,
           soci::into(id);
