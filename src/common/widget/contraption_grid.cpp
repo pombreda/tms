@@ -17,6 +17,7 @@ ContraptionGrid::ContraptionGrid(wxWindow *parent, wxWindowID id,
   EnableDragRowSize();
   DisableCellEditControl();
   EnableEditing(false);
+  SetDefaultRenderer(new wxGridCellAutoWrapStringRenderer());
   Bind(wxEVT_GRID_CELL_LEFT_CLICK, &ContraptionGrid::OnCellClick, this);
   Bind(wxEVT_GRID_CELL_LEFT_DCLICK, &ContraptionGrid::OnCellDClick, this);
 }
