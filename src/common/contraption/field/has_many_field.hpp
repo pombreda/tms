@@ -59,8 +59,9 @@ class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
   virtual void FinalizeGet(FieldTypeArray &values, ContraptionID id) const {
     if (!values[static_cast<int>(this->field_id_)]) {
       ContraptionArrayP val =  ContraptionArrayP(
-          new HasManyFieldContraptionArray(ModelP(&model_), 
-                                           ModelP(&through_model_), 
+          new HasManyFieldContraptionArray(ModelP(const_cast<Model*>(&model_)),
+                                           ModelP(const_cast<Model*>(
+                                               &through_model_)), 
                                            id_column_,
                                            other_id_column_,
                                            id));
@@ -84,8 +85,8 @@ class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
     }
   }
  private:
-  mutable Model& model_;
-  mutable Model& through_model_;
+  Model& model_;
+  Model& through_model_;
   const IntField *id_column_;
   const IntField *other_id_column_;
 };
