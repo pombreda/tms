@@ -6,6 +6,8 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/grid.h>
 #include <wx/sizer.h>
+#include <wx/msgdlg.h>
+#include <wx/choice.h>
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
 // boost
@@ -20,12 +22,15 @@
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>
 #include <contraption/model_backend.hpp>
-#include <contraption/model_backend/soci_model_backend.hpp>
+#include <contraption/model_backend/server_model_backend.hpp>
 #include <contraption/field.hpp>
 #include <contraption/field/simple_field.hpp>
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
 #include "contact_persons_frame.hpp"
+// project
+#include <project/model/contact_person.hpp>
+#include "options.hpp"
 
 namespace tms {
 namespace client {
@@ -33,24 +38,36 @@ namespace client {
 class GridFrame : public wxFrame {
  public:
   GridFrame() :
-      wxFrame(), grid_(), contraptions_(), contact_persons_frame() {}
+      wxFrame(),
+      grid_books_(), choice_book_(), selected_book_id_(0),
+      grid_catalogs_(), choice_catalog_(), selected_catalog_id_(0),
+      table_contact_persons_(), contact_persons_frame_() {}
   virtual ~GridFrame();
-  void Init(tms::common::widget::ContraptionGridTableBase *contact_persons);
+  void Init();
 
  private:
   GridFrame(const GridFrame&);
   GridFrame& operator=(const GridFrame&);
 
-  tms::common::widget::ContraptionGrid *grid_;
-  tms::common::contraption::ContraptionArrayP contraptions_;
-  tms::common::widget::ContraptionGridTableBase *base_;
-  ContactPersonsFrame* contact_persons_frame;
+  tms::common::widget::ContraptionGrid *grid_books_;
+  wxChoice *choice_book_;
+  int selected_book_id_;
+  // here should be book tables and edit frames
+  tms::common::widget::ContraptionGrid *grid_catalogs_;
+  wxChoice *choice_catalog_;
+  int selected_catalog_id_;
+  tms::common::widget::ContraptionGridTableBase *table_contact_persons_;
+  ContactPersonsFrame* contact_persons_frame_;
+  // here should be more catalog tables and edit frames
+
+  void InitContactPersonsTable();
 
   void OnCellClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
   void OnCellDClick(tms::common::contraption::ContraptionP contraption,
                     tms::common::contraption::FieldID field_id);
-  void OnAddClick(wxCommandEvent& WXUNUSED(event));
+  void OnAddInCatalogClick(wxCommandEvent& WXUNUSED(event));
+  void OnCatalogSelect(wxCommandEvent& WXUNUSED(event));
   void OnExitClick(wxCommandEvent& WXUNUSED(event));
 
   DECLARE_EVENT_TABLE()

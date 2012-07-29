@@ -75,20 +75,10 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
   login->set_password_hash(Options::password_hash());
   MessageP ret = client->EvalRequest(*login);
   if (boost::dynamic_pointer_cast<LoginResponse>(ret)) {
-    std::vector<Column> cols;
-    cols.push_back(Column(0, "Имя", 150));
-    cols.push_back(Column(1, "Код", 100));
-    cols.push_back(Column(2, "Email", 50));
-    cols.push_back(Column(4, "Телефон", 100));
-    cols.push_back(Column(5, "Факс", 100));
-    cols.push_back(Column(3, "Заметки", 200));
-    ModelP model = new ContactPerson(ModelBackendP(
-        new ServerModelBackend(client, "contact_persons")));
     grid_frame = new GridFrame();
     wxXmlResource::Get()->LoadFrame(grid_frame, NULL, _T("GridFrame"));
-    base_ = new ContraptionGridTableBase(model->All(), cols);
-    grid_frame->Init(base_);
-    grid_frame->SetTitle(_T("Журнал"));
+    grid_frame->Init();
+    grid_frame->SetTitle(_T("TMS"));
     grid_frame->Show(true);
   }
   Close();

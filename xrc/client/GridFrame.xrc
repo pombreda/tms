@@ -7,14 +7,6 @@
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxStaticText" name="ID_STATICTEXT1">
-					<label>Для добавления нового элемента нажмите &quot;Добавить&quot;.&#x0A;Для изменения или удаления уже существующего элемента дважды кликните по нему в таблице.</label>
-					<style>wxALIGN_LEFT|wxSUNKEN_BORDER</style>
-				</object>
-				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-				<border>5</border>
-			</object>
-			<object class="sizeritem">
 				<object class="wxNotebook" name="ID_NOTEBOOK1">
 					<object class="notebookpage">
 						<object class="wxPanel" name="ID_PANEL1">
@@ -23,7 +15,13 @@
 								<object class="sizeritem">
 									<object class="wxBoxSizer">
 										<object class="sizeritem">
-											<object class="wxChoice" name="ID_CHOICE1" />
+											<object class="wxChoice" name="ID_CHOICE_BOOK">
+												<content>
+													<item>Входящие</item>
+													<item>Коммерческие предложения</item>
+												</content>
+												<selection>0</selection>
+											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>2</option>
@@ -41,9 +39,10 @@
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
-									<object class="CustomClass" name="ID_GRID_BOOKS">
+									<object class="unknown" name="ID_GRID_BOOKS">
+										<style></style>
 										<size>681,250</size>
-										<style>0</style>
+										<style></style>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
@@ -60,7 +59,14 @@
 								<object class="sizeritem">
 									<object class="wxBoxSizer">
 										<object class="sizeritem">
-											<object class="wxChoice" name="ID_CHOICE2" />
+											<object class="wxChoice" name="ID_CHOICE_CATALOG">
+												<content>
+													<item>Контактные лица</item>
+													<item>Компании</item>
+													<item>Оборудование</item>
+												</content>
+												<selection>0</selection>
+											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>2</option>
@@ -79,8 +85,9 @@
 								</object>
 								<object class="sizeritem">
 									<object class="unknown" name="ID_GRID_CATALOGS">
+										<style></style>
 										<size>687,250</size>
-										<style>0</style>
+										<style></style>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
