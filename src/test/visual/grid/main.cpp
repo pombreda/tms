@@ -50,7 +50,7 @@ using namespace boost;
 using namespace tms::common::widget;
 using namespace tms::common;
 
-void OnClick(ContraptionP &contraption, FieldID field_id,
+void OnClick(ContraptionP &contraption, FieldID /*field_id*/,
              ContraptionArrayP contraptions) {
   contraption->Set<string>("name", string("Ivan"));
   contraptions->erase(contraptions->size() - 1);
@@ -144,6 +144,7 @@ bool ExceptionTest::OnInit() {
   } catch (GUIException &e) {
     std::cerr << e.message() << std::endl;
   }
+  return true;
   // Success: wxApp::OnRun() will be called which will enter the main message
   // loop and the application will run. If we returned false here, the
   // application would exit immediately.
@@ -169,7 +170,7 @@ MyFrame::MyFrame(const wxString& title)
   ContraptionGridTableBase *grid_base =
     new ContraptionGridTableBase(contraptions, cols);
   grid = new ContraptionGrid(this, wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
-  grid->SetTable(grid_base);
+  grid->SetTable(grid_base, wxGrid::wxGridSelectRows, 2500);
   function<void(ContraptionP, FieldID)> f = bind(&OnClick, _1, _2, contraptions);
   grid->SetOnCellClick(f);
   wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);

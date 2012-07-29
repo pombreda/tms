@@ -26,8 +26,9 @@ ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraption
 
 wxString ContraptionGridTableBase::GetValue(int row, int col) {
   if (model_->GetField(cols_[static_cast<long unsigned>(col)].field_id)->IsReadable()) {
-    return printer_[col]->ToString(*(contraptions_->at(row)->
-                                     GetFieldValue(cols_[col].field_id)));
+    return wxString::FromUTF8(
+        printer_[col]->ToString(*(contraptions_->at(row)->
+                                  GetFieldValue(cols_[col].field_id))).c_str());
   } else {
     return _T("###");
   }
@@ -47,7 +48,7 @@ int ContraptionGridTableBase::GetNumberRows() {
 }
 
 wxString ContraptionGridTableBase::GetColLabelValue(int col) {
-  return cols_[static_cast<long unsigned>(col)].name;
+  return wxString::FromUTF8(cols_[static_cast<long unsigned>(col)].name.c_str());
 }
 
 bool ContraptionGridTableBase::AppendRows(size_t numRows) {
