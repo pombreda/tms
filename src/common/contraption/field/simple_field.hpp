@@ -6,6 +6,9 @@
 // std
 #include <typeinfo>
 // boost
+#ifndef BOOST_PARAMETER_MAX_ARITY
+#define BOOST_PARAMETER_MAX_ARITY 10
+#endif // BOOST_PARAMETER_MAX_ARITY
 #include <boost/parameter.hpp>
 // common
 #include <contraption/field.hpp>
@@ -96,6 +99,8 @@ class SimpleFieldT : public SimpleFieldTImpl<T> {
   )
 };
 
+typedef SimpleFieldT<int> IntField;
+typedef SimpleFieldT<std::string> StringField;
 
 }
 }

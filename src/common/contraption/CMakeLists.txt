@@ -5,7 +5,10 @@ add_library (tms_contraption SHARED
   contraption
   contraption_array
   model_contraption_array
+  has_many_field_contraption_array
   field
+  field/simple_field
+  field/has_many_field
   field_exception
   model_backend
   model_backend_exception

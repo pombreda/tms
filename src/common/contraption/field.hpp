@@ -8,6 +8,9 @@
 #include <memory>
 #include <sstream>
 // boost
+#ifndef BOOST_PARAMETER_MAX_ARITY
+#define BOOST_PARAMETER_MAX_ARITY 10
+#endif // BOOST_PARAMETER_MAX_ARITY
 #include <boost/parameter.hpp>
 // common
 #include <contraption/model.hpp>
@@ -81,6 +84,7 @@ class Field {
     CheckType(&value);
     values[static_cast<int>(this->field_id_)].reset(value.Duplicate());
   }
+  virtual FieldID field_id() { return field_id_; }
 
   virtual ~Field() {}
 

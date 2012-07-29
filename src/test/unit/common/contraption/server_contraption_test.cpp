@@ -24,6 +24,7 @@
 #include <contraption/model_backend/soci_model_backend.hpp>
 #include <contraption/field.hpp>
 #include <contraption/field/simple_field.hpp>
+#include <contraption/field/has_many_field.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/contraption_array.hpp>
@@ -130,12 +131,12 @@ class Fixture {
     backend.reset(new ServerModelBackend(client, "test"));
     // Init model
     fields.clear();
-    fields.push_back(new SimpleFieldT<string>("name"));
-    fields.push_back(new SimpleFieldT<int>("age"));
-    fields.push_back(new SimpleFieldT<int>("password", 
-                                           _is_readable = false));
-    fields.push_back(new SimpleFieldT<string>("Surname", 
-                                              _backend_name = "surname"));
+    fields.push_back(new StringField("name"));
+    fields.push_back(new IntField("age"));
+    fields.push_back(new IntField("password", 
+                                  _is_readable = false));
+    fields.push_back(new StringField("Surname", 
+                                    _backend_name = "surname"));
 
     model.reset(new Model(fields, backend));
   }

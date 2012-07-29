@@ -2,72 +2,104 @@
 #define _TMS_COMMON_CONTRAPTION_FIELD__HAS_MANY_FIELD_HPP_
 // std
 #include <cassert>
+// boost
+#include <boost/lexical_cast.hpp>
+#ifndef BOOST_PARAMETER_MAX_ARITY
+#define BOOST_PARAMETER_MAX_ARITY 10
+#endif // BOOST_PARAMETER_MAX_ARITY
+#include <boost/parameter.hpp>
 // common
 #include <contraption/field.hpp>
 #include <contraption/model.hpp>
-#include <contraption/has_many_contaption_array.hpp>
+#include <contraption/has_many_field_contraption_array.hpp>
+#include <contraption/model_backend_exception.hpp>
 
 namespace tms {
 namespace common {
 namespace contraption {
 
-class HasManyFieldImpl : public FieldT<ContaptionArrayP> {
+
+BOOST_PARAMETER_NAME(through_model)
+BOOST_PARAMETER_NAME(model)
+BOOST_PARAMETER_NAME(id_acolumn)
+BOOST_PARAMETER_NAME(other_id_column)
+
+
+class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
  public:
   template <class ArgPack>
-  SimpleFieldTImpl(ArgPack const &args)
+  HasManyFieldImpl(ArgPack const &args)
       throw(FieldException) :
-      FieldT<T>(args[_name],
-                args[_is_readable | true],
-                args[_is_writable | true]),
+      FieldT<ContraptionArrayP>(args[_name],
+                                args[_is_readable | true],
+                                args[_is_writable | true]),
       model_(args[_model]),
-      through_model_(args[_through_model]) {
+      through_model_(args[_through_model]),
+      id_column_(0),
+      other_id_column_() {
+    try {
+      id_column_ 
+          = dynamic_cast<IntField*>(model_->GetField(args[_id_acolumn | "id"]));
+      other_id_column_
+          = dynamic_cast<IntField*>(
+              model_->GetField(args[_other_id_column | "other_id" ]));
+    } catch (FieldException &e) {
+      throw ModelBackendException(&e);
+    }
   }
   
   virtual bool CheckType(const FieldType *type) const {
-    FieldType<ContraptionArrayP>* array
+    const FieldTypeT<ContraptionArrayP>* array
         = dynamic_cast<const FieldTypeT<ContraptionArrayP>*>(type);
-    return array && array->model() == model_;
+    return array && array->data()->model() == model_;
   }
 
-  virtual void FinalizeGet(FieldTypeArray &values, ContraptionID id) {
-    if (!values[static_cast<int>(this->field_id_)]) const {
+  virtual void FinalizeGet(FieldTypeArray &values, ContraptionID id) const {
+    if (!values[static_cast<int>(this->field_id_)]) {
       values[static_cast<int>(this->field_id_)].reset(
           new FieldTypeT<ContraptionArrayP>(
-              new HasManyFieldContraptionArray(model_, through_model, id)));
+              ContraptionArrayP(
+                  new HasManyFieldContraptionArray(model_, 
+                                                   through_model_, 
+                                                   id_column_,
+                                                   other_id_column_,
+                                                   id))));
     }
   }
-
-  virtual void FinalizeSave(FieldTypeArray &values, ContraptionID id) {
-    if (!values[static_cast<int>(this->field_id_)]) const {
-      FieldType<ContraptionArrayP>* array
-          = dynamic_cast<const FieldTypeT<ContraptionArrayP>*>(
-              static_cast<int>(this->field_id_));
-      assert(array && array->model() == model_);
-      array->Save();
-    }
+  
+  virtual void FinalizeSave(FieldTypeArray &values, ContraptionID /*id*/) const {
+    const FieldTypeT<ContraptionArrayP>* array
+        = dynamic_cast<const FieldTypeT<ContraptionArrayP>*>(
+            &*values[static_cast<int>(this->field_id_)]);
+    assert(array && array->data()->model() == model_);
+    array->data()->Save();
   }
  private:
   ModelP model_;
-  ModelP throw_model_;
+  ModelP through_model_;
+  IntField *id_column_;
+  IntField *other_id_column_;
 };
 
 // for boost parameter
-class HasManyField : public HasManyField {
+class HasManyField : public HasManyFieldImpl {
  public:
   BOOST_PARAMETER_CONSTRUCTOR(
-    SimpleFieldT, (SimpleFieldTImpl<T>),
+    HasManyField, (HasManyFieldImpl),
     tag,
     (required
       (name, (std::string))
       (model, (std::string))
-      (throw_model, (std::string))
+      (through_model, (std::string))
     )
     (optional
       (is_readable, (bool))
       (is_writable, (bool))
+      (id_acolumn, (std::string))
+      (other_id_column, (std::string))
     )
   )
-}
+};
 
 }
 }
