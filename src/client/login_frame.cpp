@@ -35,7 +35,6 @@ void LoginFrame::LoadOptions() {
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL1");
   text->ChangeValue(Options::name());
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL2");
-  // here should be some processing of password_hash
   text->ChangeValue("*****");
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL3");
   text->ChangeValue(Options::server());
@@ -48,9 +47,10 @@ void LoginFrame::SaveOptions() {
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL1");
   Options::set_name(text->GetValue().ToStdString());
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL2");
-  // here should be setting password_hash
-  Options::set_password_hash(
-      sha256(text->GetValue().ToStdString()));
+  if (text->GetValue().ToStdString() != "*****") {
+    Options::set_password_hash(sha256(text->GetValue().
+                                      ToStdString()));
+  }
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL3");
   Options::set_server(text->GetValue().ToStdString());
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL4");
