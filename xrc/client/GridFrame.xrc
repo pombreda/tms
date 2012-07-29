@@ -7,28 +7,6 @@
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxBoxSizer">
-					<object class="sizeritem">
-						<object class="wxButton" name="ID_BUTTON1">
-							<label>Добавить</label>
-						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-						<option>1</option>
-					</object>
-					<object class="sizeritem">
-						<object class="wxButton" name="ID_BUTTON2">
-							<label>Выход</label>
-						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-						<option>1</option>
-					</object>
-				</object>
-				<flag>wxALL|wxFIXED_MINSIZE|wxALIGN_RIGHT|wxALIGN_TOP</flag>
-				<border>5</border>
-			</object>
-			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT1">
 					<label>Для добавления нового элемента нажмите &quot;Добавить&quot;.&#x0A;Для изменения или удаления уже существующего элемента дважды кликните по нему в таблице.</label>
 					<style>wxALIGN_LEFT|wxSUNKEN_BORDER</style>
@@ -37,19 +15,83 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxBoxSizer">
-					<object class="sizeritem">
-						<object class="unknown" name="ID_CUSTOM1">
-							<style></style>
-							<size>679,200</size>
-							<style></style>
+				<object class="wxNotebook" name="ID_NOTEBOOK1">
+					<object class="notebookpage">
+						<object class="wxPanel" name="ID_PANEL1">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxBoxSizer">
+										<object class="sizeritem">
+											<object class="wxChoice" name="ID_CHOICE1" />
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>2</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="ID_BUTTON_ADD_IN_BOOK">
+												<label>Добавить</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="CustomClass" name="ID_GRID_BOOKS">
+										<size>681,250</size>
+										<style>0</style>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>5</option>
+								</object>
+							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-						<option>1</option>
+						<label>Журналы</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="ID_PANEL2">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxBoxSizer">
+										<object class="sizeritem">
+											<object class="wxChoice" name="ID_CHOICE2" />
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>2</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="ID_BUTTON_ADD_IN_CATALOG">
+												<label>Добавить</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="unknown" name="ID_GRID_CATALOGS">
+										<size>687,250</size>
+										<style>0</style>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>5</option>
+								</object>
+							</object>
+						</object>
+						<label>Каталоги</label>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

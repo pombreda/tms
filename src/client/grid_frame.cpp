@@ -13,10 +13,10 @@ GridFrame::~GridFrame() {
 }
 
 void GridFrame::Init(ContraptionGridTableBase *contact_persons) {
-  Connect(XRCID("ID_BUTTON1"), wxEVT_COMMAND_BUTTON_CLICKED,
+  Connect(XRCID("ID_BUTTON_ADD_IN_BOOK"), wxEVT_COMMAND_BUTTON_CLICKED,
           (wxObjectEventFunction)&GridFrame::OnAddClick);
-  Connect(XRCID("ID_BUTTON2"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&GridFrame::OnExitClick);
+  Connect(XRCID("ID_BUTTON_ADD_IN_CATALOG"), wxEVT_COMMAND_BUTTON_CLICKED,
+          (wxObjectEventFunction)&GridFrame::OnAddClick);
   Centre();
   base_ = contact_persons;
   contraptions_ = base_->contraptions();
@@ -24,7 +24,7 @@ void GridFrame::Init(ContraptionGridTableBase *contact_persons) {
   grid_->SetTable(base_, wxGrid::wxGridSelectRows, 2500);
   grid_->SetOnCellClick(boost::bind(&GridFrame::OnCellClick, this, _1, _2));
   grid_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2));
-  wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);
+  wxXmlResource::Get()->AttachUnknownControl("ID_GRID_CATALOGS", (wxWindow *)grid_);
   GetSizer()->RecalcSizes();
   contact_persons_frame = new ContactPersonsFrame();
   wxXmlResource::Get()->LoadFrame(contact_persons_frame, this,
