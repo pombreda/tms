@@ -4,6 +4,7 @@
 // wxWidget
 #include <wx/grid.h>
 #include <wx/event.h>
+#include <wx/timer.h>
 // boost
 #include <boost/signals.hpp>
 #include <boost/function.hpp>
@@ -40,7 +41,8 @@ class ContraptionGridTableBase : public wxGridTableBase {
   bool AppendRows(size_t numRows = 1);
   bool DeleteRows(size_t pos = 0, size_t numRows = 1);
   void RefreshViewColumns();
-  void OnChange();
+  void StartTimer(int interval);
+  void StopTimer();
   const ContraptionArrayP contraptions() {
     return contraptions_;
   }
@@ -57,6 +59,10 @@ class ContraptionGridTableBase : public wxGridTableBase {
   std::vector<Column> cols_;
   std::vector<boost::shared_ptr<Printer> > printer_;
   int old_size_;
+  wxTimer* timer_;
+
+  void OnChange();
+  void OnTimer(wxTimerEvent &event);
 
 };
 

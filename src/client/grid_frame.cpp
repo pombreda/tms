@@ -21,7 +21,7 @@ void GridFrame::Init(ContraptionGridTableBase *contact_persons) {
   base_ = contact_persons;
   contraptions_ = base_->contraptions();
   grid_ = new ContraptionGrid(this, wxID_ANY);
-  grid_->SetTable(base_, wxGrid::wxGridSelectRows);
+  grid_->SetTable(base_, wxGrid::wxGridSelectRows, 2500);
   grid_->SetOnCellClick(boost::bind(&GridFrame::OnCellClick, this, _1, _2));
   grid_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2));
   wxXmlResource::Get()->AttachUnknownControl("ID_CUSTOM1", (wxWindow *)grid_);

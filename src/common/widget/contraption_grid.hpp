@@ -41,7 +41,8 @@ class ContraptionGrid : public wxGrid {
   void SetOnCellClick(OnClickFunction on_cell_click);
   void SetOnCellDClick(OnClickFunction on_cell_dclick);
   bool SetTable(ContraptionGridTableBase *table,
-                wxGridSelectionModes selmode = wxGridSelectCells);
+                wxGridSelectionModes selmode,
+                int interval);
 
  private:
   ContraptionGrid(const ContraptionGrid&);

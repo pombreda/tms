@@ -9,7 +9,7 @@ using namespace contraption;
 ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraptions,
                                                    std::vector<Column> &cols) :
     contraptions_(contraptions), model_(), cols_(cols),
-    printer_(), old_size_(0) {
+    printer_(), old_size_(0), timer_(new wxTimer()) {
   model_ = contraptions_->model();
   old_size_ = contraptions_->size();
   for (size_t j = 0; j < cols_.size(); j++) {
@@ -70,6 +70,16 @@ void ContraptionGridTableBase::RefreshViewColumns() {
   }
 }
 
+void ContraptionGridTableBase::StartTimer(int interval) {
+  GetView()->Bind(wxEVT_TIMER, &ContraptionGridTableBase::OnTimer, this);
+  timer_->SetOwner(GetView());
+  timer_->Start(interval);
+}
+
+void ContraptionGridTableBase::StopTimer() {
+  timer_->Stop();
+}
+
 void ContraptionGridTableBase::OnChange() {
   int delta = static_cast<int>(old_size_) -
     static_cast<int>(contraptions_->size());
@@ -79,6 +89,13 @@ void ContraptionGridTableBase::OnChange() {
     GetView()->DeleteRows(static_cast<int>(contraptions_->size()), delta);
   }
   old_size_ = contraptions_->size();
+}
+
+void ContraptionGridTableBase::OnTimer(wxTimerEvent &WXUNUSED(event)) {
+  if (GetView() != NULL) {
+    contraptions_->Refresh();
+    OnChange();
+  }
 }
 
 }

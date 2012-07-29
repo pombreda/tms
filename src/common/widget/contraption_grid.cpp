@@ -25,10 +25,15 @@ ContraptionGrid::~ContraptionGrid() {
 }
 
 bool ContraptionGrid::SetTable(ContraptionGridTableBase *table,
-                               wxGridSelectionModes selmode) {
+                               wxGridSelectionModes selmode,
+                               int interval) {
+  if (GetTable() != NULL) {
+    dynamic_cast<ContraptionGridTableBase*>(GetTable())->StopTimer();
+  }
   bool res = wxGrid::SetTable(table, false, selmode);
   base_ = table;
   base_->RefreshViewColumns();
+  base_->StartTimer(interval);
   return res;
 }
 
