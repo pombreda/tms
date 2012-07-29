@@ -4,6 +4,7 @@ add_library (tms_contraption SHARED
   model
   contraption
   contraption_array
+  model_contraption_array
   field
   field_exception
   model_backend

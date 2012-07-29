@@ -97,6 +97,8 @@ class Contraption {
 
   void Swap(Contraption &other)
       throw();
+  
+  ModelP model() { return model_; }
 
   static const ContraptionID kNewID; // for Model class
 

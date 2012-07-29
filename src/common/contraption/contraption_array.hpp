@@ -26,34 +26,30 @@ namespace contraption {
 // correctness. Now it'll report about incorrect model
 // only on Save() attempt.
 //------------------------------------------------------------
-class ContraptionArray : private std::vector<ContraptionP> {
+class ContraptionArray : protected std::vector<ContraptionP> {
  public:
-  void Save();
+  virtual void Save() = 0;
   ModelP model() {return model_;}
-  friend class Model;
 
-  void Refresh();
-  void push_back(const ContraptionP& contraption);
+  virtual void Refresh() = 0;
+  void push_back(ContraptionP contraption);
   void erase(size_t position);
   ContraptionP& at(size_t position);
   size_t size();
 
   void SetOnChange(boost::function<void ()> f);
 
- private:
-  typedef boost::signal<void (const std::vector<ContraptionP>&,
-                              const std::vector<ContraptionP>&)> SaverType;
-
+ protected:
+  boost::signal<void ()>  on_change_;
+  ModelP model_;  
   ContraptionArray(
-      std::auto_ptr<SaverType> saver,
       const std::vector<ContraptionP> &contraptions,
       ModelP model)
-      throw();
+      throw();  
+  void Init();
+  vector<ContraptionP> to_remove_;
   void OnChange();
-  std::auto_ptr<SaverType> saver_;
-  vector<ContraptionP> back_up_;
-  ModelP model_;
-  boost::signal<void ()>  on_change_;
+ private:
   typedef boost::signals::scoped_connection SlotConnection;
   typedef boost::shared_ptr<SlotConnection> SlotConnectionP;
   std::vector<SlotConnectionP> connections_;
@@ -61,7 +57,5 @@ class ContraptionArray : private std::vector<ContraptionP> {
 }
 }
 }
-#pragma GCC diagnostic warning "-Wnon-virtual-dtor"
-#pragma GCC diagnostic warning "-Weffc++"
 
 #endif // _TMS_COMMON_CONTRAPTION__CONTRAPTION_ARRAY_HPP_

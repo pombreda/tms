@@ -4,7 +4,7 @@
 #include <contraption/contraption.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/field.hpp>
-#include <contraption/contraption_array.hpp>
+#include <contraption/model_contraption_array.hpp>
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/filter/all_filter.hpp>
 #include "model.hpp"
@@ -116,41 +116,6 @@ void Model::Delete(ContraptionID &id) const
   backend_->DeleteEntry(id);
 }
 
-void Model::SaveHandle(const vector<ContraptionP> &save, 
-                       const vector<ContraptionP> &remove) const
-    throw(ModelBackendException) {
-  ostringstream msg;
-  for (size_t pos = 0, end = save.size(); pos < end; ++pos) {
-    try {
-      if (ContraptionAccessor(save[pos].get()).model().get() != this) {
-        throw(ModelBackendException(
-            "Contraption was created from wrong model in "
-            "ConrraptionArray::Save."));              
-      }
-      save[pos]->Save();
-    } catch (const ModelBackendException &e) {
-      if (msg.str().size() != 0) {
-        msg << "\n==\n";
-      }
-      msg << e.message();
-    }
-  }
-  for (size_t pos = 0, end = remove.size(); pos < end; ++pos) {
-    try {
-      save[pos]->Delete();
-    } catch (const ModelBackendException &e) {
-      if (msg.str().size() != 0) {
-        msg << "\n==\n";
-      }
-      msg << e.message();
-    }
-  }
-  if (msg.str().size() != 0) {
-    string emsg = "Several errors occured:" + msg.str();
-    throw(ModelBackendException(emsg));
-  }
-}
-
 ContraptionArrayP Model::Filter(FilterCP filter)
     throw(ModelBackendException) {
   auto_ptr< vector<ContraptionID> > ids = backend_->Select(filter);
@@ -160,11 +125,8 @@ ContraptionArrayP Model::Filter(FilterCP filter)
     ContraptionAccessor accessor(contraptions[pos].get());
     accessor.id() = (*ids)[pos];
   }
-  auto_ptr<ContraptionArray::SaverType> saver(
-      new ContraptionArray::SaverType());
-  saver->connect(boost::bind(&Model::SaveHandle, this, _1, _2));
   return ContraptionArrayP(
-      new ContraptionArray(saver, contraptions, ModelP(this)));
+      new ModelContraptionArray(contraptions, ModelP(this)));
 }
 
 

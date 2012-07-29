@@ -1,66 +1,47 @@
+// std
 #include <algorithm>
+// contraption
 #include <contraption/field_type.hpp>
 #include "contraption_array.hpp"
-
 #include <iostream>
 
 using namespace std;
 using namespace tms::common::contraption;
 
-void ContraptionArray::Save() {
-  for (size_t pos = 0, end = size(); pos < end; ++pos) {
-    (*this)[pos]->in_array_ = true;
-  }
-  size_t rend = 0;
-  for (size_t pos = 0, end = back_up_.size(); pos < end; ++pos) {
-    if (!back_up_[pos]->in_array_) {
-      std::swap(back_up_[pos],back_up_[rend]);
-      ++rend;
-    }
-  }
-  back_up_.resize(rend);
-  (*saver_)(*this, back_up_);
-  for (size_t pos = 0, end = size(); pos < end; ++pos) {
-    (*this)[pos]->in_array_ = false;
-  }
-  back_up_ = *this;
-}
-
 ContraptionArray::ContraptionArray(
-    auto_ptr<SaverType> saver,
     const vector<ContraptionP> &contraptions,
     ModelP model)
     throw() :
     vector<ContraptionP>(contraptions),
-    saver_(saver),
-    back_up_(contraptions),
     model_(model) {
+  Init();
+}
+
+void ContraptionArray::Init() {
   for (size_t i = 0; i < size(); i++) {
     connections_.push_back(SlotConnectionP(new SlotConnection(
-                           at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this)))));
+        at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this)))));
     connections_.push_back(SlotConnectionP(new SlotConnection(
-                           at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i)))));
+        at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i)))));
   }
 }
 
-void ContraptionArray::Refresh() {
-  swap(*(model_->All()));
-  for (size_t i = 0; i < size(); i++) {
-    connections_.push_back(SlotConnectionP(new SlotConnection(
-                           at(i)->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this)))));
-    connections_.push_back(SlotConnectionP(new SlotConnection(
-                           at(i)->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, i)))));
+void ContraptionArray::push_back(ContraptionP contraption) {
+  if (contraption->model().get() != model_) {
+    throw(ModelBackendException(
+        "Contraption was created from wrong model in "
+        "ConrraptionArray::Save."));              
   }
-  OnChange();
-}
 
-void ContraptionArray::push_back(const ContraptionP& contraption) {
   vector::push_back(contraption);
-  contraption->on_change_.connect(boost::bind(&ContraptionArray::OnChange, this));
-  contraption->on_delete_.connect(boost::bind(&ContraptionArray::erase, this, size() - 1));
+  contraption->on_change_.connect(
+      boost::bind(&ContraptionArray::OnChange, this));
+  contraption->on_delete_.connect(
+      boost::bind(&ContraptionArray::erase, this, size() - 1));
 }
 
 void ContraptionArray::erase(size_t position) {
+  to_remove_.push_back(at(position));
   vector::erase(begin() + position);
   OnChange();
 }

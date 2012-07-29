@@ -97,9 +97,6 @@ class Model {
   void Delete(ContraptionID &id) const
       throw(ModelBackendException);
 
-  void SaveHandle(const std::vector<ContraptionP> &save, 
-                  const std::vector<ContraptionP> &remove) const
-      throw(ModelBackendException);
   void InitFields(const std::vector< Field* > &fields)
       throw(FieldException);
   Model() : 
