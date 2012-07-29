@@ -8,7 +8,6 @@
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/filter/all_filter.hpp>
 #include "model.hpp"
-#include <iostream> //oops
 
 using namespace tms::common::contraption;
 using namespace std;
@@ -108,6 +107,7 @@ void Model::Save(FieldTypeArray &values, ContraptionID &id) const
 
 ContraptionP Model::New()
     throw() {
+  CheckInit();
   return ContraptionP(new Contraption(ModelP(this)));
 }
 
@@ -141,7 +141,8 @@ Model::Model(const vector<Field*> &fields,
     ptr_count_(0),
     fields_(),
     fields_by_name_(),
-    backend_(backend) {
+    backend_(backend),
+    initialized_(false) {
   InitFields(fields);
 }
 
@@ -151,12 +152,44 @@ Model::Model(const vector<Field*> &fields,
     ptr_count_(0),
     fields_(),
     fields_by_name_(),
-    backend_(backend) {
+    backend_(backend),
+    initialized_(false) {
   InitFields(fields);
+}
+
+Model::Model(ModelBackend *backend) :
+    ptr_count_(0),
+    fields_(),
+    fields_by_name_(),
+    backend_(backend),
+    initialized_(false) {
+}
+
+Model::Model(boost::shared_ptr<ModelBackend> backend) :
+    ptr_count_(0),
+    fields_(),
+    fields_by_name_(),
+    backend_(backend),
+    initialized_(false) {
+}
+
+void Model::CheckInit() const
+    throw (FieldException) {
+  if (!initialized_) {
+    throw FieldException("Model was not initialized");
+  }
+}
+
+bool Model::IsInitialized() const
+    throw () {
+  return initialized_;
 }
 
 void Model::InitFields(const std::vector< Field* > &fields)
     throw(FieldException) {
+  if (initialized_) {
+    throw FieldException("Model was already initialized");
+  }
   size_t size = fields.size();
   for (size_t field_id = 0; field_id < size; ++field_id) {
     Field *field = fields[field_id];
@@ -175,6 +208,7 @@ void Model::InitFields(const std::vector< Field* > &fields)
   for (size_t field_id = 0; field_id < size; ++field_id) {
     fields_[field_id]->Initialize(this);
   }
+  initialized_ = true;
 }
 
 Model::~Model() {

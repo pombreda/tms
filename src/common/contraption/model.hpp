@@ -67,6 +67,10 @@ class Model {
   void InitSchema()
       throw(ModelBackendException);
 
+  Model(ModelBackend *backend);
+
+  Model(boost::shared_ptr<ModelBackend> backend);
+
   Model(const std::vector< Field* > &fields, 
         ModelBackend *backend)
       throw(FieldException);
@@ -74,6 +78,14 @@ class Model {
   Model(const std::vector< Field* > &fields, 
         boost::shared_ptr<ModelBackend> backend)
       throw(FieldException);
+  
+  void InitFields(const std::vector< Field* > &fields)
+      throw(FieldException);
+
+  void CheckInit() const
+      throw(FieldException);
+  bool IsInitialized() const
+      throw();
 
   virtual ~Model();
   friend void boost::intrusive_ptr_add_ref(Model* model);
@@ -97,17 +109,17 @@ class Model {
   void Delete(ContraptionID &id) const
       throw(ModelBackendException);
 
-  void InitFields(const std::vector< Field* > &fields)
-      throw(FieldException);
   Model() : 
       ptr_count_(0),
       fields_(0), 
       fields_by_name_(), 
-      backend_() {}
+      backend_(),
+      initialized_() {}
   size_t ptr_count_;
   std::vector< boost::shared_ptr<Field> > fields_; 
   std::map<std::string, FieldID> fields_by_name_;
   boost::shared_ptr<ModelBackend> backend_;
+  bool initialized_;
 };
 }
 }

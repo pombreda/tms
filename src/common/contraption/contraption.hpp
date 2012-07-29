@@ -92,8 +92,6 @@ class Contraption {
   // a sepparate record for it.
   Contraption(const Contraption &other)
       throw();
-  Contraption(ModelP model)
-      throw();
 
   void Swap(Contraption &other)
       throw();
@@ -104,6 +102,7 @@ class Contraption {
 
   friend class ContraptionAccessor;
   friend class ContraptionArray;
+  friend class Model;
   friend void boost::intrusive_ptr_add_ref(Contraption *contraption);
   friend void boost::intrusive_ptr_release(Contraption *contraption);
 
@@ -114,6 +113,8 @@ class Contraption {
       throw(FieldException);
 
  private:
+  Contraption(ModelP model)
+      throw();
   size_t ptr_count_;
   bool in_array_;
   boost::signal<void ()> on_change_;

@@ -156,7 +156,7 @@ BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testContraptionConstructor, Fixture) {
-  ContraptionP test_contraprion(new Contraption(model()));
+  ContraptionP test_contraprion(model()->New());
   BOOST_CHECK(test_contraprion);
   ContraptionP copy_contraprion(new Contraption(*test_contraprion));
   BOOST_CHECK(test_contraprion);
@@ -169,7 +169,7 @@ BOOST_FIXTURE_TEST_CASE(testGetFieldID, Fixture) {
   BOOST_CHECK_THROW(
       test_model->GetFieldID("surname"),
       FieldException);
-  ContraptionP test_contraprion(new Contraption(model()));
+  ContraptionP test_contraprion(model()->New());
   BOOST_CHECK_EQUAL(test_contraprion->GetID("name"), 0);
   BOOST_CHECK_EQUAL(test_contraprion->GetID("age"), 1);
   BOOST_CHECK_THROW(
@@ -201,7 +201,7 @@ BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
 BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend = backend();
   ModelP test_model(new Model(fields(), test_backend));
-  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionP test_contraption(test_model->New());
   ContraptionAccessor accessor(test_contraption.get());
 
   test_contraption->Set<string>("name", "Dummy");
@@ -237,7 +237,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveString, Fixture) {
 
 
   ContraptionP test_contraption2(
-      new Contraption(test_model));
+      test_model->New());
   ContraptionAccessor accessor2(test_contraption2.get());
   test_contraption2->Set("age", 17);
   test_contraption2->Set<string>("name", "Leonid");
@@ -279,7 +279,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
       = backend();
 
   ModelP test_model(new Model(fields(), test_backend));
-  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionP test_contraption(test_model->New());
   ContraptionAccessor accessor(test_contraption.get());
 
   test_contraption->Set<string>(0, "Dummy");
@@ -313,7 +313,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
                     string("Dummy"));
 
 
-  ContraptionP test_contraption2(new Contraption(test_model));
+  ContraptionP test_contraption2(test_model->New());
   ContraptionAccessor accessor2(test_contraption2.get());
   test_contraption2->Set(1, 17);
   test_contraption2->Set<string>(0, "Leonid");
@@ -352,7 +352,7 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetString, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend
       = backend();
   ModelP test_model(new Model(fields(), test_backend));
-  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionP test_contraption(test_model->New());
   ContraptionAccessor accessor(test_contraption.get());
   BOOST_CHECK_EQUAL(test_contraption->Get<int>("age"), 0);
   test_contraption->Set<string>("name", "Dummy");
@@ -388,7 +388,7 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend
       = backend();
   ModelP test_model(new Model(fields(), test_backend));
-  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionP test_contraption(test_model->New());
   ContraptionAccessor accessor(test_contraption.get());
 
   test_contraption->Set<string>("name", "Dummy");
@@ -423,7 +423,7 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
 
 BOOST_FIXTURE_TEST_CASE(testGetFieldIDName, Fixture) {
   ContraptionP test_contraption(
-      new Contraption(model()));
+      model()->New());
   BOOST_CHECK_EQUAL(test_contraption->GetName(
       test_contraption->GetID("name")), "name");
   BOOST_CHECK_EQUAL(test_contraption->GetName(
@@ -435,8 +435,7 @@ BOOST_FIXTURE_TEST_CASE(testGetFieldIDName, Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testPrivate, Fixture) {
-  ContraptionP test_contraption(
-      new Contraption(model()));
+  ContraptionP test_contraption(model()->New());
   BOOST_CHECK_THROW(test_contraption->Get<int>("password"),
                     FieldException);
   BOOST_CHECK_THROW(test_contraption->Set("password", 1),
@@ -446,7 +445,7 @@ BOOST_FIXTURE_TEST_CASE(testPrivate, Fixture) {
 BOOST_FIXTURE_TEST_CASE(testBackendName, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend(backend());
   ModelP test_model(new Model(fields(), test_backend));
-  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionP test_contraption(test_model->New());
   ContraptionAccessor accessor(test_contraption.get());
   test_contraption->Set<string>("Surname", "Dummy");
   test_contraption->Save();
@@ -459,7 +458,7 @@ BOOST_FIXTURE_TEST_CASE(testBackendName, Fixture) {
 BOOST_FIXTURE_TEST_CASE(testDelete, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend(backend());
   ModelP test_model(new Model(fields(), test_backend));
-  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionP test_contraption(test_model->New());
   ContraptionAccessor accessor(test_contraption.get());
   test_contraption->Set<string>("Surname", "Dummy");
   test_contraption->Save();
@@ -480,12 +479,12 @@ BOOST_FIXTURE_TEST_CASE(testDelete, Fixture) {
 BOOST_FIXTURE_TEST_CASE(testAll, Fixture) {
   boost::shared_ptr<MemoryModelBackend> test_backend(backend());
   ModelP test_model(new Model(fields(), test_backend));
-  ContraptionP test_contraption(new Contraption(test_model));
+  ContraptionP test_contraption(test_model->New());
   ContraptionAccessor accessor(test_contraption.get());
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Dummy");
   test_contraption->Save();
-  test_contraption.reset(new Contraption(test_model));
+  test_contraption = test_model->New();
   test_contraption->Set<int>("age", 12);
   test_contraption->Set<string>("Surname", "Ymmud");
   test_contraption->Save();
@@ -505,7 +504,7 @@ BOOST_FIXTURE_TEST_CASE(testAll, Fixture) {
   contraptions = test_model->All();
   BOOST_CHECK_EQUAL(contraptions->size(),
                     1);
-  test_contraption.reset(new Contraption(test_model));
+  test_contraption = test_model->New();
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Dummy");
   contraptions->push_back(test_contraption);
