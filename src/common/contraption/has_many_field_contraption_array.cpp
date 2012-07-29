@@ -6,21 +6,20 @@
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/filter/compare_filter.hpp>
 #include <contraption/filter/logical_connective.hpp>
-
+#include <iostream> // oops
 
 using namespace std;
 using namespace tms::common::contraption;
 
 void HasManyFieldContraptionArray::Save() {
   ostringstream msg;
-
   for (size_t pos = 0, end = size(); pos < end; ++pos) {
     try {
       at(pos)->Save();
       ContraptionP link = through_model_->New();
       link->Set<int>(id_column_->field_id(), static_cast<int>(id_));
       link->Set<int>(other_id_column_->field_id(), 
-                    static_cast<int>(ContraptionAccessor(&*at(pos)).id()));
+                     static_cast<int>(ContraptionAccessor(&*at(pos)).id()));
       link->Save();
     } catch (const ModelBackendException &e) {
       if (msg.str().size() != 0) {
@@ -59,8 +58,8 @@ void HasManyFieldContraptionArray::Save() {
 HasManyFieldContraptionArray::HasManyFieldContraptionArray(
     ModelP model,
     ModelP through_model,
-    IntField *id_column,
-    IntField *other_id_column,
+    const IntField *id_column,
+    const IntField *other_id_column,
     ContraptionID id)
     throw() :
     ContraptionArray(vector<ContraptionP>(), model),
@@ -76,6 +75,7 @@ void HasManyFieldContraptionArray::Refresh() {
       = through_model_->Filter(Compare(id_column_, 
                                        kEqual, 
                                        static_cast<int>(id_)));
+  cerr << links->size() << endl;
   for (size_t pos = 0, end = links->size(); pos < end; ++pos) {
     push_back(ContraptionP(model_->New()));
     ContraptionAccessor accessor(&*at(pos));

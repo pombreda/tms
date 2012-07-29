@@ -16,17 +16,17 @@ class SocketClient : public Client {
  public:
   SocketClient(SocketP socket, ProtocolP protocol) 
       throw():
+      ip_(),
       socket_(socket), 
-      protocol_(protocol),
-      ip_() {
+      protocol_(protocol) {
     socket_->lowest_layer().set_option(boost::asio::ip::tcp::no_delay(true));
   }
 
   SocketClient(std::string server, std::string port, ProtocolP protocol) 
       throw():
+      ip_(),
       socket_(), 
-      protocol_(protocol),
-      ip_() {
+      protocol_(protocol) {
     ip_.reset(new boost::asio::io_service());
     
     boost::asio::ip::tcp::resolver resolver(*ip_);
@@ -46,9 +46,9 @@ class SocketClient : public Client {
   virtual ~SocketClient() 
       throw(){}
  private:
+  boost::shared_ptr< boost::asio::io_service > ip_;
   SocketP socket_;
   ProtocolP protocol_;
-  boost::shared_ptr< boost::asio::io_service > ip_;
 };
 
 

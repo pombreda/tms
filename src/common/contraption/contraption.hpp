@@ -122,6 +122,7 @@ class Contraption {
   ModelP model_;
   FieldTypeArray values_;
   ContraptionID id_;
+  bool saving_;
 };
 }
 }

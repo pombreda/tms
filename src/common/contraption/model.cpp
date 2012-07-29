@@ -32,6 +32,7 @@ FieldTypeP Model::GetFieldValue(FieldID field_id,
   if (!out.empty()) {
     backend_->ReadRecords(out, id);
   }
+  fields_[field_id]->FinalizeGet(values, id);
   return fields_[field_id]->GetValue(values, id);
 }
 
@@ -95,14 +96,20 @@ void Model::InitSchema()
   backend_->InitSchema(out);
 }
 
-void Model::Save(FieldTypeArray &values, ContraptionID &id) const
+void Model::Save(FieldTypeArray &values, 
+                 ContraptionID &id) const
     throw(ModelBackendException) {
   vector<RecordP> out(0);
+
   for (FieldID field_id = 0, end = fields_.size();
        field_id < end; ++field_id) {
     fields_[field_id]->GetWriteRecords(values, id, out);
   }
   backend_->WriteRecords(out, id);
+  for (FieldID field_id = 0, end = fields_.size();
+       field_id < end; ++field_id) {
+    fields_[field_id]->FinalizeSave(values, id);
+  }
 }
 
 ContraptionP Model::New()

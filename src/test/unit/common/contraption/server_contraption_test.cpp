@@ -87,15 +87,22 @@ class Fixture {
     soci_model.reset(new Model(fields, new SOCIModelBackend(scheme, "test")));    
     soci_model->InitSchema();
     soci_model.reset();
+
+    fields.clear();
+    fields.push_back(new IntField("id"));
+    fields.push_back(new IntField("other_id"));
+    through_model.reset(new Model(fields, 
+                                  new SOCIModelBackend(scheme, "test_con")));
+    through_model->InitSchema();
     // Init Models
     users.reset(new User(ModelBackendP(new SOCIModelBackend(scheme, "users"))));
     fields.clear();
-    fields.push_back(new SimpleFieldT<string>("name"));
-    fields.push_back(new SimpleFieldT<int>("age"));
-    fields.push_back(new SimpleFieldT<int>("password", 
-                                           _is_readable = false));
-    fields.push_back(new SimpleFieldT<string>("Surname", 
-                                              _backend_name = "surname"));
+    fields.push_back(new StringField("name"));
+    fields.push_back(new IntField("age"));
+    fields.push_back(new IntField("password", 
+                                  _is_readable = false));
+    fields.push_back(new StringField("Surname", 
+                                     _backend_name = "surname"));
     soci_model.reset(new Model(fields, new SOCIModelBackend(scheme, "test")));    
     // user added
     ContraptionP user = users->New();
@@ -127,22 +134,34 @@ class Fixture {
     BOOST_CHECK(boost::dynamic_pointer_cast<LoginResponse>(ret));
     BOOST_CHECK(boost::dynamic_pointer_cast<LoginResponse>(ret)->status()
                 == LoginResponse::kOk);
+    // init through model
+    fields.clear();
+    fields.push_back(new IntField("id"));
+    fields.push_back(new IntField("other_id"));
+    through_model.reset(new Model(fields, 
+                                  new ServerModelBackend(client, "test_con")));
+
     // Create Backend
     backend.reset(new ServerModelBackend(client, "test"));
     // Init model
     fields.clear();
+    model.reset(new Model(backend));
     fields.push_back(new StringField("name"));
     fields.push_back(new IntField("age"));
     fields.push_back(new IntField("password", 
                                   _is_readable = false));
     fields.push_back(new StringField("Surname", 
-                                    _backend_name = "surname"));
-
-    model.reset(new Model(fields, backend));
+                                     _backend_name = "surname"));
+    fields.push_back(new HasManyField("friends", 
+                                      boost::ref(*model), 
+                                      boost::ref(*through_model)));
+    model->InitFields(fields);
+    
   }
 
   ModelBackendP backend;
   ModelP model;
+  ModelP through_model;
   ModelP soci_model;
   ModelP users;
   ServerP server;
@@ -153,7 +172,7 @@ class Fixture {
   }
 };
 
-
+ 
 //------------------------------------------------------------
 // Tests
 //------------------------------------------------------------
@@ -164,26 +183,33 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Du'\"\\mmy");
   test_contraption->Save();
-  test_contraption = model->New();
-  test_contraption->Set<int>("age", 12);
-  test_contraption->Set<string>("Surname", "Ymmud");
-  test_contraption->Save();
+  ContraptionP test_contraption2 = model->New();
+  test_contraption2->Set<int>("age", 12);
+  test_contraption2->Set<string>("Surname", "Ymmud");
+  ContraptionArrayP friends 
+      = test_contraption2->Get<ContraptionArrayP>("friends");      
+  friends->push_back(test_contraption2);
+  friends->push_back(test_contraption);
+  test_contraption2->Save();
   ContraptionArrayP contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
-  2);
+                    2);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
-  10);
+                    10);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
-  "Du'\"\\mmy");
+                    "Du'\"\\mmy"); 
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<ContraptionArrayP>("friends")->size(), 
+                    2);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
-  12);
+                    12);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
-  "Ymmud");
+                    "Ymmud");
+  
   contraptions->erase(0);
   contraptions->Save();
   contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
-  1);
+                    1);
   test_contraption = model->New();
   test_contraption->Set<int>("age", 10);
   test_contraption->Set<string>("Surname", "Dummy");
@@ -191,16 +217,16 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   contraptions->Save();
   contraptions = model->All();
   BOOST_CHECK_EQUAL(contraptions->size(), 
-  2);  
-  }
-
-  BOOST_FIXTURE_TEST_CASE(testFilter, Fixture) {
+                    2);  
+}
+  
+BOOST_FIXTURE_TEST_CASE(testFilter, Fixture) {
   const SimpleFieldT<int> *age 
-  = dynamic_cast<const SimpleFieldT<int>*>(
-  model->GetField("age"));
+      = dynamic_cast<const SimpleFieldT<int>*>(
+          model->GetField("age"));
   const SimpleFieldT<string> *surname
-  = dynamic_cast<const SimpleFieldT<string>*>(
-  model->GetField("Surname"));
+      = dynamic_cast<const SimpleFieldT<string>*>(
+          model->GetField("Surname"));
   BOOST_CHECK(age);
   ContraptionP test_contraption = model->New();
   test_contraption->Set<int>("age", 10);
@@ -231,47 +257,47 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   ContraptionArrayP contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 2);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
-  "Dummy");
+                    "Dummy");
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
-  10);
+                    10);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
-  "Dummy");
+                    "Dummy");
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
-  12);
+                    12);
 
   // Simple int
   filter = Compare(age, kEqual, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 3);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
-  "Ymmud");
+                    "Ymmud");
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
-  12);
+                    12);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
-  "Dummy");
+                    "Dummy");
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
-  12);
+                    12);
   BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
-  "Ymmud");
+                    "Ymmud");
   BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
-  12);
+                    12);
   filter = Compare(age, kNotLesser, 12);
   contraptions = model->Filter(filter);
   BOOST_CHECK_EQUAL(contraptions->size(), 4);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
-  "Ymmud");
+                    "Ymmud");
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<int>("age"), 
-  12);
+                    12);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
-  "Dummy");
+                    "Dummy");
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
-  12);
+                    12);
   BOOST_CHECK_EQUAL(contraptions->at(2)->Get<string>("Surname"), 
-  "Ymmud");
+                    "Ymmud");
   BOOST_CHECK_EQUAL(contraptions->at(2)->Get<int>("age"), 
-  12);
+                    12);
   BOOST_CHECK_EQUAL(contraptions->at(3)->Get<string>("Surname"), 
-  "Ymmud");
+                    "Ymmud");
   BOOST_CHECK_EQUAL(contraptions->at(3)->Get<int>("age"), 
                     14);
   filter = Compare(age, kGreater, 10);

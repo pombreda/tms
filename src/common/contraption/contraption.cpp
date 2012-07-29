@@ -47,8 +47,12 @@ void Contraption::SetFieldValue(FieldID field_id, const FieldType& value)
 
 void Contraption::Save()
     throw(ModelBackendException) {
-  model_->Save(values_, id_);
-  on_change_();
+  if (!saving_) {
+    saving_ = true;
+    model_->Save(values_, id_);
+    on_change_();
+    saving_ = false;
+  }
 }
 
 void Contraption::Delete()
@@ -118,7 +122,8 @@ Contraption::Contraption(const Contraption &other)
     on_delete_(),
     model_(other.model_),
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
-    id_(other.id_) {
+    id_(other.id_),
+    saving_(false) {
   for (size_t field_id = 0, end = GetFieldNumber();
        field_id < end; ++field_id) {
     if (other.values_[(int)field_id]) {
@@ -135,5 +140,6 @@ Contraption::Contraption(ModelP model)
     on_delete_(),
     model_(model),
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
-    id_(kNewID) {
+    id_(kNewID),
+    saving_(false){
 }

@@ -29,13 +29,13 @@ class HasManyFieldContraptionArray : public ContraptionArray {
   HasManyFieldContraptionArray(
       ModelP model,
       ModelP through_model,
-      IntField *id_column,
-      IntField *other_id_column,
+      const IntField *id_column,
+      const IntField *other_id_column,
       ContraptionID id)
       throw();
   ModelP through_model_;
-  IntField *id_column_;
-  IntField *other_id_column_;
+  const IntField *id_column_;
+  const IntField *other_id_column_;
   ContraptionID id_;
 };
 

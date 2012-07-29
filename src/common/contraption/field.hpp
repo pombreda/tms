@@ -84,7 +84,7 @@ class Field {
     CheckType(&value);
     values[static_cast<int>(this->field_id_)].reset(value.Duplicate());
   }
-  virtual FieldID field_id() { return field_id_; }
+  virtual FieldID field_id() const { return field_id_; }
 
   virtual ~Field() {}
 
