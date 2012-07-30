@@ -1,0 +1,4 @@
+package tms.common.protocol.message;
+message PatchServerRequest {
+  required bytes patch_archive = 1;
+}

@@ -1,0 +1,5 @@
+package tms.common.protocol.message;
+message PathcClientRequest {
+  required string version = 1;
+  required string system = 2;
+}
