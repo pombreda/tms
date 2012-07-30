@@ -1,0 +1,64 @@
+TMS - time management system.
+Copyright (C) 2012  Alex Davydow <adavydow@yandex.ru>
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+This project was linked against several opensource libraries.
+The corresponding licenses can be founded in this folder.
+For sources visit cites provided. Allo of them are GPLv3 compatible.
+
+wxWidget - wxwidget/license.txt
+http://www.wxwidgets.org
+
+openssl - openssl/license.txt
+http://www.openssl.org/
+
+boost - boost/license.txt
+http://www.boost.org/
+
+protobuf - bsd.txt
+http://code.google.com/p/protobuf/
+
+log4cplus - apache.txt
+http://log4cplus.sourceforge.net/
+
+soci - boost/license.txt
+http://soci.sourceforge.net/
+
+sqlite3 - public domain
+http://www.sqlite.org/
+
+In addition MinGW was used to create windows distribution of this project
+MinGW can be used with following licenses:
+
+MinGW runtime: The MinGW base runtime package has been placed in the
+public domain, and is not governed by copyright. This basically means
+that you can do what you like with the code.
+
+w32api: You are free to use, modify and copy this package. No
+restrictions are imposed on programs or object files linked with this
+library. You may not restrict the the usage of this library. You may
+distribute this library as part of another package or as a modified
+package if, and only if, you do not restrict the usage of the portions
+consisting of this (optionally modified) library. If distributed as a
+modified package, then a copy of this notice must be included.
+
+This library is distributed in the hope that it will be useful, but
+WITHOUT WARRANTY OF ANY KIND; without even the implied warranties of
+MERCHANTABILITY or of FITNESS FOR A PARTICULAR PURPOSE.
+
+MinGW profiling code: MinGW profiling code is distributed under the
+terms of the GNU General Public License. (gpl.txt)
+
+Binutils, GCC, GDB, GNU Make: All of the GNU development tools, such
+as GNU binutils, GCC, GDB and GNU Make, are governed by the terms of
+the GNU General Public License. (gpl.txt)
