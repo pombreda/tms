@@ -19,6 +19,10 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS PROTOFILES
   select_request.proto
   select_response.proto
   disconnect_request.proto
+  # patcher
+  patch_client_request.proto
+  patch_client_response.proto
+  patch_server_request.proto
   )
 add_library (tms_message SHARED
   login_response
@@ -35,6 +39,9 @@ add_library (tms_message SHARED
   select_response
   select_request
   disconnect_request
+  patch_client_request
+  patch_client_response
+  patch_server_request
   ${PROTO_SRCS}
   ${PROTO_HDRS}
   )
