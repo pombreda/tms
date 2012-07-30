@@ -30,7 +30,7 @@ class SimpleRequestProcessor::ShortFunctionWrapper {
       helper_(helper) {
   }
 
-  MessageP operator()(const protocol::Message& message, Server &server) 
+  MessageP operator()(const protocol::Message& message, Server &/*server*/) 
       throw(ServerException) {
     const Message *message_ptr = dynamic_cast<const Message*>(&message);
     if (!message_ptr) {

@@ -3,14 +3,12 @@
 //------------------------------------------------------------
 // Headers
 //------------------------------------------------------------
+#include <config.hpp>
 // std
 #include <string>
 #include <memory>
 #include <sstream>
 // boost
-#ifndef BOOST_PARAMETER_MAX_ARITY
-#define BOOST_PARAMETER_MAX_ARITY 10
-#endif // BOOST_PARAMETER_MAX_ARITY
 #include <boost/parameter.hpp>
 // common
 #include <contraption/model.hpp>

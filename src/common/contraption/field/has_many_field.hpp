@@ -1,12 +1,10 @@
 #ifndef _TMS_COMMON_CONTRAPTION_FIELD__HAS_MANY_FIELD_HPP_
 #define _TMS_COMMON_CONTRAPTION_FIELD__HAS_MANY_FIELD_HPP_
+#include <config.hpp>
 // std
 #include <cassert>
 // boost
 #include <boost/lexical_cast.hpp>
-#ifndef BOOST_PARAMETER_MAX_ARITY
-#define BOOST_PARAMETER_MAX_ARITY 10
-#endif // BOOST_PARAMETER_MAX_ARITY
 #include <boost/parameter.hpp>
 // common
 #include <contraption/field.hpp>

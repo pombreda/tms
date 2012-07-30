@@ -16,3 +16,5 @@ TMS.layout
 log.cfg
 *.sqlite3
 *.db
+release
+install_manifest.txt

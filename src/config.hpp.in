@@ -1,0 +1,13 @@
+#ifndef _TMS__CONFIG_HPP_
+#define _TMS__CONFIG_HPP_
+
+#include<string>
+
+#ifndef ${SYSTEM}
+#define ${SYSTEM}
+#endif ${SYSTEM}
+const std::string kVersion = "0.1";
+const std::string kSystem = "${system}";
+#define BOOST_PARAMETER_MAX_ARITY 10
+
+#endif // _TMS__CONFIG_HPP_

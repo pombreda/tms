@@ -34,7 +34,6 @@ FIND_LIBRARY(LOG4CPLUS_LIBRARIES
   /opt/csw
   /opt
 )
-message(${LOG4CPLUS_LIBRARIES})
 
 
 INCLUDE(FindPackageHandleStandardArgs)

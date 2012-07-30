@@ -39,7 +39,6 @@ target_link_libraries(tms_protocol
   ${LOG4CPLUS_LIBRARIES}
 )
 
-
 if(WIN32)
   target_link_libraries(tms_protocol ws2_32 mswsock)
 endif(WIN32)
