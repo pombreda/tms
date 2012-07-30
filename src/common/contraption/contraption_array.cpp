@@ -33,7 +33,7 @@ void ContraptionArray::push_back(ContraptionP contraption) {
         "ConrraptionArray::Save."));              
   }
 
-  vector::push_back(contraption);
+  vector<ContraptionP>::push_back(contraption);
   contraption->on_change_.connect(
       boost::bind(&ContraptionArray::OnChange, this));
   contraption->on_delete_.connect(
@@ -42,16 +42,16 @@ void ContraptionArray::push_back(ContraptionP contraption) {
 
 void ContraptionArray::erase(size_t position) {
   to_remove_.push_back(at(position));
-  vector::erase(begin() + position);
+  vector<ContraptionP>::erase(begin() + position);
   OnChange();
 }
 
 ContraptionP& ContraptionArray::at(size_t position) {
-  return vector::at(position);
+  return vector<ContraptionP>::at(position);
 }
 
 size_t ContraptionArray::size() {
-  return vector::size();
+  return vector<ContraptionP>::size();
 }
 
 void ContraptionArray::SetOnChange(boost::function<void ()> f) {

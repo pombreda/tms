@@ -47,7 +47,7 @@ class ContraptionArray : protected std::vector<ContraptionP> {
       ModelP model)
       throw();  
   void Init();
-  vector<ContraptionP> to_remove_;
+  std::vector<ContraptionP> to_remove_;
   void OnChange();
  private:
   typedef boost::signals::scoped_connection SlotConnection;
