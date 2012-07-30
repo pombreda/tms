@@ -55,10 +55,11 @@ else(NOT system)
 endif(NOT system)
 
 string(TOUPPER "${system}" SYSTEM)
-
-configure_file (
-  "${CMAKE_SOURCE_DIR}/src/config.hpp.in" 
-  "${CMAKE_SOURCE_DIR}/bin/config.hpp")
+if (${CMAKE_SOURCE_DIR}/src/config.hpp.in IS_NEWER_THAN ${CMAKE_SOURCE_DIR}/bin/config.hpp)
+  configure_file (
+    ${CMAKE_SOURCE_DIR}/src/config.hpp.in
+    ${CMAKE_SOURCE_DIR}/bin/config.hpp)
+endif(${CMAKE_SOURCE_DIR}/src/config.hpp.in IS_NEWER_THAN ${CMAKE_SOURCE_DIR}/bin/config.hpp)
 
 include_directories(src/common)
 include_directories(src)
@@ -81,14 +82,49 @@ add_subdirectory(src bin)
 
 
 if(UNIX)
-FILE(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.so")
-FILE(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/client_app")
-FILE(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/server_app")
+  file(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.so")
+  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/client_app")
+  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/server_app")
 elseif(WIN32)
-FILE(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.dll")
-FILE(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/client_app.exe")
-FILE(GLOB server "${CMAKE_SOURCE_DIR}/bin/client/server_app.exe")
+  file(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.dll")
+  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/client_app.exe")
+  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/server_app.exe")
 endif(UNIX)
+
+if(WIN32)
+  foreach(lib 
+          "libgcc_s_dw2-1.dll"
+          "libstdc++-6.dll"
+          "libboost_signals-mgw46-mt-1_50.dll"
+          "libboost_system-mgw46-mt-1_50.dll"
+          "libboost_thread-mgw46-mt-1_50.dll"
+          "libboost_chrono-mgw46-mt-1_50.dll"
+          "libboost_filesystem-mgw46-mt-1_50.dll"
+          "libboost_program_options-mgw46-mt-1_50.dll"
+          "wxbase294u_gcc_custom.dll"
+          "wxbase294u_xml_gcc_custom.dll"
+          "wxmsw294u_adv_gcc_custom.dll"
+          "wxmsw294u_core_gcc_custom.dll"
+          "wxmsw294u_xrc_gcc_custom.dll"
+          "wxmsw294u_html_gcc_custom.dll"
+          "libprotobuf-7.dll"
+          "libsoci_core_3_1.dll"
+          "libsoci_sqlite3_3_1.dll"
+          "libsqlite3-0.dll"
+          "liblog4cplus-1-0-4.dll"
+          )
+    message("${lib}")    
+    unset(lib_path CACHE)
+    find_file(
+      lib_path
+      ${lib}
+      PATHS ENV PATH
+    )	
+    message("${lib_path}")    
+    list(APPEND system_libs ${lib_path})	
+  endforeach(lib)
+  unset(lib_path CACHE)
+endif(WIN32)
 
 # server
 install(FILES 
@@ -101,6 +137,13 @@ install(FILES
   PERMISSIONS OWNER_READ OWNER_WRITE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/server)
 
+if(WIN32)
+  install(FILES 
+    ${system_libs} 
+    PERMISSIONS OWNER_READ OWNER_WRITE
+    DESTINATION ${CMAKE_SOURCE_DIR}/release/server)
+endif(WIN32)
+
 # client
 install(FILES 
   ${client} 
@@ -111,6 +154,13 @@ install(FILES
   ${libs} 
   PERMISSIONS OWNER_READ OWNER_WRITE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/client)
+
+if(WIN32)
+  install(FILES 
+    ${system_libs} 
+    PERMISSIONS OWNER_READ OWNER_WRITE
+    DESTINATION ${CMAKE_SOURCE_DIR}/release/client)
+endif(WIN32)
 
 install(DIRECTORY
   ${CMAKE_SOURCE_DIR}/xrc
