@@ -23,7 +23,7 @@ class ModelContraptionArray : public ContraptionArray {
  public:
   virtual void Save();
   friend class Model;
-  virtual void Refresh();
+  virtual ContraptionArrayP Duplicate();
  private:
   ModelContraptionArray(
       const std::vector<ContraptionP> &contraptions,

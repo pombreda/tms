@@ -61,3 +61,9 @@ void ContraptionArray::SetOnChange(boost::function<void ()> f) {
 void ContraptionArray::OnChange() {
   on_change_();
 }
+
+void ContraptionArray::Refresh() {
+  swap(*(Duplicate()));
+  Init();
+  OnChange();
+}

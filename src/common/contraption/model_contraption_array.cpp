@@ -51,9 +51,7 @@ ModelContraptionArray::ModelContraptionArray(
     ContraptionArray(contraptions, model) {
 }
 
-void ModelContraptionArray::Refresh() {
-  to_remove_.clear();
-  swap(*(model_->All()));
-  Init();
-  OnChange();
+ContraptionArrayP ModelContraptionArray::Duplicate() {
+  return model_->All();
 }
+

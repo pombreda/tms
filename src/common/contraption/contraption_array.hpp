@@ -31,8 +31,9 @@ class ContraptionArray : protected std::vector<ContraptionP> {
   virtual void Save() = 0;
   ModelP model() {return model_;}
 
-  virtual void Refresh() = 0;
+  virtual void Refresh();
   virtual void push_back(ContraptionP contraption);
+  virtual ContraptionArrayP Duplicate() = 0;
   void erase(size_t position);
   ContraptionP at(size_t position);
   size_t size();
@@ -46,7 +47,7 @@ class ContraptionArray : protected std::vector<ContraptionP> {
       const std::vector<ContraptionP> &contraptions,
       ModelP model)
       throw();  
-  void Init();
+  virtual void Init();
   std::vector<ContraptionP> to_remove_;
   void OnChange();
  private:

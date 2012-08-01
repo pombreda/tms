@@ -115,7 +115,7 @@ Contraption& Contraption::operator=(const Contraption &other)
 }
 
 Contraption::Contraption(const Contraption &other)
-    throw(ModelBackendException) :
+    throw() :
     ptr_count_(0),
     in_array_(false),
     on_change_(),
@@ -124,12 +124,11 @@ Contraption::Contraption(const Contraption &other)
     values_(new boost::scoped_ptr<FieldType>[GetFieldNumber()]),
     id_(other.id_),
     saving_(false) {
-  if (ContraptionAccessor(&*contraption).id() 
-      == 
-      Contraption::kNewID) {
-    throw(ModelBackendException(
-        "Only contraptions already saved to database "
-        "can be cloned"));
+  for (size_t field_id = 0, end = GetFieldNumber();
+       field_id < end; ++field_id) {
+    if (other.values_[(int)field_id]) {
+      values_[(int)field_id].reset(other.values_[(int)field_id]->Duplicate());
+    }
   }
 }
 

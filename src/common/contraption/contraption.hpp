@@ -83,14 +83,11 @@ class Contraption {
   void Refresh()
       throw();
 
-  // Copying will create a new clean link for the same contraption
-  // in db
+
   Contraption& operator=(const Contraption &other)
-      throw(ModelBackendException);
-  // Copying will create a new clean link for the same contraption
-  // in db
+      throw();
   Contraption(const Contraption &other)
-      throw(ModelBackendException);
+      throw();
 
   void Swap(Contraption &other)
       throw();

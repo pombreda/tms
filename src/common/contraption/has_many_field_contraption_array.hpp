@@ -24,7 +24,7 @@ class HasManyFieldContraptionArray : public ContraptionArray {
  public:
   virtual void Save();
   friend class HasManyFieldImpl;
-  virtual void Refresh();
+  virtual ContraptionArrayP Duplicate();
  private:
   HasManyFieldContraptionArray(
       ModelP model,

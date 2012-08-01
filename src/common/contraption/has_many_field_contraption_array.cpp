@@ -19,8 +19,10 @@ void HasManyFieldContraptionArray::push_back(ContraptionP contraption) {
         "Only contraptions already saved to database "
         "can be added to the HasManyContraptionArray"));
   }
-  ContraptionArray::push_back(contraption);
-  to_add_.push_back(contraption);
+  ContraptionArray::push_back(ContraptionP(new Contraption(
+      *contraption)));
+  to_add_.push_back(ContraptionP(new Contraption(
+      *contraption)));
 }
 
 
@@ -42,7 +44,7 @@ void HasManyFieldContraptionArray::Save() {
       ContraptionP link = through_model_->New();
       link->Set<int>(id_column_->field_id(), static_cast<int>(id_));
       link->Set<int>(other_id_column_->field_id(), 
-                     static_cast<int>(ContraptionAccessor(&*at(pos)).id()));
+                     static_cast<int>(ContraptionAccessor(&*to_add_.at(pos)).id()));
       link->Save();
     } catch (const ModelBackendException &e) {
       if (msg.str().size() != 0) {
@@ -92,13 +94,6 @@ HasManyFieldContraptionArray::HasManyFieldContraptionArray(
     other_id_column_(other_id_column),
     id_(id),
     to_add_() {
-  Refresh();
-}
-
-void HasManyFieldContraptionArray::Refresh() {
-  vector<ContraptionP>::clear();
-  to_remove_.clear();
-  to_add_.clear();
   ContraptionArrayP links 
       = through_model_->Filter(Compare(id_column_, 
                                        kEqual, 
@@ -110,6 +105,10 @@ void HasManyFieldContraptionArray::Refresh() {
         links->at(pos)->Get<int>(other_id_column_->field_id()));
     push_back(contraption);
   }
+
   Init();
-  OnChange();
+}
+
+ContraptionArrayP HasManyFieldContraptionArray::Duplicate() {
+  return ContraptionArrayP(new HasManyFieldContraptionArray(model_, through_model_, id_column_, other_id_column_, id_));
 }

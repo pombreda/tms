@@ -211,10 +211,13 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   test_contraption2->Set<string>("Surname", "Ymmud");
   test_contraption2->Save();
   test_contraption->Save();
+  cerr << 1 << endl;
   ContraptionArrayP friends 
       = test_contraption2->Get<ContraptionArrayP>("friends");
+  cerr << 2 << endl;  
   friends->push_back(test_contraption2);
   friends->push_back(test_contraption);
+  cerr << 3 << endl;
   test_contraption2->Save();
   contraptions->Refresh();
 
@@ -225,8 +228,11 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
                     10);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"), 
                     "Du'\"\\mmy"); 
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<ContraptionArrayP>("friends")->size(), 
+                    0);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<ContraptionArrayP>("friends")->size(), 
                     2);
+
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<int>("age"), 
                     12);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<string>("Surname"), 
