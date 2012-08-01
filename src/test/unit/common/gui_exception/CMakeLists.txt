@@ -1,5 +1,5 @@
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 add_executable(gui_exception_test gui_exception_test.cpp)
 target_link_libraries(gui_exception_test tms_exception ${Boost_LIBRARIES})
 add_test(gui_exception_test gui_exception_test)

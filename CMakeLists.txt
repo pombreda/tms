@@ -101,6 +101,12 @@ if(WIN32)
           "libboost_chrono-mgw46-mt-1_50.dll"
           "libboost_filesystem-mgw46-mt-1_50.dll"
           "libboost_program_options-mgw46-mt-1_50.dll"
+          "libboost_signals-mgw45-mt-1_50.dll"
+          "libboost_system-mgw45-mt-1_50.dll"
+          "libboost_thread-mgw45-mt-1_50.dll"
+          "libboost_chrono-mgw45-mt-1_50.dll"
+          "libboost_filesystem-mgw45-mt-1_50.dll"
+          "libboost_program_options-mgw45-mt-1_50.dll"
           "wxbase294u_gcc_custom.dll"
           "wxbase294u_xml_gcc_custom.dll"
           "wxmsw294u_adv_gcc_custom.dll"
@@ -120,12 +126,15 @@ if(WIN32)
       ${lib}
       PATHS ENV PATH
     )	
-    message("${lib_path}")    
-    list(APPEND system_libs ${lib_path})	
+    if(lib_path)
+      message("${lib_path}")    
+      list(APPEND system_libs ${lib_path})	
+    endif(lib_path)
   endforeach(lib)
   unset(lib_path CACHE)
 endif(WIN32)
 
+message(${system_libs})
 # server
 install(FILES 
   ${server}

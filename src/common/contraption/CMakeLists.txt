@@ -1,5 +1,8 @@
 add_subdirectory(model_backend)
 
+find_package(Boost COMPONENTS signals REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
 add_library (tms_contraption SHARED
   model
   contraption
@@ -18,7 +21,5 @@ add_library (tms_contraption SHARED
   field_type_fwd
   filter
   )
-
-find_package(Boost COMPONENTS signals REQUIRED)
 
 target_link_libraries(tms_contraption tms_exception ${Boost_LIBRARIES})

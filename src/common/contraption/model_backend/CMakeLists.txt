@@ -1,3 +1,6 @@
+find_package(Boost COMPONENTS signals REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
 add_library (tms_memory_contraption SHARED
   memory_model_backend
   )

@@ -1,4 +1,5 @@
 find_package(Boost COMPONENTS unit_test_framework serialization signals system REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 find_package(ProtocolBuffers REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

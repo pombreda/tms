@@ -1,3 +1,5 @@
+find_package(Boost COMPONENTS signals REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${wxWidget_INCLUDE_DIR})
 if(WIN32)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mwindows")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
