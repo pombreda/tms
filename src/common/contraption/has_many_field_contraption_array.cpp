@@ -19,8 +19,7 @@ void HasManyFieldContraptionArray::push_back(ContraptionP contraption) {
         "Only contraptions already saved to database "
         "can be added to the HasManyContraptionArray"));
   }
-  ContraptionArray::push_back(ContraptionP(new Contraption(
-      *contraption)));
+  ContraptionArray::push_back(contraption);
   to_add_.push_back(ContraptionP(new Contraption(
       *contraption)));
 }

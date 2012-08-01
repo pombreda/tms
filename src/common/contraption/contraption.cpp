@@ -127,7 +127,7 @@ Contraption::Contraption(const Contraption &other)
   for (size_t field_id = 0, end = GetFieldNumber();
        field_id < end; ++field_id) {
     if (other.values_[(int)field_id]) {
-      values_[(int)field_id].reset(other.values_[(int)field_id]->Duplicate());
+      values_[(int)field_id].reset(other.values_[(int)field_id]->Clone());
     }
   }
 }

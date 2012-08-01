@@ -27,6 +27,7 @@ class FieldType {
  public:
   virtual ~FieldType() {}
   virtual FieldType* Duplicate() const = 0;
+  virtual FieldType* Clone() const = 0;
   virtual inline std::string ToString() const {return rtti::TypeID(*this).name();};
 };
                                                
@@ -46,11 +47,14 @@ class FieldTypeT : public FieldType {
   T& data() { return data_; }
   void set_data(const T & data) { data_ = data; }
   virtual FieldTypeT<T>* Duplicate() const { return new FieldTypeT<T>(data_); } 
+  virtual FieldTypeT<T>* Clone() const { return new FieldTypeT<T>(data_); } 
   inline std::string ToString() const;
   friend class SimpleFieldTImpl<T>;
  private:
   T data_;
 };
+
+
 
 template<class T>
 inline std::string FieldTypeT<T>::ToString() const {
