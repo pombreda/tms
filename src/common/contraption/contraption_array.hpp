@@ -32,9 +32,9 @@ class ContraptionArray : protected std::vector<ContraptionP> {
   ModelP model() {return model_;}
 
   virtual void Refresh() = 0;
-  void push_back(ContraptionP contraption);
+  virtual void push_back(ContraptionP contraption);
   void erase(size_t position);
-  ContraptionP& at(size_t position);
+  ContraptionP at(size_t position);
   size_t size();
 
   void SetOnChange(boost::function<void ()> f);

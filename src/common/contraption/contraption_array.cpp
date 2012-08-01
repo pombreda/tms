@@ -1,9 +1,10 @@
+#include "contraption_array.hpp"
 // std
 #include <algorithm>
 // contraption
 #include <contraption/field_type.hpp>
-#include "contraption_array.hpp"
-#include <iostream>
+#include <contraption/contraption_accessor.hpp>
+
 
 using namespace std;
 using namespace tms::common::contraption;
@@ -32,8 +33,7 @@ void ContraptionArray::push_back(ContraptionP contraption) {
         "Contraption was created from wrong model in "
         "ConrraptionArray::Save."));              
   }
-
-  vector<ContraptionP>::push_back(contraption);
+  vector<ContraptionP>::push_back(ContraptionP(new Contraption(*contraption)));
   contraption->on_change_.connect(
       boost::bind(&ContraptionArray::OnChange, this));
   contraption->on_delete_.connect(
@@ -46,7 +46,7 @@ void ContraptionArray::erase(size_t position) {
   OnChange();
 }
 
-ContraptionP& ContraptionArray::at(size_t position) {
+ContraptionP ContraptionArray::at(size_t position) {
   return vector<ContraptionP>::at(position);
 }
 

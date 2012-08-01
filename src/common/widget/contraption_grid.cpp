@@ -52,7 +52,7 @@ void ContraptionGrid::OnCellClick(wxGridEvent &e) {
     int row = e.GetRow();
     int col = e.GetCol();
     SelectRow(row);
-    ContraptionP &contraption = base_->contraptions()->at(static_cast<size_t>(row));
+    ContraptionP contraption = base_->contraptions()->at(static_cast<size_t>(row));
     FieldID field_id = static_cast<FieldID>(base_->cols()[col].field_id);
     on_cell_click_(contraption, field_id);
   }
@@ -63,7 +63,7 @@ void ContraptionGrid::OnCellDClick(wxGridEvent &e) {
     int row = e.GetRow();
     int col = e.GetCol();
     SelectRow(row);
-    ContraptionP &contraption = base_->contraptions()->at(static_cast<size_t>(row));
+    ContraptionP contraption = base_->contraptions()->at(static_cast<size_t>(row));
     FieldID field_id = static_cast<FieldID>(base_->cols()[col].field_id);
     on_cell_dclick_(contraption, field_id);
   }

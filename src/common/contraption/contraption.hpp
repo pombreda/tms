@@ -52,7 +52,6 @@ class Contraption {
 
   // Field setters only change contraption object.
   // To save changes there is a Save() method.
-
   template<typename T>
   void Set(FieldID field_id, const T &value)
       throw(FieldException, ModelBackendException);
@@ -84,14 +83,14 @@ class Contraption {
   void Refresh()
       throw();
 
-  // Copying will clone contraption and next save will create
-  // a sepparate record for it.
+  // Copying will create a new clean link for the same contraption
+  // in db
   Contraption& operator=(const Contraption &other)
-      throw();
-  // Copying will clone contraption and next save will create
-  // a sepparate record for it.
+      throw(ModelBackendException);
+  // Copying will create a new clean link for the same contraption
+  // in db
   Contraption(const Contraption &other)
-      throw();
+      throw(ModelBackendException);
 
   void Swap(Contraption &other)
       throw();

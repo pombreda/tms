@@ -11,11 +11,34 @@
 using namespace std;
 using namespace tms::common::contraption;
 
+void HasManyFieldContraptionArray::push_back(ContraptionP contraption) {
+  if (ContraptionAccessor(&*contraption).id() 
+      == 
+      Contraption::kNewID) {
+    throw(ModelBackendException(
+        "Only contraptions already saved to database "
+        "can be added to the HasManyContraptionArray"));
+  }
+  ContraptionArray::push_back(contraption);
+  to_add_.push_back(contraption);
+}
+
+
 void HasManyFieldContraptionArray::Save() {
   ostringstream msg;
   for (size_t pos = 0, end = size(); pos < end; ++pos) {
     try {
       at(pos)->Save();
+    } catch (const ModelBackendException &e) {
+      if (msg.str().size() != 0) {
+        msg << "\n==\n";
+      }
+      msg << e.message();
+    }
+  }
+
+  for (size_t pos = 0, end = to_add_.size(); pos < end; ++pos) {
+    try {
       ContraptionP link = through_model_->New();
       link->Set<int>(id_column_->field_id(), static_cast<int>(id_));
       link->Set<int>(other_id_column_->field_id(), 
@@ -53,6 +76,7 @@ void HasManyFieldContraptionArray::Save() {
     throw(ModelBackendException(emsg));
   }
   to_remove_.clear();
+  to_add_.clear();
 }
 
 HasManyFieldContraptionArray::HasManyFieldContraptionArray(
@@ -66,21 +90,25 @@ HasManyFieldContraptionArray::HasManyFieldContraptionArray(
     through_model_(through_model),
     id_column_(id_column),
     other_id_column_(other_id_column),
-    id_(id) {
+    id_(id),
+    to_add_() {
   Refresh();
 }
 
 void HasManyFieldContraptionArray::Refresh() {
+  vector<ContraptionP>::clear();
+  to_remove_.clear();
+  to_add_.clear();
   ContraptionArrayP links 
       = through_model_->Filter(Compare(id_column_, 
                                        kEqual, 
                                        static_cast<int>(id_)));
-  cerr << links->size() << endl;
   for (size_t pos = 0, end = links->size(); pos < end; ++pos) {
-    push_back(ContraptionP(model_->New()));
-    ContraptionAccessor accessor(&*at(pos));
+    ContraptionP contraption(model_->New());
+    ContraptionAccessor accessor(&*contraption);
     accessor.id() = static_cast<ContraptionID>(
         links->at(pos)->Get<int>(other_id_column_->field_id()));
+    push_back(contraption);
   }
   Init();
   OnChange();

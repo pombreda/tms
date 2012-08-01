@@ -52,6 +52,7 @@ ModelContraptionArray::ModelContraptionArray(
 }
 
 void ModelContraptionArray::Refresh() {
+  to_remove_.clear();
   swap(*(model_->All()));
   Init();
   OnChange();

@@ -70,7 +70,6 @@ class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
   
   virtual void FinalizeSave(FieldTypeArray &values, ContraptionID id) const {
     if (values[static_cast<int>(this->field_id_)]) {
-      cerr << id << endl;
       const FieldTypeT<ContraptionArrayP>* type
           = dynamic_cast<const FieldTypeT<ContraptionArrayP>*>(
               &*values[static_cast<int>(this->field_id_)]);

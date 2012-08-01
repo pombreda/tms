@@ -34,9 +34,11 @@ class HasManyFieldContraptionArray : public ContraptionArray {
       ContraptionID id)
       throw();
   ModelP through_model_;
+  virtual void push_back(ContraptionP contraption);
   const IntField *id_column_;
   const IntField *other_id_column_;
   ContraptionID id_;
+  std::vector<ContraptionP> to_add_; 
 };
 
 typedef boost::shared_ptr<HasManyFieldContraptionArray> HasManyFieldContraptionArrayP;
