@@ -34,11 +34,11 @@ namespace contraption {
 //------------------------------------------------------------
 // ToDo - stl container interface?
 // ToDo - move implementation
-class Model { 
+class Model {
  public:
   size_t GetFieldNumber() const
       throw();
-  
+
   FieldID GetFieldID(const std::string &field_name) const
       throw(FieldException);
 
@@ -60,7 +60,7 @@ class Model {
   // This method will init backend to work with models.
   // For example - for SOCIModelBackand it
   // creates corresponding table.
-  // In general it will be called once, when your 
+  // In general it will be called once, when your
   // application is installed.
   // Attention! This method can drop your data.
   // At least for SOCIModelBackand it does.
@@ -69,16 +69,16 @@ class Model {
 
   Model(ModelBackend *backend);
 
-  Model(boost::shared_ptr<ModelBackend> backend);
+  Model(ModelBackendP backend);
 
-  Model(const std::vector< Field* > &fields, 
+  Model(const std::vector< Field* > &fields,
         ModelBackend *backend)
       throw(FieldException);
-  
-  Model(const std::vector< Field* > &fields, 
-        boost::shared_ptr<ModelBackend> backend)
+
+  Model(const std::vector< Field* > &fields,
+        ModelBackendP backend)
       throw(FieldException);
-  
+
   void InitFields(const std::vector< Field* > &fields)
       throw(FieldException);
 
@@ -91,35 +91,36 @@ class Model {
   friend void boost::intrusive_ptr_add_ref(Model* model);
   friend void boost::intrusive_ptr_release(Model* model);
   friend class Contraption;
- private:  
-  FieldTypeP GetFieldValue(FieldID field_id, 
+ private:
+  FieldTypeP GetFieldValue(FieldID field_id,
                            FieldTypeArray &values,
-                           ContraptionID id) const 
+                           ContraptionID id) const
       throw(FieldException, ModelBackendException);
-  
+
   void SetFieldValue(FieldID field_id,
                      const FieldType &value,
                      FieldTypeArray &values,
                      ContraptionID id) const
        throw(FieldException);
-  
+
   void Save(FieldTypeArray &values, ContraptionID &id) const
       throw(ModelBackendException);
 
   void Delete(ContraptionID &id) const
       throw(ModelBackendException);
 
-  Model() : 
-      ptr_count_(0),
-      fields_(0), 
-      fields_by_name_(), 
+  Model() :
+      fields_(0),
+      fields_by_name_(),
       backend_(),
-      initialized_() {}
-  size_t ptr_count_;
-  std::vector< boost::shared_ptr<Field> > fields_; 
+      initialized_(),
+      ptr_count_(0) {}
+  std::vector< boost::shared_ptr<Field> > fields_;
   std::map<std::string, FieldID> fields_by_name_;
   boost::shared_ptr<ModelBackend> backend_;
   bool initialized_;
+ protected:
+  size_t ptr_count_;
 };
 }
 }

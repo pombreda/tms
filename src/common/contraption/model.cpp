@@ -52,9 +52,9 @@ void Model::SetFieldValue(FieldID field_id,
         << "' can not accept value of type '"
         << typeid(value).name() << "'.";
     throw FieldException(msg.str());
-  }  
+  }
 }
-  
+
 
 const Field* Model::GetField(FieldID field_id) const
     throw(FieldException) {
@@ -67,14 +67,14 @@ const Field* Model::GetField(FieldID field_id) const
   return fields_[field_id].get();
 }
 
-const Field* Model::GetField(const std::string &field_name) const 
+const Field* Model::GetField(const std::string &field_name) const
     throw(FieldException) {
   return GetField(GetFieldID(field_name));
 }
 
 FieldID Model::GetFieldID(const std::string &field_name) const
     throw(FieldException) {
-  map<string, FieldID>::const_iterator it = 
+  map<string, FieldID>::const_iterator it =
       fields_by_name_.find(field_name);
   if (it == fields_by_name_.end()) {
     ostringstream msg;
@@ -96,7 +96,7 @@ void Model::InitSchema()
   backend_->InitSchema(out);
 }
 
-void Model::Save(FieldTypeArray &values, 
+void Model::Save(FieldTypeArray &values,
                  ContraptionID &id) const
     throw(ModelBackendException) {
   vector<RecordP> out(0);
@@ -142,42 +142,42 @@ ContraptionArrayP Model::All()
   return Filter(tms::common::contraption::All());
 }
 
-Model::Model(const vector<Field*> &fields, 
+Model::Model(const vector<Field*> &fields,
              ModelBackend *backend)
-    throw(FieldException) : 
-    ptr_count_(0),
+    throw(FieldException) :
     fields_(),
     fields_by_name_(),
     backend_(backend),
-    initialized_(false) {
+    initialized_(false),
+    ptr_count_(0) {
   InitFields(fields);
 }
 
-Model::Model(const vector<Field*> &fields, 
+Model::Model(const vector<Field*> &fields,
              boost::shared_ptr<ModelBackend> backend)
-    throw(FieldException) : 
-    ptr_count_(0),
+    throw(FieldException) :
     fields_(),
     fields_by_name_(),
     backend_(backend),
-    initialized_(false) {
+    initialized_(false),
+    ptr_count_(0) {
   InitFields(fields);
 }
 
 Model::Model(ModelBackend *backend) :
-    ptr_count_(0),
     fields_(),
     fields_by_name_(),
     backend_(backend),
-    initialized_(false) {
+    initialized_(false),
+    ptr_count_(0) {
 }
 
 Model::Model(boost::shared_ptr<ModelBackend> backend) :
-    ptr_count_(0),
     fields_(),
     fields_by_name_(),
     backend_(backend),
-    initialized_(false) {
+    initialized_(false),
+    ptr_count_(0) {
 }
 
 void Model::CheckInit() const
@@ -208,7 +208,7 @@ void Model::InitFields(const std::vector< Field* > &fields)
       ostringstream msg;
       msg << "Duplicate field name in Model::InitFields: '"
           << field->name() << "'";
-      throw FieldException(msg.str());    
+      throw FieldException(msg.str());
     }
     fields_by_name_[field->name()] = field_id;
   }

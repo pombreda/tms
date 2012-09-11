@@ -23,33 +23,33 @@ namespace server {
 
 ServerP CreateServer(const std::string &port, const std::string &db) {
   // Create RequestProcessor
-  SOCIDBScheme scheme(soci::sqlite3, db);    
-  ModelP users(new User(ModelBackendP(new SOCIModelBackend(scheme, "users"))));      
+  SOCIDBScheme scheme(soci::sqlite3, db);
+  ModelP users(User::GetModel(ModelBackendP(new SOCIModelBackend(scheme, "users"))));
   SimpleRequestProcessorP request_processor(new SimpleRequestProcessor());
   ModelBackendRequestProcessor::Register(*request_processor, scheme);
   RequestProcessorP processor(
       new LoginRequestProcessor(request_processor, users));
   // Create Server
   return ServerP(
-      new TCPServer(port, 
-                    AppProtocol(), 
-                    processor));  
+      new TCPServer(port,
+                    AppProtocol(),
+                    processor));
 
 }
 
 void InitSchema(const std::string &db) {
-  SOCIDBScheme scheme(soci::sqlite3, db);    
+  SOCIDBScheme scheme(soci::sqlite3, db);
   {
-    ModelP users(new User(ModelBackendP(new SOCIModelBackend(scheme, "users"))));    
+    ModelP users = User::GetModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
     users->InitSchema();
     ContraptionP admin = users->New();
     admin->Set<string>("name", "admin");
     admin->Set<string>("password_hash", sha256("admin"));
-    admin->Save();  
+    admin->Save();
   }
   {
     ModelP contact_persons(
-        new ContactPerson(ModelBackendP(new SOCIModelBackend(scheme, 
+        new ContactPerson(ModelBackendP(new SOCIModelBackend(scheme,
                                                              "contact_persons"))));
     contact_persons->InitSchema();
   }

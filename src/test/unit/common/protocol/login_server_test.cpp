@@ -32,7 +32,7 @@
 #include <model/user.hpp>
 #include "dummy.pb.h"
 #include "dummy_protocol.hpp"
- 
+
 using namespace std;
 using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
@@ -59,9 +59,9 @@ class Fixture {
       users() {
     string test_db("test.sqlite3");
     remove(test_db.c_str());
-    SOCIDBScheme scheme(soci::sqlite3, test_db);    
-    backend.reset(new SOCIModelBackend(scheme, "test"));    
-    users.reset(new User(backend));    
+    SOCIDBScheme scheme(soci::sqlite3, test_db);
+    backend.reset(new SOCIModelBackend(scheme, "test"));
+    users = User::GetModel(backend);
     users->InitSchema();
     ContraptionP test_contraption = users->New();
     test_contraption->Set<string>("name", "adavydow");
@@ -94,12 +94,12 @@ BOOST_FIXTURE_TEST_CASE(testBase, Fixture)
   ProtocolP protocol(new LoginProtocol(DummyProtocol()));
   protocol->Initialize();
   ServerP server(
-      new TCPServer(tcp::endpoint(tcp::v4(), 3030), 
-                    protocol, 
-                    processor));  
+      new TCPServer(tcp::endpoint(tcp::v4(), 3030),
+                    protocol,
+                    processor));
   server->Listen();
   ClientP client(
-      new StreamClient(StreamP(new tcp::iostream("localhost", "3030")), 
+      new StreamClient(StreamP(new tcp::iostream("localhost", "3030")),
                        protocol));
   boost::shared_ptr<DummyMessage> message(new DummyMessage());
   message->set_name("huricane bla bla bla");

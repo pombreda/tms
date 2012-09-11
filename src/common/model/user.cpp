@@ -5,13 +5,10 @@
 using namespace tms::common::model;
 using namespace tms::common::contraption;
 
-User::User(ModelBackendP backend) :
-    Model(fields(), backend) {}
-
-std::vector<Field*> User::fields() {
+void User::Initialize() {
   std::vector<Field*> ret;
   ret.push_back(new SimpleFieldT<std::string>("name"));
   ret.push_back(new SimpleFieldT<std::string>("password_hash"));
-  return ret;
+  InitFields(ret);
 }
 
