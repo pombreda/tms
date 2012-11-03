@@ -1,4 +1,9 @@
 #include "login_frame.hpp"
+// log4cplus
+#include <client/logger.hpp>
+// log4cplus
+#include <log4cplus/configurator.h>
+
 // common
 #include <protocol/client.hpp>
 #include <protocol/crypto.hpp>
@@ -6,11 +11,13 @@
 #include <protocol/message/login_response.hpp>
 #include <contraption/model_backend/server_model_backend.hpp>
 #include <contraption/model.hpp>
+#include <string/string.hpp>
 #include <widget/contraption_grid_table_base.hpp>
 // client
 #include <client/client.hpp>
 // project
 #include <project/model/contact_person.hpp>
+
 
 #include <wx/grid.h>
 
@@ -22,6 +29,7 @@ using namespace tms::common::contraption;
 using namespace tms::common::protocol::message;
 using namespace tms::project::model;
 using namespace tms::common::widget;
+using namespace tms::common::string;
 
 BEGIN_EVENT_TABLE(LoginFrame,wxFrame)
 END_EVENT_TABLE()
@@ -43,6 +51,9 @@ void LoginFrame::LoadOptions() {
 }
 
 void LoginFrame::SaveOptions() {
+  LOG4CPLUS_INFO(client_logger,
+                 WStringFromUTF8String("Saving options"));
+
   wxTextCtrl *text;
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL1");
   Options::set_name(text->GetValue().ToStdString());
@@ -50,11 +61,17 @@ void LoginFrame::SaveOptions() {
   if (text->GetValue().ToStdString() != "*****") {
     Options::set_password_hash(sha256(text->GetValue().
                                       ToStdString()));
+    LOG4CPLUS_DEBUG(client_logger,
+		    WStringFromUTF8String("Password changed to: " 
+					  + text->GetValue().ToStdString()));
   }
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL3");
   Options::set_server(text->GetValue().ToStdString());
   text = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL4");
   Options::set_port(text->GetValue().ToStdString());
+  LOG4CPLUS_INFO(client_logger,
+                 WStringFromUTF8String("Options saved"));
+  
 }
 
 void LoginFrame::Init() {

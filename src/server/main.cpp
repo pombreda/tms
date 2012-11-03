@@ -4,25 +4,28 @@
 #include <iostream>
 // log4cplus
 #include <log4cplus/configurator.h>
+// common
+#include <string/string.hpp>
 
 using namespace tms::server;
 using namespace tms::common::protocol;
+using namespace tms::common::string;
 using namespace std;
 using namespace log4cplus;
 
 namespace po = boost::program_options;
 int main(int argc, char** argv){
   try {    
-    PropertyConfigurator config("log.cfg");
+    PropertyConfigurator config(WStringFromUTF8String("log.cfg"));
     config.configure();
 
     po::options_description desc("Allowed options");
     desc.add_options()
-        ("help", "produce help message")
-        ("port", po::value<string>(), "port to listen")
-        ("db", po::value<string>(), "file with sqlite3 database")
-        ("init", "initialize db schema (this will erase all data in db)")
-        ;
+      ("help", "produce help message")
+      ("port", po::value<std::string>(), "port to listen")
+      ("db", po::value<std::string>(), "file with sqlite3 database")
+      ("init", "initialize db schema (this will erase all data in db)")
+      ;
     
     po::variables_map vm;        
     po::store(po::parse_command_line(argc, argv, desc), vm);

@@ -40,6 +40,7 @@
 #include <protocol/simple_request_processor.hpp>
 #include <protocol/model_backend_request_processor.hpp>
 #include <protocol/model_backend_protocol.hpp>
+#include <string/string.hpp>
 #include <model/user.hpp>
 
 using namespace std;
@@ -47,12 +48,13 @@ using namespace tms::common::contraption;
 using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
 using namespace tms::common::model;
+using namespace tms::common::string;
 using boost::asio::ip::tcp;
 using namespace log4cplus;
 
 struct InitLog {
   InitLog() {
-    PropertyConfigurator config("log.cfg");
+    PropertyConfigurator config(WStringFromUTF8String("log.cfg"));
     config.configure();
   }
 } init_log;

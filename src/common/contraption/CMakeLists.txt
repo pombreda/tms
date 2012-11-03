@@ -12,10 +12,20 @@ add_library (tms_contraption SHARED
   field
   field/simple_field
   field/has_many_field
+  field/date_field
+  field/simple_field_fwd
   field_exception
   model_backend
   model_backend_exception
   contraption_fwd
+  compare
+  model_wrapper
+  record
+  record_fwd
+  contraption_accessor
+  contraption_accessor_fwd
+  contraption_impl
+  
   field_fwd
   field_type
   field_type_fwd

@@ -48,9 +48,9 @@ void InitSchema(const std::string &db) {
     admin->Save();
   }
   {
-    ModelP contact_persons(
-        new ContactPerson(ModelBackendP(new SOCIModelBackend(scheme,
-                                                             "contact_persons"))));
+    ModelP contact_persons =
+        ContactPerson::GetModel(ModelBackendP(new SOCIModelBackend(scheme,
+                                                             "contact_persons")));
     contact_persons->InitSchema();
   }
 }

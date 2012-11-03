@@ -16,11 +16,11 @@ set(BUILD_SHARED_LIBS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/ext/CMakeModules")
 
-cmake_minimum_required(VERSION 2.6) 
+cmake_minimum_required(VERSION 2.6)
 
 include(ExternalProject)
 
-add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -Wextra -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Winit-self -Wunreachable-code -pedantic -DBOOST_THREAD_USE_LIB)
+add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -Wextra -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Winit-self -Wunreachable-code -pedantic -DBOOST_THREAD_USE_LIB -DUNICODE -D_UNICODE)
 
 if (WIN32)
   add_definitions(-D_WIN32_WINNT=0x0501) # for asio
@@ -31,7 +31,7 @@ check_type_size("void*" SIZEOF_VOID_P BUILTIN_TYPES_ONLY)
 
 set(bitness 32)
 if(SIZEOF_VOID_P EQUAL 8)
-  set(bitness 64) 
+  set(bitness 64)
 endif()
 
 if(WIN32)
@@ -92,7 +92,7 @@ elseif(WIN32)
 endif(UNIX)
 
 if(WIN32)
-  foreach(lib 
+  foreach(lib
           "libgcc_s_dw2-1.dll"
           "libstdc++-6.dll"
           "libboost_signals-mgw46-mt-1_50.dll"
@@ -119,54 +119,63 @@ if(WIN32)
           "libsqlite3-0.dll"
           "liblog4cplus-1-0-4.dll"
           )
-    message("${lib}")    
+    message("${lib}")
     unset(lib_path CACHE)
     find_file(
       lib_path
       ${lib}
       PATHS ENV PATH
-    )	
+    )
     if(lib_path)
-      message("${lib_path}")    
-      list(APPEND system_libs ${lib_path})	
+      message("${lib_path}")
+      list(APPEND system_libs ${lib_path})
     endif(lib_path)
   endforeach(lib)
   unset(lib_path CACHE)
 endif(WIN32)
 
-message(${system_libs})
 # server
-install(FILES 
+install(FILES
   ${server}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/server)
 
-install(FILES 
-  ${libs} 
+install(FILES
+  "log.cfg.default"
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+  DESTINATION ${CMAKE_SOURCE_DIR}/release/server RENAME log.cfg)
+
+install(FILES
+  "log.cfg.default"
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+  DESTINATION ${CMAKE_SOURCE_DIR}/release/client RENAME log.cfg)
+
+install(FILES
+  ${libs}
   PERMISSIONS OWNER_READ OWNER_WRITE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/server)
 
 if(WIN32)
-  install(FILES 
-    ${system_libs} 
+  install(FILES
+    ${system_libs}
     PERMISSIONS OWNER_READ OWNER_WRITE
     DESTINATION ${CMAKE_SOURCE_DIR}/release/server)
 endif(WIN32)
 
 # client
-install(FILES 
-  ${client} 
+install(FILES
+  ${client}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/client)
 
-install(FILES 
-  ${libs} 
+install(FILES
+  ${libs}
   PERMISSIONS OWNER_READ OWNER_WRITE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/client)
 
 if(WIN32)
-  install(FILES 
-    ${system_libs} 
+  install(FILES
+    ${system_libs}
     PERMISSIONS OWNER_READ OWNER_WRITE
     DESTINATION ${CMAKE_SOURCE_DIR}/release/client)
 endif(WIN32)

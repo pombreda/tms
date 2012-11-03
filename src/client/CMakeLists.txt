@@ -1,3 +1,4 @@
+
 if(WIN32)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mwindows")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
@@ -5,12 +6,16 @@ endif(WIN32)
 
 add_executable(client_app
                main
-	             client
+               client               
                login_frame
                grid_frame
                contact_persons_frame
                options_model
+	       logger
                options)
+
+find_package(Log4cplus REQUIRED)
+include_directories( "${LOG4CPLUS_INCLUDE_DIR}" )
 
 find_package(wxWidgets COMPONENTS base core xrc REQUIRED)
 include( "${wxWidgets_USE_FILE}" )
@@ -33,6 +38,7 @@ target_link_libraries(client_app
   ${SOCI_sqlite3_PLUGIN}
   ${SQLITE3_LIBRARIES}
   ${SOCIDB_LIBRARY}
+  ${LOG4CPLUS_LIBRARIES}
   ${wxWidgets_LIBRARIES}
   )
 

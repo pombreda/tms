@@ -53,7 +53,7 @@ void GridFrame::InitContactPersonsTable() {
   cols.push_back(Column(4, "Телефон", 100));
   cols.push_back(Column(5, "Факс", 100));
   cols.push_back(Column(3, "Заметки", 200));
-  ModelP model = new ContactPerson(ModelBackendP(
+  ModelP model = ContactPerson::GetModel(ModelBackendP(
     new ServerModelBackend(Options::client(), "contact_persons")));
   table_contact_persons_ =
     new ContraptionGridTableBase(model->All(), cols);

@@ -4,12 +4,15 @@
 #include <boost/bind.hpp>
 // log4cplus
 #include <log4cplus/loggingmacros.h>
+// common
+#include <string/string.hpp>
 using namespace std;
 using namespace tms::common::protocol;
+using namespace tms::common::string;
 
 log4cplus::Logger 
 Server::logger_ = log4cplus::Logger
-    ::getInstance(LOG4CPLUS_TEXT("tms::common::protocol::Server"));
+    ::getInstance(WStringFromUTF8String("tms::common::protocol::Server"));
 
 Server::Server(RequestProcessorP request_processor) 
     throw():
@@ -30,9 +33,9 @@ void Server::Listen()
     throw ServerException(&e);
   }
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("Server " 
-                                + rtti::TypeID(*this).name() 
-                                + " started"));
+                 WStringFromUTF8String("Server " 
+				       + rtti::TypeID(*this).name() 
+				       + " started"));
 }
 
 void Server::ListenHere() 
@@ -44,9 +47,9 @@ void Server::ListenHere()
     throw ServerException(&e);
   }
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("Server " 
-                                + rtti::TypeID(*this).name() 
-                                + " started"));
+                 WStringFromUTF8String("Server " 
+				       + rtti::TypeID(*this).name() 
+				       + " started"));
 }
 
 
@@ -61,9 +64,9 @@ void Server::Stop()
   }
   running_ = false;
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("Server " 
-                                + rtti::TypeID(*this).name() 
-                                + " stopped"));
+                 WStringFromUTF8String("Server " 
+				       + rtti::TypeID(*this).name() 
+				       + " stopped"));
 }
 
 void Server::Wait()
@@ -83,7 +86,7 @@ bool Server::IsListening()
 bool Server::Check(const std::string &var) const
     throw() {
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Checking " + var));
+                  WStringFromUTF8String("Checking " + var));
 
   return session_.count(var) != 0;
 }

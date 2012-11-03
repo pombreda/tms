@@ -26,9 +26,11 @@
 #include <protocol/simple_request_processor.hpp>
 #include <protocol/model_backend_request_processor.hpp>
 #include <protocol/model_backend_protocol.hpp>
+#include <string/string.hpp>
 
 using namespace std;
 using namespace tms::common::contraption;
+using namespace tms::common::string;
 using namespace tms::common::protocol;
 using namespace tms::common::model;
 using boost::asio::ip::tcp;
@@ -36,8 +38,8 @@ using namespace log4cplus;
 
 
 int main () {
-  // Configuse logger
-  PropertyConfigurator config("log.cfg");
+  // Configure logger
+  PropertyConfigurator config(WStringFromUTF8String("log.cfg"));
   config.configure();
   // DB data
   string test_db("test.sqlite3");

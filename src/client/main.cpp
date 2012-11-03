@@ -1,3 +1,4 @@
+
 //-----------------------------------------------------------------------------
 // Standard wxWidgets headers
 //-----------------------------------------------------------------------------
@@ -19,6 +20,10 @@
 //-----------------------------------------------------------------------------
 // Headers of this .cpp file
 //-----------------------------------------------------------------------------
+// log4cplus
+#include <client/logger.hpp>
+// log4cplus
+#include <log4cplus/configurator.h>
 
 #include <wx/xrc/xmlres.h>
 #include <wx/grid.h>
@@ -29,16 +34,17 @@
 // common
 #include <gui_exception/gui_exception.hpp>
 // frames
-#include "login_frame.hpp"
+#include <client/login_frame.hpp>
 
 using namespace tms::client;
+using namespace tms::common::string;
+using namespace log4cplus;
 
 class ClientApp : public wxApp {
  public:
   ClientApp() :
       login_frame() {}
   virtual bool OnInit();
-
  private:
   ClientApp(const ClientApp&);
   ClientApp& operator=(const ClientApp&);
@@ -49,6 +55,10 @@ class ClientApp : public wxApp {
 IMPLEMENT_APP(ClientApp)
 
 bool ClientApp::OnInit() {
+  PropertyConfigurator config(WStringFromUTF8String("log.cfg"));
+  config.configure();
+  LOG4CPLUS_INFO(client_logger,
+                 WStringFromUTF8String("Client started"));
   bool wxsOK = true;
   try {
     wxXmlResource::Get()->InitAllHandlers();
@@ -65,5 +75,7 @@ bool ClientApp::OnInit() {
   } catch (tms::common::GUIException &e) {
     std::cerr << e.message() << std::endl;
   }
+  LOG4CPLUS_INFO(client_logger,
+                 WStringFromUTF8String("Forms are initialized"));
   return wxsOK;
 }

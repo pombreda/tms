@@ -10,12 +10,14 @@
 #include <protocol/message/record.hpp>
 #include <protocol/message/filter.hpp>
 #include <protocol/server.hpp>
+#include <string/string.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/record.hpp>
 
 using namespace std;
 using namespace tms::common::protocol;
 using namespace tms::common::contraption;
+using namespace tms::common::string;
 using tms::common::protocol::message::InitRecord;
 using tms::common::protocol::message::GetFilter;
 using tms::common::protocol::message::ReadRecordsResponse;
@@ -61,13 +63,13 @@ RequestProcessorP ModelBackendRequestProcessor::Duplicate() const {
 }
 
 SOCIModelBackendP 
-    ModelBackendRequestProcessor::GetBackend(const string &table, 
-                                             Server &server, 
-                                             SOCIDBSchemeP scheme) {
+ModelBackendRequestProcessor::GetBackend(const std::string &table, 
+					 Server &server, 
+					 SOCIDBSchemeP scheme) {
   BackendMap::iterator it = server.Get<BackendMap>("backend_map").find(table);
   if (it == server.Get<BackendMap>("backend_map").end()) {
     return (server.Get<BackendMap>("backend_map"))[table] = SOCIModelBackendP(
-        new SOCIModelBackend(*scheme, table));
+									      new SOCIModelBackend(*scheme, table));
   }
   return it->second;
 }
@@ -98,9 +100,9 @@ MessageP ModelBackendRequestProcessor::ReadRecords(
 MessageP ModelBackendRequestProcessor::WriteRecords(
     const WriteRecordsRequest &request, Server &server, SOCIDBSchemeP scheme) {
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("User " + server.Get<ContraptionP>("user")
-                                ->Get<string>("name")
-                                + " writes " + " to " + request.table()));  
+                 WStringFromUTF8String("User " + server.Get<ContraptionP>("user")
+				       ->Get<std::string>("name")
+				       + " writes " + " to " + request.table()));  
 
   WriteRecordsResponseP response(new WriteRecordsResponse());
   FieldTypeArray values(new boost::scoped_ptr<FieldType>[request.record_size()]);
@@ -135,10 +137,10 @@ MessageP ModelBackendRequestProcessor::Select(
   FilterCP filter = GetFilter(request.filter());
 
   LOG4CPLUS_INFO(logger_, 
-                 LOG4CPLUS_TEXT("User " + server.Get<ContraptionP>("user")
-                                ->Get<string>("name")
-                                + " selected " + filter->ToString()
-                                + " from " + request.table()));  
+                 WStringFromUTF8String("User " + server.Get<ContraptionP>("user")
+				       ->Get<std::string>("name")
+				       + " selected " + filter->ToString()
+				       + " from " + request.table()));  
   SOCIModelBackendP backend = GetBackend(request.table(), server, scheme);
   auto_ptr< vector<ContraptionID> > contraptions = backend->Select(filter);
   SelectResponseP response (new SelectResponse());

@@ -1,3 +1,4 @@
+#include <string/string.hpp>
 namespace tms {
 namespace common {
 namespace protocol {
@@ -6,7 +7,7 @@ template<class T>
 T& Server::Get(const std::string &var)
     throw(SessionException) {
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Reading " + var));
+                  string::WStringFromUTF8String("Reading " + var));
   
   SessionMap::const_iterator it = session_.find(var);
   if (it == session_.end()) {
@@ -29,7 +30,7 @@ template<class T>
 void Server::Set(const std::string &var, const T &value) 
     throw(SessionException) {
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Writing " + var));
+                  string::WStringFromUTF8String("Writing " + var));
   
   session_[var].reset(new contraption::FieldTypeT<T>(value));
 }

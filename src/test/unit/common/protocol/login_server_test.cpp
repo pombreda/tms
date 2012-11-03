@@ -29,6 +29,7 @@
 #include <protocol/message/login_request.hpp>
 #include <protocol/message/login_response.hpp>
 #include <protocol/message/error_response.hpp>
+#include <string/string.hpp>
 #include <model/user.hpp>
 #include "dummy.pb.h"
 #include "dummy_protocol.hpp"
@@ -37,6 +38,7 @@ using namespace std;
 using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
 using namespace tms::common::contraption;
+using namespace tms::common::string;
 using namespace tms::test;
 using namespace tms::common::model;
 using boost::asio::ip::tcp;
@@ -44,7 +46,7 @@ using namespace log4cplus;
 
 struct InitLog {
   InitLog() {
-    PropertyConfigurator config("log.cfg");
+    PropertyConfigurator config(WStringFromUTF8String("log.cfg"));
     config.configure();
   }
 } init_log;

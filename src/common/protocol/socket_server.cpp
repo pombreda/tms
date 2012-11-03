@@ -6,10 +6,13 @@
 // common
 #include <protocol/message/disconnect_request.hpp>
 #include <protocol/message/error_response.hpp>
+#include <string/string.hpp>
 
 using namespace std;
 using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
+using namespace tms::common::string;
+
 SocketServer::SocketServer(SocketP socket, 
                            ProtocolP protocol, 
                            RequestProcessorP request_processor)
@@ -32,7 +35,7 @@ void SocketServer::WriteMessageHandler(ProtocolExceptionP exception) {
     
   } else {
     LOG4CPLUS_WARN(logger_, 
-                   LOG4CPLUS_TEXT(exception->message()));
+                   WStringFromUTF8String(exception->message()));
   }
 }
 
@@ -58,7 +61,7 @@ void SocketServer::ReadMessageHandler(MessageP message,
     ErrorResponseP ret = ErrorResponseP(new ErrorResponse());
     ret->set_status(ErrorResponse::kServerError);
     LOG4CPLUS_WARN(logger_, 
-                   LOG4CPLUS_TEXT(exception->message()));
+                   WStringFromUTF8String(exception->message()));
     protocol_->AsyncWriteMessage(*socket_, ret,
                                  boost::bind(&SocketServer::WriteMessageHandler,
                                              this,

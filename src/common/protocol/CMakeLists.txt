@@ -31,6 +31,7 @@ find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)
 find_package(Log4cplus REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${LOG4CPLUS_INCLUDE_DIR} ${OpenSSL_INCLUDE_DIR})
 target_link_libraries(tms_protocol 
+  tms_string
   tms_exception 
   tms_message 
   tms_contraption 

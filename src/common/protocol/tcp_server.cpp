@@ -6,8 +6,11 @@
 #include <log4cplus/loggingmacros.h>
 // common
 #include <protocol/socket_server.hpp>
+#include <string/string.hpp>
+
 using boost::asio::ip::tcp;
 using namespace tms::common::protocol;
+using namespace tms::common::string;
 using namespace std;
 
 TCPServer::TCPServer(tcp::endpoint endpoint, ProtocolP protocol, RequestProcessorP request_processor) 
@@ -18,7 +21,7 @@ TCPServer::TCPServer(tcp::endpoint endpoint, ProtocolP protocol, RequestProcesso
     listeners_(0),
     protocol_(protocol) {}
 
-TCPServer::TCPServer(string port, 
+TCPServer::TCPServer(std::string port, 
                      ProtocolP protocol, 
                      RequestProcessorP request_processor) 
     throw():
@@ -52,9 +55,10 @@ void TCPServer::HandleAccept(SocketP socket,
     listeners_.back()->Listen();
   } else {
     LOG4CPLUS_WARN(logger_, 
-                   LOG4CPLUS_TEXT(string("Error in TCPServer::HandleAccept: ") 
+		   WStringFromUTF8String(
+				  std::string("Error in TCPServer::HandleAccept: ")
                                   + ec.category().name() + " " 
-                                  + boost::lexical_cast<string>(ec.value())));
+                                  + boost::lexical_cast<std::string>(ec.value())));
   }
   StartAccept();
 }

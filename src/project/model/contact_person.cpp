@@ -4,11 +4,8 @@
 using namespace tms::project::model;
 using namespace tms::common::contraption;
 using namespace std;
-ContactPerson::ContactPerson(ModelBackendP backend) : Model(fields(), backend) {
-}
 
-
-vector<Field*> ContactPerson::fields() {
+void ContactPerson::Initialize() {
   vector<Field*> ret;
   ret.push_back(new SimpleFieldT<string>("name"));
   ret.push_back(new SimpleFieldT<string>("code"));
@@ -16,6 +13,6 @@ vector<Field*> ContactPerson::fields() {
   ret.push_back(new SimpleFieldT<string>("note"));
   ret.push_back(new SimpleFieldT<string>("phone"));
   ret.push_back(new SimpleFieldT<string>("fax"));
-  return ret;
+  InitFields(ret);
 }
 

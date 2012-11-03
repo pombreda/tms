@@ -6,6 +6,8 @@
 #include <log4cplus/loggingmacros.h>
 // common
 #include <protocol/message/disconnect_request.hpp>
+#include <string/string.hpp>
+
 namespace tms {
 namespace common {
 namespace protocol {
@@ -78,7 +80,8 @@ class Protocol::AsyncHelper {
   void AsyncReadMessage(AsyncReadStream &stream, 
                         AsyncReadHandler handler) {
     LOG4CPLUS_DEBUG(logger_, 
-                    LOG4CPLUS_TEXT("Reading Message Asynchronously"));
+                    string::WStringFromUTF8String(
+  	 	      "Reading Message Asynchronously"));
     AsyncHelperP ptr(this);
     buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
     boost::asio::async_read(stream, boost::asio::buffer(&buf[0], 
@@ -97,7 +100,8 @@ class Protocol::AsyncHelper {
                          MessageP message,
                          AsyncWriteHandler handler) {
     LOG4CPLUS_DEBUG(logger_, 
-                    LOG4CPLUS_TEXT("Writing Message Asynchronously"));
+                    string::WStringFromUTF8String(
+           	      "Writing Message Asynchronously"));
 
     AsyncHelperP ptr(this);
     buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
@@ -146,10 +150,11 @@ class Protocol::AsyncHelper {
       uint32_t id = reinterpret_cast<uint32_t*>(&buf[0])[0];
       uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
       LOG4CPLUS_DEBUG(logger_, 
-                      LOG4CPLUS_TEXT("Header read: id = " 
-                                     + boost::lexical_cast<std::string>(id)
-                                     + ", size = "
-                                     + boost::lexical_cast<std::string>(size)));
+                      string::WStringFromUTF8String(
+                        "Header read: id = "
+		        + boost::lexical_cast<std::string>(id)
+		        + ", size = "
+		        + boost::lexical_cast<std::string>(size)));
       buf.reset(new uint8_t[size]);
       boost::asio::async_read(stream, boost::asio::buffer(&buf[0], size),
                               boost::bind(&AsyncHelper
@@ -178,7 +183,8 @@ class Protocol::AsyncHelper {
       try {
         message = protocol_.helpers_[id]->ReadMessage(&buf[0], size);
         LOG4CPLUS_DEBUG(logger_, 
-                        LOG4CPLUS_TEXT("Message of type \"" 
+                        string::WStringFromUTF8String(
+				       "Message of type \"" 
                                        + rtti::TypeID(*message).name()
                                        + "\" read"));        
       } catch (ProtocolException &e) {
@@ -200,7 +206,7 @@ class Protocol::AsyncHelper {
           new ProtocolException("IO error in Protocol::AsyncWriteHeader.")));
     } else {
       LOG4CPLUS_DEBUG(logger_, 
-                      LOG4CPLUS_TEXT("Header written: id = " 
+                      string::WStringFromUTF8String("Header written: id = " 
                                      + boost::lexical_cast<std::string>(
                                          reinterpret_cast<uint32_t*>(&buf[0])[0])
                                      + ", size = "
@@ -210,7 +216,7 @@ class Protocol::AsyncHelper {
       uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
       if (size == 0) {
         LOG4CPLUS_DEBUG(logger_, 
-                        LOG4CPLUS_TEXT("0-size"));
+                        string::WStringFromUTF8String("0-size"));
                 
         AsyncWriteBody<AsyncWriteStream>(boost::system::error_code(), 
                                          stream,
@@ -246,7 +252,7 @@ class Protocol::AsyncHelper {
       exception.reset(new ProtocolException("IO error in Protocol::AsyncWriteBody"));
     } else {
       LOG4CPLUS_DEBUG(logger_, 
-                      LOG4CPLUS_TEXT("Message of type \"" 
+                      string::WStringFromUTF8String("Message of type \"" 
                                      + rtti::TypeID(*message).name()
                                      + "\" written"));        
     }
@@ -287,7 +293,7 @@ void Protocol::SyncWriteMessage(SyncWriteStream &stream,
                                 const Message &message) {
   boost::scoped_array<uint8_t> buf;
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Writing Message Synchronously"));
+                  string::WStringFromUTF8String("Writing Message Synchronously"));
   buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
   HelpersMap::const_iterator it 
         = helpers_by_type_info_.find(rtti::TypeID(message));
@@ -305,7 +311,7 @@ void Protocol::SyncWriteMessage(SyncWriteStream &stream,
   boost::asio::write(stream, boost::asio::buffer(&buf[0], 
                                                  sizeof(uint32_t) * 2));
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Header written: id = " 
+                  string::WStringFromUTF8String("Header written: id = " 
                                  + boost::lexical_cast<std::string>(
                                      reinterpret_cast<uint32_t*>(&buf[0])[0])
                                  + ", size = "
@@ -321,9 +327,9 @@ void Protocol::SyncWriteMessage(SyncWriteStream &stream,
     boost::asio::write(stream, boost::asio::buffer(&buf[0], size));
   }
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Message of type \"" 
-                                 + rtti::TypeID(message).name()
-                                 + "\" written"));        
+                  string::WStringFromUTF8String("Message of type \"" 
+						+ rtti::TypeID(message).name()
+						+ "\" written"));        
 
 }
 
@@ -331,7 +337,8 @@ void Protocol::SyncWriteMessage(SyncWriteStream &stream,
 template <class SyncReadStream>
 MessageP Protocol::SyncReadMessage(SyncReadStream &stream) {
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Reading Message Synchronously"));
+                  string::WStringFromUTF8String(
+		    "Reading Message Synchronously"));
 
   boost::scoped_array<uint8_t> buf;
   buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
@@ -340,7 +347,8 @@ MessageP Protocol::SyncReadMessage(SyncReadStream &stream) {
   uint32_t id = reinterpret_cast<uint32_t*>(&buf[0])[0];
   uint32_t size = reinterpret_cast<uint32_t*>(&buf[0])[1];
   LOG4CPLUS_DEBUG(logger_, 
-                  LOG4CPLUS_TEXT("Header read: id = " 
+                  string::WStringFromUTF8String(
+                                 "Header read: id = " 
                                  + boost::lexical_cast<std::string>(id)
                                  + ", size = "
                                  + boost::lexical_cast<std::string>(size)));
@@ -349,7 +357,8 @@ MessageP Protocol::SyncReadMessage(SyncReadStream &stream) {
   MessageP message;
   message = helpers_[id]->ReadMessage(&buf[0], size);
   LOG4CPLUS_DEBUG(logger_, 
-                    LOG4CPLUS_TEXT("Message of type \"" 
+		  string::WStringFromUTF8String(
+                                   "Message of type \"" 
                                    + rtti::TypeID(*message).name()
                                    + "\" read"));          
   return message;
