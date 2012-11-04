@@ -13,9 +13,9 @@ std::string tms::common::string::UTF8StingFromWString(std::wstring str) {
   size_t s2 = s1 * 2;
   vector<char> str2(s2);
   char *obuf = str2.data();
-  const wchar_t *ibuf = str.data();
+  char *ibuf = const_cast<char *>(reinterpret_cast<const char*>(str.data()));
  
-  size_t rc = iconv(cd, (const char**)&ibuf, &s1, &obuf, &s2);  
+  size_t rc = iconv(cd, &ibuf, &s1, &obuf, &s2);  
   if (static_cast<int>(rc) < 0) return "";
   return std::string(str2.begin(), str2.begin() + rc );
 }
@@ -25,10 +25,10 @@ std::wstring tms::common::string::WStringFromUTF8String(std::string str) {
   size_t s1 = str.size();
   size_t s2 = s1 * sizeof(wchar_t);
   vector<wchar_t> str2(s1);
-  wchar_t *obuf = str2.data();
-  const char *ibuf = str.data();
+  char *obuf = reinterpret_cast<char*>(str2.data());
+  char *ibuf = const_cast<char*>(str.data());
  
-  size_t rc = iconv(cd, &ibuf, &s1, (char **)&obuf, &s2);  
+  size_t rc = iconv(cd, &ibuf, &s1, &obuf, &s2);  
   if (static_cast<int>(rc) < 0) return std::wstring();
   return std::wstring(str2.begin(), str2.begin() + rc );
 }

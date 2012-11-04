@@ -83,18 +83,24 @@ add_subdirectory(src bin)
 
 if(UNIX)
   file(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.so")
-  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/client_app")
-  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/server_app")
+  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/*app")
+  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/*app")
 elseif(WIN32)
   file(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.dll")
-  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/client_app.exe")
-  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/server_app.exe")
+  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/*.exe")
+  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/*.exe")
 endif(UNIX)
 
 if(WIN32)
   foreach(lib
           "libgcc_s_dw2-1.dll"
           "libstdc++-6.dll"
+          "libboost_signals-mgw47-mt-1_50.dll"
+          "libboost_system-mgw47-mt-1_50.dll"
+          "libboost_thread-mgw47-mt-1_50.dll"
+          "libboost_chrono-mgw47-mt-1_50.dll"
+          "libboost_filesystem-mgw47-mt-1_50.dll"
+          "libboost_program_options-mgw47-mt-1_50.dll"
           "libboost_signals-mgw46-mt-1_50.dll"
           "libboost_system-mgw46-mt-1_50.dll"
           "libboost_thread-mgw46-mt-1_50.dll"

@@ -1,5 +1,6 @@
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+find_package(Log4cplus)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${LOG4CPLUS_INCLUDE_DIR})
 add_subdirectory(model)
 add_library(tms_project SHARED
   protocol

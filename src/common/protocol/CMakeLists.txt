@@ -29,7 +29,8 @@ add_library (tms_protocol SHARED
 find_package(OpenSSL REQUIRED)
 find_package(Boost COMPONENTS serialization thread system chrono REQUIRED)
 find_package(Log4cplus REQUIRED)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${LOG4CPLUS_INCLUDE_DIR} ${OpenSSL_INCLUDE_DIR})
+find_package(Soci REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${LOG4CPLUS_INCLUDE_DIR} ${OpenSSL_INCLUDE_DIR} ${SOCI_INCLUDE_DIRS})
 target_link_libraries(tms_protocol 
   tms_string
   tms_exception 

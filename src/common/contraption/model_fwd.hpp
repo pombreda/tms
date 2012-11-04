@@ -8,6 +8,7 @@ namespace contraption {
 typedef size_t FieldID;
 
 class Model;
+
 typedef boost::intrusive_ptr<Model> ModelP;
 }
 }

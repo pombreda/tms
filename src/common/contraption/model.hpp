@@ -19,7 +19,6 @@
 #include <contraption/contraption_array_fwd.hpp>
 //
 #include "model_fwd.hpp"
-
 namespace boost {
 inline void intrusive_ptr_add_ref(tms::common::contraption::Model* model);
 inline void intrusive_ptr_release(tms::common::contraption::Model* model);
@@ -28,6 +27,9 @@ inline void intrusive_ptr_release(tms::common::contraption::Model* model);
 namespace tms {
 namespace common {
 namespace contraption {
+
+using boost::intrusive_ptr_add_ref;
+using boost::intrusive_ptr_release;
 
 //------------------------------------------------------------
 // Model class.

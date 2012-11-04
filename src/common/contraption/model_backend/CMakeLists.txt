@@ -7,8 +7,9 @@ add_library (tms_memory_contraption SHARED
 target_link_libraries(tms_memory_contraption tms_contraption)
 
 find_package(Soci REQUIRED)
+find_package(Log4cplus REQUIRED)
+include_directories(SYSTEM ${SOCI_INCLUDE_DIRS} ${LOG4CPLUS_INCLUDE_DIR})
 
-include_directories(${SOCI_INCLUDE_DIRS})
 
 add_library (tms_soci_contraption SHARED
   soci_model_backend

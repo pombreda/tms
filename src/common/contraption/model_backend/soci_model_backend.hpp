@@ -7,7 +7,7 @@
 // boost
 #include <boost/shared_ptr.hpp>
 // soci
-#include <soci/soci.h>
+#include <soci.h>
 // common
 #include <contraption/model_backend.hpp>
 #include <contraption/field_type_fwd.hpp>

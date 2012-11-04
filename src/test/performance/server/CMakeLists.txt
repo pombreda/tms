@@ -2,7 +2,7 @@ find_package(Boost COMPONENTS unit_test_framework system chrono REQUIRED)
 find_package(Soci REQUIRED)
 find_package(Sqlite3 REQUIRED)
 find_package(Log4cplus REQUIRED)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${Soci_INCLUDE_DIR} ${Sqlite3_INCLUDE_DIR} ${Log4cplus_INCLUDE_DIR})
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${Soci_INCLUDE_DIR} ${SQLITE3_INCLUDE_DIR} ${Log4cplus_INCLUDE_DIR})
 include_directories(SYSTEM 
   ${SOCI_INCLUDE_DIRS} 
   ${SQLITE3_INCLUDE_DIRS} 

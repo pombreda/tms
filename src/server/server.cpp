@@ -1,6 +1,6 @@
 #include "server.hpp"
 // soci
-#include <soci/sqlite3/soci-sqlite3.h>
+#include <sqlite3/soci-sqlite3.h>
 // common
 #include <protocol/tcp_server.hpp>
 #include <protocol/crypto.hpp>

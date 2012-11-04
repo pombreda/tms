@@ -6,7 +6,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/asio.hpp>
 // soci
-#include <soci/sqlite3/soci-sqlite3.h>
+#include <sqlite3/soci-sqlite3.h>
 // log4cplus
 #include <log4cplus/configurator.h>
 // common

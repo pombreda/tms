@@ -255,7 +255,7 @@ static bool PrepareCreateColumn(RecordP record_p,
     }
     it->second = record;
     return true;
-  }  
+  } 
   return false;
 }
 

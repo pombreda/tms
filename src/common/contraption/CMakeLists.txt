@@ -1,7 +1,8 @@
 add_subdirectory(model_backend)
 
 find_package(Boost COMPONENTS signals REQUIRED)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+find_package(Log4cplus)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${LOG4CPLUS_INCLUDE_DIRS})
 
 add_library (tms_contraption SHARED
   model

@@ -41,7 +41,9 @@ class Fixture {
     string test_db("test.sqlite3");
     remove(test_db.c_str());
     SOCIDBScheme scheme(soci::sqlite3, test_db);
+    cout << "Scheme created" << endl;
     backend.reset(new SOCIModelBackend(scheme, "test"));
+    cout << "Backend created" << endl;
     vector<Field*> fields;
     fields.push_back(new SimpleFieldT<string>("name"));
     fields.push_back(new SimpleFieldT<int>("age"));
@@ -50,7 +52,9 @@ class Fixture {
     fields.push_back(new SimpleFieldT<string>("Surname",
                                               _backend_name = "surname"));
     model.reset(new Model(fields, backend));
+    cout << "Before Model inited" << endl;	
     model->InitSchema();
+    cout << "Model inited" << endl;	
   }
 
   ModelBackendP backend;

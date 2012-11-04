@@ -25,7 +25,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 find_package(Soci REQUIRED)
 find_package(Sqlite3 REQUIRED)
-include_directories(${SOCI_INCLUDE_DIRS})
+include_directories(SYSTEM ${SOCI_INCLUDE_DIRS} ${SQLITE3_INCLUDE_DIR})
 
 target_link_libraries(client_app
   tms_soci_contraption

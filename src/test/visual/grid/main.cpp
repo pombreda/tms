@@ -31,7 +31,7 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 // soci
-#include <soci/sqlite3/soci-sqlite3.h>
+#include <sqlite3/soci-sqlite3.h>
 // common
 #include <contraption/model.hpp>
 #include <contraption/contraption.hpp>

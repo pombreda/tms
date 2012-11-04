@@ -35,6 +35,9 @@ inline void intrusive_ptr_release(tms::common::contraption::Contraption *contrap
 namespace tms {
 namespace common {
 namespace contraption {
+
+using boost::intrusive_ptr_add_ref;
+using boost::intrusive_ptr_release;
 //------------------------------------------------------------
 // Contraption class. This is an abstract class. Contraption
 // represents an object from real world - model instances.
