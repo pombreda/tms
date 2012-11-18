@@ -65,7 +65,7 @@ class Field {
                                std::vector<RecordP> &/*out*/
                                ) const {
   }
-  
+
   virtual bool CheckType(const FieldType *type) const = 0;
   virtual void FinalizeGet(FieldTypeArray &/*values*/, 
                            ContraptionID /*id*/) const {

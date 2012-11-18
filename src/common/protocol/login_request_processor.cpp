@@ -61,8 +61,10 @@ MessageP LoginRequestProcessor::Eval(const Message &message, Server &server) {
                                     + server_->Get<ContraptionP>("user")
                                     ->Get<std::string>("name")
                                     + " logged in"));  
-      
-      return MessageP(new LoginResponse());      
+      LoginResponseP response(new LoginResponse);
+      response->set_admin(users->at(0)->Get<int>("admin"));
+      response->set_secretair(users->at(0)->Get<int>("secretair"));
+      return response;      
     } else {
       LOG4CPLUS_INFO(logger_, 
                      WStringFromUTF8String("User " + request->name()

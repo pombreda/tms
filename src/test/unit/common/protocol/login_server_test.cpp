@@ -63,7 +63,8 @@ class Fixture {
     remove(test_db.c_str());
     SOCIDBScheme scheme(soci::sqlite3, test_db);
     backend.reset(new SOCIModelBackend(scheme, "test"));
-    users = User::GetModel(backend);
+    User::PrepareModel(backend);
+    users = User::GetModel();
     users->InitSchema();
     ContraptionP test_contraption = users->New();
     test_contraption->Set<string>("name", "adavydow");

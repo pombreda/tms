@@ -11,7 +11,6 @@
 #include <boost/foreach.hpp>
 // std
 #include <fstream>
-#include <iostream>
 
 using namespace tms::common::archive;
 using namespace boost::filesystem;

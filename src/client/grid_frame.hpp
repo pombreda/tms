@@ -28,8 +28,11 @@
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
 #include "contact_persons_frame.hpp"
+#include "users_frame.hpp"
+#include <model/user.hpp>
 // project
 #include <project/model/contact_person.hpp>
+#include <project/model/company.hpp>
 #include "options.hpp"
 
 namespace tms {
@@ -52,22 +55,41 @@ class GridFrame : public wxFrame {
   tms::common::widget::ContraptionGrid *grid_books_;
   wxChoice *choice_book_;
   int selected_book_id_;
-  // here should be book tables and edit frames
+  // here should be book tables and edit frames 
+
+  tms::common::widget::ContraptionGrid *grid_admin_;
+  wxChoice *choice_admin_;
+  int selected_admin_id_;
+  tms::common::widget::ContraptionGridTableBase *table_users_;
+  // here should be admin tables and edit frames
+ 
   tms::common::widget::ContraptionGrid *grid_catalogs_;
   wxChoice *choice_catalog_;
   int selected_catalog_id_;
   tms::common::widget::ContraptionGridTableBase *table_contact_persons_;
   ContactPersonsFrame* contact_persons_frame_;
+  UsersFrame* users_frame_;
   // here should be more catalog tables and edit frames
 
   void InitContactPersonsTable();
+  void InitUsersTable();
+  void PrepareModels();
 
-  void OnCellClick(tms::common::contraption::ContraptionP contraption,
+  void OnCatalogCellClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
-  void OnCellDClick(tms::common::contraption::ContraptionP contraption,
-                    tms::common::contraption::FieldID field_id);
+  void OnCatalogCellDClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
+
+  void OnAdminCellClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
+  void OnAdminCellDClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
+
   void OnAddInCatalogClick(wxCommandEvent& WXUNUSED(event));
   void OnCatalogSelect(wxCommandEvent& WXUNUSED(event));
+  void OnAddInAdminClick(wxCommandEvent& WXUNUSED(event));
+  void OnPatchClick(wxCommandEvent& WXUNUSED(event));
+  void OnAdminSelect(wxCommandEvent& WXUNUSED(event));
   void OnExitClick(wxCommandEvent& WXUNUSED(event));
 
   DECLARE_EVENT_TABLE()

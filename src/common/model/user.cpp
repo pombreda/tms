@@ -9,6 +9,8 @@ void User::Initialize() {
   std::vector<Field*> ret;
   ret.push_back(new SimpleFieldT<std::string>("name"));
   ret.push_back(new SimpleFieldT<std::string>("password_hash"));
+  ret.push_back(new SimpleFieldT<int>("admin"));
+  ret.push_back(new SimpleFieldT<int>("secretair"));
   InitFields(ret);
 }
 

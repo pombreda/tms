@@ -2,11 +2,12 @@
 #include <log4cplus/configurator.h>
 // common
 #include <string/string.hpp>
-log4cplus::Logger
-client_logger = log4cplus::Logger
-  ::getInstance(LOG4CPLUS_TEXT("client::main"));
 using namespace log4cplus;
 using namespace tms::common::string;
+
+Logger
+client_logger = Logger
+  ::getInstance(WStringFromUTF8String("client::main"));
 
 namespace {
 class Configurator {

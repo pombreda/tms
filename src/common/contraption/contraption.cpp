@@ -66,6 +66,12 @@ void Contraption::Refresh()
   values_.reset(new boost::scoped_ptr<FieldType>[GetFieldNumber()]);
 }
 
+bool Contraption::IsNew()
+    throw() {
+  return id_ == kNewID;
+}
+
+
 size_t Contraption::GetFieldNumber() const
     throw() {
   return model_->GetFieldNumber();

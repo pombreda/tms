@@ -1,5 +1,8 @@
-add_library (tms_project_model SHARED
+add_library (tms_project_model STATIC
   contact_person
+  scheme
+  incoming	
+  company
   )
 target_link_libraries(tms_project_model 
   tms_contraption 

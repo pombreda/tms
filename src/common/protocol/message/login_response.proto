@@ -5,4 +5,6 @@ message LoginResponse {
     kAccessViolation = 1;
   }
   optional Status status = 1 [default = kOk];
+  optional int32 admin = 2 [default = 0];
+  optional int32 secretair = 3 [default = 0];
 }

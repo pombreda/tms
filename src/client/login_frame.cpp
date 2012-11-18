@@ -17,8 +17,8 @@
 #include <client/client.hpp>
 // project
 #include <project/model/contact_person.hpp>
-
-
+// wx
+#include <wx/msgdlg.h>
 #include <wx/grid.h>
 
 namespace tms {
@@ -90,15 +90,37 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
   LoginRequestP login(new LoginRequest);
   login->set_name(Options::name());
   login->set_password_hash(Options::password_hash());
+  LOG4CPLUS_INFO(client_logger,
+		 WStringFromUTF8String("Trying to log in"));
+
   MessageP ret = client->EvalRequest(*login);
-  if (boost::dynamic_pointer_cast<LoginResponse>(ret)) {
+
+  if (LoginResponseP resp = boost::dynamic_pointer_cast<LoginResponse>(ret)) {
+    Options::set_admin(resp->admin());
+
+    LOG4CPLUS_INFO(client_logger,
+		   WStringFromUTF8String("Loged in"));
+      
     grid_frame = new GridFrame();
     wxXmlResource::Get()->LoadFrame(grid_frame, NULL, _T("GridFrame"));
     grid_frame->Init();
     grid_frame->SetTitle(_T("TMS"));
     grid_frame->Show(true);
+    LOG4CPLUS_INFO(client_logger,
+		   WStringFromUTF8String("Determening user rights"));
+
+    if (resp->admin()) {
+      LOG4CPLUS_INFO(client_logger,
+		     WStringFromUTF8String("User has admin rights"));
+    }
+
+    Close();
+  } else {
+      LOG4CPLUS_INFO(client_logger,
+                 WStringFromUTF8String("Logging in failed"));
+    wxMessageDialog *msg = new wxMessageDialog(this, wxString::FromUTF8("Неверный логин или пароль"), wxString::FromUTF8("Ошибка"));
+    msg->ShowModal();
   }
-  Close();
 }
 
 void LoginFrame::OnExitButtonClick(wxCommandEvent& WXUNUSED(event)) {

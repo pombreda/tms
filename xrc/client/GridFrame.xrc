@@ -7,9 +7,9 @@
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxNotebook" name="ID_NOTEBOOK1">
+				<object class="wxNotebook" name="ID_NOTEBOOK_MAIN">
 					<object class="notebookpage">
-						<object class="wxPanel" name="ID_PANEL1">
+						<object class="wxPanel" name="ID_PANEL_BOOK">
 							<object class="wxBoxSizer">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
@@ -21,6 +21,7 @@
 													<item>Коммерческие предложения</item>
 												</content>
 												<selection>0</selection>
+												<size>180,-1</size>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -53,7 +54,7 @@
 						<label>Журналы</label>
 					</object>
 					<object class="notebookpage">
-						<object class="wxPanel" name="ID_PANEL2">
+						<object class="wxPanel" name="ID_PANEL_CATALOG">
 							<object class="wxBoxSizer">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
@@ -66,6 +67,7 @@
 													<item>Оборудование</item>
 												</content>
 												<selection>0</selection>
+												<size>180,-1</size>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -96,6 +98,56 @@
 							</object>
 						</object>
 						<label>Каталоги</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="ID_PANEL_ADMIN">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxBoxSizer">
+										<object class="sizeritem">
+											<object class="wxChoice" name="ID_CHOICE_ADMIN">
+												<content>
+													<item>Пользователи</item>
+												</content>
+												<selection>0</selection>
+												<size>180,-1</size>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>2</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="ID_BUTTON_ADD_IN_ADMIN">
+												<label>Добавить</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="ID_BUTTON_PATCH">
+												<label>Обновить систему</label>
+											</object>
+											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+										</object>
+									</object>
+									<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="unknown" name="ID_GRID_ADMIN">
+										<style></style>
+										<style></style>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>5</option>
+								</object>
+							</object>
+						</object>
+						<label>Администрирование</label>
 					</object>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

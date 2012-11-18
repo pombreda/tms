@@ -34,15 +34,9 @@ class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
                                 args[_is_writable | true]),
       model_(args[_model]),
       through_model_(args[_through_model]),
-      id_column_(0),
-      other_id_column_() {
+      id_column_(args[_id_column | "id"]),
+      other_id_column_(args[_other_id_column | "other_id"]) {
     try {
-      id_column_ 
-          = dynamic_cast<const IntField*>(
-              through_model_.GetField(args[_id_column | "id"]));
-      other_id_column_
-          = dynamic_cast<const IntField*>(
-              through_model_.GetField(args[_other_id_column | "other_id" ]));
     } catch (FieldException &e) {
       throw ModelBackendException(&e);
     }
@@ -55,13 +49,19 @@ class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
   }
 
   virtual void FinalizeGet(FieldTypeArray &values, ContraptionID id) const {
+    const IntField *id_column
+          = dynamic_cast<const IntField*>(
+              through_model_.GetField(id_column_));
+    const IntField *other_id_column
+          = dynamic_cast<const IntField*>(
+              through_model_.GetField(other_id_column_));
     if (!values[static_cast<int>(this->field_id_)]) {
       ContraptionArrayP val =  ContraptionArrayP(
           new HasManyFieldContraptionArray(ModelP(const_cast<Model*>(&model_)),
                                            ModelP(const_cast<Model*>(
                                                &through_model_)), 
-                                           id_column_,
-                                           other_id_column_,
+                                           id_column,
+                                           other_id_column,
                                            id));
       values[static_cast<int>(this->field_id_)].reset(
           new FieldTypeT<ContraptionArrayP>(val));
@@ -84,8 +84,8 @@ class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
  private:
   Model& model_;
   Model& through_model_;
-  const IntField *id_column_;
-  const IntField *other_id_column_;
+  std::string id_column_;
+  std::string other_id_column_;
 };
 
 // for boost parameter

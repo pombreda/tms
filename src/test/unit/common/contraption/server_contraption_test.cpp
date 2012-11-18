@@ -25,6 +25,7 @@
 #include <contraption/field.hpp>
 #include <contraption/field/simple_field.hpp>
 #include <contraption/field/has_many_field.hpp>
+#include <contraption/field/proxy_field.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/contraption_array.hpp>
@@ -77,9 +78,13 @@ class Fixture {
     remove(test_db.c_str());
     SOCIDBScheme scheme(soci::sqlite3, test_db);
     // InitSchema
-    users = User::GetModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
+    User::PrepareModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
+    users = User::GetModel();
+    cerr << "User model got" << endl;
     users->InitSchema();
+    cerr << "User scheme released" << endl;
     users.reset();
+    
     vector<Field*> fields;
     fields.push_back(new SimpleFieldT<string>("name"));
     fields.push_back(new SimpleFieldT<int>("age"));
@@ -98,7 +103,8 @@ class Fixture {
                                   new SOCIModelBackend(scheme, "test_con")));
     through_model->InitSchema();
     // Init Models
-    users = User::GetModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
+    User::PrepareModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
+    users = User::GetModel();
     fields.clear();
     fields.push_back(new StringField("name"));
     fields.push_back(new IntField("age"));
@@ -155,9 +161,14 @@ class Fixture {
                                   _is_readable = false));
     fields.push_back(new StringField("Surname",
                                      _backend_name = "surname"));
-    fields.push_back(new HasManyField("friends",
+    HasManyField *friends = new HasManyField("friends",
                                       boost::ref(*model),
-                                      boost::ref(*through_model)));
+                                      boost::ref(*through_model));
+    fields.push_back(friends);
+    fields.push_back(new ProxyField<std::string>("first_friend",
+						 friends,
+						 "Surname"));
+
     model->InitFields(fields);
 
   }
@@ -215,6 +226,7 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   test_contraption2->Save();
   test_contraption->Save();
   cerr << 1 << endl;
+
   ContraptionArrayP friends
       = test_contraption2->Get<ContraptionArrayP>("friends");
   cerr << 2 << endl;
@@ -223,6 +235,8 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   cerr << 3 << endl;
   test_contraption2->Save();
   contraptions->Refresh();
+  BOOST_CHECK_EQUAL(test_contraption2->Get<std::string>("first_friend"),
+		    "Ymmud");
 
 
   BOOST_CHECK_EQUAL(contraptions->size(),

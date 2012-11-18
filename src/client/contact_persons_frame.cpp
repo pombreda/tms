@@ -1,9 +1,17 @@
 #include "contact_persons_frame.hpp"
+// log4cplus
+#include <client/logger.hpp>
+#include <log4cplus/loggingmacros.h>
+// common
+#include <string/string.hpp>
+// boost
+#include <boost/lexical_cast.hpp>
 
 namespace tms {
 namespace client {
 
 using namespace tms::common::contraption;
+using namespace tms::common::string;
 
 BEGIN_EVENT_TABLE(ContactPersonsFrame,wxFrame)
 END_EVENT_TABLE()
@@ -23,26 +31,52 @@ void ContactPersonsFrame::Init() {
 
 void ContactPersonsFrame::SetUpValues(ContraptionP contraption,
                             ContraptionArrayP contraptions) {
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Setting contact person values"));
   contraption_ = contraption;
   contraptions_ = contraptions;
+ 
   tc_name_ = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL1");
-  tc_name_->ChangeValue(wxString::FromUTF8(
-      contraption_->Get<std::string>("name").c_str()));
+  std::string name = contraption_->Get<std::string>("name");
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String("Name is: " + name));
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String(boost::lexical_cast<std::string>((int)tc_name_)));
+  tc_name_->ChangeValue(wxString::FromUTF8(name.c_str()));
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String("name set"));
   tc_code_ = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL2");
   tc_code_->ChangeValue(wxString::FromUTF8(
       contraption_->Get<std::string>("code").c_str()));
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String("code set"));
+
   tc_email_ = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL3");
   tc_email_->ChangeValue(wxString::FromUTF8(
       contraption_->Get<std::string>("email").c_str()));
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String("email set"));
+
   tc_phone_ = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL4");
   tc_phone_->ChangeValue(wxString::FromUTF8(
       contraption_->Get<std::string>("phone").c_str()));
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String("phone set"));
+
   tc_fax_ = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL5");
   tc_fax_->ChangeValue(wxString::FromUTF8(
       contraption_->Get<std::string>("fax").c_str()));
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String("fax set"));
+
   tc_notes_ = (wxTextCtrl*)FindWindowByName("ID_TEXTCTRL6");
   tc_notes_->ChangeValue(wxString::FromUTF8(
       contraption_->Get<std::string>("note").c_str()));
+  LOG4CPLUS_DEBUG(client_logger, 
+		  WStringFromUTF8String("note set"));
+
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Contact person values set"));
 }
 
 void ContactPersonsFrame::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {

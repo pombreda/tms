@@ -1,4 +1,4 @@
-c c#ifndef _TMS_COMMON_PROTOCOL_MESSAGE__PATCH_SERVER_REQUEST_HPP_
+#ifndef _TMS_COMMON_PROTOCOL_MESSAGE__PATCH_SERVER_REQUEST_HPP_
 #define _TMS_COMMON_PROTOCOL_MESSAGE__PATCH_SERVER_REQUEST_HPP_
 #include <protocol/message/patch_server_request.pb.h>
 // boost

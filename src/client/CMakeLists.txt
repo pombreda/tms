@@ -10,6 +10,7 @@ add_executable(client_app
                login_frame
                grid_frame
                contact_persons_frame
+	       users_frame
                options_model
 	       logger
                options)
@@ -32,6 +33,8 @@ target_link_libraries(client_app
   tms_contraption
   tms_contraption_grid
   tms_project
+  tms_gui_exception
+  tms_model
   tms_server_contraption
   tms_project_model
   ${Boost_LIBRARIES}

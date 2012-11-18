@@ -85,6 +85,8 @@ class Contraption {
       throw(ModelBackendException);
   void Refresh()
       throw();
+  bool IsNew()
+      throw();
 
 
   Contraption& operator=(const Contraption &other)

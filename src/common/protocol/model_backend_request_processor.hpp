@@ -65,6 +65,7 @@ class ModelBackendRequestProcessor : public LoginRequestProcessor {
   static contraption::SOCIModelBackendP GetBackend(const std::string &table, 
                                                    Server &server,
                                                    contraption::SOCIDBSchemeP scheme);
+protected:
   contraption::SOCIDBScheme scheme_;
 };
 

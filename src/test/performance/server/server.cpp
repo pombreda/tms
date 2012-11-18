@@ -46,7 +46,8 @@ int main () {
   remove(test_db.c_str());
   SOCIDBScheme scheme(soci::sqlite3, test_db);
   // InitSchema
-  ModelP users(User::GetModel(ModelBackendP(new SOCIModelBackend(scheme, "users"))));
+  User::PrepareModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
+  ModelP users(User::GetModel());
   users->InitSchema();
   users.reset();
   vector<Field*> fields;
@@ -60,7 +61,7 @@ int main () {
   soci_model->InitSchema();
   soci_model.reset();
   // Init Models
-  users = User::GetModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
+  users = User::GetModel();
   fields.clear();
   fields.push_back(new SimpleFieldT<string>("name"));
   fields.push_back(new SimpleFieldT<int>("age"));
