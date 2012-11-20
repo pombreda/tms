@@ -11,6 +11,7 @@ add_executable(client_app
                grid_frame
                contact_persons_frame
 	       users_frame
+	       companies_frame
                options_model
 	       logger
                options)

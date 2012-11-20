@@ -31,8 +31,6 @@ void GridFrame::Init() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing grid frame"));
   PrepareModels();
-  InitContactPersonsTable();
-  InitUsersTable();
   wxNotebook* notebook = (wxNotebook*) FindWindowByName("ID_NOTEBOOK_MAIN");
   notebook->RemovePage(0);
   grid_books_ = new ContraptionGrid(this, wxID_ANY);
@@ -49,22 +47,14 @@ void GridFrame::Init() {
   if (Options::admin()) {
     LOG4CPLUS_INFO(client_logger, 
 		   WStringFromUTF8String("Loading admin page"));
-  
     grid_admin_ = new ContraptionGrid(this, wxID_ANY);
     choice_admin_ = (wxChoice *)FindWindowByName("ID_CHOICE_ADMIN");
-    grid_admin_->SetTable(table_users_, wxGrid::wxGridSelectRows, 2500);
-    Connect(XRCID("ID_BUTTON_ADD_IN_ADMIN"), wxEVT_COMMAND_BUTTON_CLICKED,
-	    (wxObjectEventFunction)&GridFrame::OnAddInAdminClick);
     Connect(XRCID("ID_CHOICE_ADMIN"), wxEVT_COMMAND_CHOICE_SELECTED,
 	    (wxObjectEventFunction)&GridFrame::OnAdminSelect);
     Connect(XRCID("ID_BUTTON_PATCH"), wxEVT_COMMAND_BUTTON_CLICKED,
 	    (wxObjectEventFunction)&GridFrame::OnPatchClick);
-    grid_admin_->SetOnCellClick(boost::bind(&GridFrame::OnAdminCellClick, this, _1, _2));
-    grid_admin_->SetOnCellDClick(boost::bind(&GridFrame::OnAdminCellDClick, this, _1, _2));
-    users_frame_ = new UsersFrame();
-    wxXmlResource::Get()->LoadFrame(users_frame_, this,
-				    _T("UsersFrame"));
-    users_frame_->Init();
+    InitUsersTable();
+    ActivateUsersTable();
     LOG4CPLUS_INFO(client_logger, 
 		   WStringFromUTF8String("Admin initialized"));
     //grid_books_->SetOnCellClick(boost::bind(&GridFrame::OnCellClick, this, _1, _2));
@@ -78,19 +68,11 @@ void GridFrame::Init() {
 
   grid_catalogs_ = new ContraptionGrid(this, wxID_ANY);
   choice_catalog_ =(wxChoice *)FindWindowByName("ID_CHOICE_CATALOG");
-  grid_catalogs_->SetTable(table_contact_persons_, wxGrid::wxGridSelectRows, 2500);
-  grid_catalogs_->SetOnCellClick(boost::bind(&GridFrame::OnCatalogCellClick, this, _1, _2));
-  grid_catalogs_->SetOnCellDClick(boost::bind(&GridFrame::OnCatalogCellDClick, this, _1, _2));
   wxXmlResource::Get()->AttachUnknownControl("ID_GRID_CATALOGS", (wxWindow *)grid_catalogs_);
-  Connect(XRCID("ID_BUTTON_ADD_IN_CATALOG"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&GridFrame::OnAddInCatalogClick);
   Connect(XRCID("ID_CHOICE_CATALOG"), wxEVT_COMMAND_CHOICE_SELECTED,
           (wxObjectEventFunction)&GridFrame::OnCatalogSelect);
-
-  contact_persons_frame_ = new ContactPersonsFrame();
-  wxXmlResource::Get()->LoadFrame(contact_persons_frame_, this,
-                                  _T("ContactPersonsFrame"));
-  contact_persons_frame_->Init();
+  InitContactPersonsTable();
+  ActivateContactPersonsTable();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Catalogs initialized"));
   Centre();
@@ -106,6 +88,9 @@ void GridFrame::PrepareModels() {
     new ServerModelBackend(Options::client(), "users")));
   ContactPerson::PrepareModel(ModelBackendP(
     new ServerModelBackend(Options::client(), "contact_persons")));
+  Company::PrepareModel(ModelBackendP(
+    new ServerModelBackend(Options::client(), "companies")));
+
 }
 
 void GridFrame::InitContactPersonsTable() {
@@ -113,94 +98,128 @@ void GridFrame::InitContactPersonsTable() {
                  WStringFromUTF8String("Initializing ContactPersons table"));
   
   std::vector<Column> cols;
-  cols.push_back(Column(0, "Имя", 150));
-  cols.push_back(Column(1, "Код", 100));
-  cols.push_back(Column(2, "Email", 50));
-  cols.push_back(Column(4, "Телефон", 100));
-  cols.push_back(Column(5, "Факс", 100));
-  cols.push_back(Column(3, "Заметки", 200));
   ModelP model = ContactPerson::GetModel();
+  cols.push_back(Column(model->GetFieldID("name"), "Имя", 150));
+  cols.push_back(Column(model->GetFieldID("code"), "Код", 100));
+  cols.push_back(Column(model->GetFieldID("email"), "Email", 50));
+  cols.push_back(Column(model->GetFieldID("phone"), "Телефон", 100));
+  cols.push_back(Column(model->GetFieldID("fax"), "Факс", 100));
+  cols.push_back(Column(model->GetFieldID("note"), "Заметки", 200));
   table_contact_persons_ =
     new ContraptionGridTableBase(model->All(), cols);
+
+  contact_persons_frame_ = new ContactPersonsFrame();
+  wxXmlResource::Get()->LoadFrame(contact_persons_frame_, this,
+                                  _T("ContactPersonsFrame"));
+  contact_persons_frame_->Init();
+}
+
+void GridFrame::ActivateContactPersonsTable() {
+  grid_catalogs_->SetTable(table_contact_persons_, wxGrid::wxGridSelectRows, 2500);
+  grid_catalogs_->SetOnCellClick(boost::bind(&GridFrame::OnContactPersonsCellClick,
+					     this, _1, _2));
+  grid_catalogs_->SetOnCellDClick(boost::bind(&GridFrame::OnContactPersonsCellDClick,
+					      this, _1, _2));  
+  Connect(XRCID("ID_BUTTON_ADD_IN_CATALOG"), wxEVT_COMMAND_BUTTON_CLICKED,
+          (wxObjectEventFunction)&GridFrame::OnAddInContactPersonClick);  
 }
 
 void GridFrame::InitUsersTable() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing Users table"));
   std::vector<Column> cols;
-  cols.push_back(Column(0, "Имя", 150));
-  User::PrepareModel(ModelBackendP(
-    new ServerModelBackend(Options::client(), "users")));
- 
   ModelP model = User::GetModel();
+  cols.push_back(Column(model->GetFieldID("name"), "Имя", 150));
+
   table_users_ =
+    new ContraptionGridTableBase(model->All(), cols);
+
+  users_frame_ = new UsersFrame();
+  wxXmlResource::Get()->LoadFrame(users_frame_, this,
+				  _T("UsersFrame"));
+  users_frame_->Init();
+}
+
+void GridFrame::ActivateUsersTable() {
+  grid_admin_->SetTable(table_users_, wxGrid::wxGridSelectRows, 2500);
+  Connect(XRCID("ID_BUTTON_ADD_IN_ADMIN"), wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction)&GridFrame::OnAddInUserClick);
+  grid_admin_->SetOnCellClick(boost::bind(&GridFrame::OnUsersCellClick, this, _1, _2));
+  grid_admin_->SetOnCellDClick(boost::bind(&GridFrame::OnUsersCellDClick, this, _1, _2));
+}
+
+void GridFrame::InitCompaniesTable() {
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Initializing Companies table"));
+  
+  std::vector<Column> cols;
+  ModelP model = ContactPerson::GetModel();
+  cols.push_back(Column(model->GetFieldID("short_name"), "Название", 150));
+  cols.push_back(Column(model->GetFieldID("group"), "Группа", 100));
+  table_companies_ =
     new ContraptionGridTableBase(model->All(), cols);
 }
 
-
-void GridFrame::OnCatalogCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
+void GridFrame::OnContactPersonsCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
 }
 
-void GridFrame::OnCatalogCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
+void GridFrame::OnContactPersonsCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnCatalogCellDClick"));
   ContraptionArrayP contraptions =
     dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
     contraptions();
-  switch (selected_catalog_id_) {
-    case 0:
-      contact_persons_frame_->SetUpValues(contraption, contraptions);
-      contact_persons_frame_->Show(true);
-      break;
-    default:
-      break;
-  }
+  contact_persons_frame_->SetUpValues(contraption, contraptions);
+  contact_persons_frame_->Show(true);  
 }
 
-void GridFrame::OnAdminCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
+void GridFrame::OnCompaniesCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
 }
 
-void GridFrame::OnAdminCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
+void GridFrame::OnCompaniesCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
+  // todo
+}
+
+
+void GridFrame::OnUsersCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
+}
+
+void GridFrame::OnUsersCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnAdminCellDClick"));
   try {
     ContraptionArrayP contraptions =
       dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
       contraptions();
-    switch (selected_catalog_id_) {
-    case 0:
-      users_frame_->SetUpValues(contraption, contraptions);
-      users_frame_->Show(true);
-      break;
-    default:
-      break;
-    }
+    users_frame_->SetUpValues(contraption, contraptions);
+    users_frame_->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
 }
 
 
-void GridFrame::OnAddInCatalogClick(wxCommandEvent& WXUNUSED(event)) {
+void GridFrame::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) {
   LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("OnAddInCatalogClick"));
+                 WStringFromUTF8String("OnAddInContactPersonClick"));
   try {
     ContraptionArrayP contraptions =
       dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
       contraptions();
     ContraptionP contraption = contraptions ->model()->New();
-    switch (selected_catalog_id_) {
-    case 0:
-      contact_persons_frame_->SetUpValues(contraption, contraptions);
-      contact_persons_frame_->Show(true);
-      break;
-    default:
-      break;
-    }
+    contact_persons_frame_->SetUpValues(contraption, contraptions);
+    contact_persons_frame_->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
 }
+
+void GridFrame::OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event)) {
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("OnAddInCompanyClick"));
+  // todo
+}
+
 
 void GridFrame::OnPatchClick(wxCommandEvent& WXUNUSED(event)) {
   wxFileDialog *fd = new wxFileDialog(this, "Select a patch to install", "", "", "*.patch");
@@ -212,6 +231,8 @@ void GridFrame::OnCatalogSelect(wxCommandEvent& event) {
   switch (event.GetSelection()) {
     case 0:
       selected_catalog_id_ = event.GetSelection();
+    case 1:
+      selected_catalog_id_ = event.GetSelection();
     default:
       wxMessageDialog mes(this,
                           _T("Данный каталог не поддерживается.\nПожалуйста, обратитесь к разработчику."));
@@ -221,19 +242,13 @@ void GridFrame::OnCatalogSelect(wxCommandEvent& event) {
   }
 }
 
-void GridFrame::OnAddInAdminClick(wxCommandEvent& WXUNUSED(event)) {
+void GridFrame::OnAddInUserClick(wxCommandEvent& WXUNUSED(event)) {
   ContraptionArrayP contraptions =
     dynamic_cast<ContraptionGridTableBase*>(grid_admin_->GetTable())->
     contraptions();
   ContraptionP contraption = contraptions ->model()->New();
-  switch (selected_catalog_id_) {
-    case 0:
-      users_frame_->SetUpValues(contraption, contraptions);
-      users_frame_->Show(true);
-      break;
-    default:
-      break;
-  }
+  users_frame_->SetUpValues(contraption, contraptions);
+  users_frame_->Show(true);
 }
 
 void GridFrame::OnAdminSelect(wxCommandEvent& event) {

@@ -67,27 +67,40 @@ class GridFrame : public wxFrame {
   wxChoice *choice_catalog_;
   int selected_catalog_id_;
   tms::common::widget::ContraptionGridTableBase *table_contact_persons_;
+  tms::common::widget::ContraptionGridTableBase *table_companies_;
   ContactPersonsFrame* contact_persons_frame_;
   UsersFrame* users_frame_;
+
   // here should be more catalog tables and edit frames
 
   void InitContactPersonsTable();
+  void ActivateContactPersonsTable();
+  void InitCompaniesTable();
+  void ActivateCompaniesTable();
   void InitUsersTable();
+  void ActivateUsersTable();
   void PrepareModels();
 
-  void OnCatalogCellClick(tms::common::contraption::ContraptionP contraption,
+  void OnContactPersonsCellClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
-  void OnCatalogCellDClick(tms::common::contraption::ContraptionP contraption,
+  void OnContactPersonsCellDClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
+  void OnCompaniesCellClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
+  void OnCompaniesCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 
-  void OnAdminCellClick(tms::common::contraption::ContraptionP contraption,
+
+  void OnUsersCellClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
-  void OnAdminCellDClick(tms::common::contraption::ContraptionP contraption,
+  void OnUsersCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 
-  void OnAddInCatalogClick(wxCommandEvent& WXUNUSED(event));
+  void OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event));
+  void OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event));
+
   void OnCatalogSelect(wxCommandEvent& WXUNUSED(event));
-  void OnAddInAdminClick(wxCommandEvent& WXUNUSED(event));
+  void OnAddInUserClick(wxCommandEvent& WXUNUSED(event));
   void OnPatchClick(wxCommandEvent& WXUNUSED(event));
   void OnAdminSelect(wxCommandEvent& WXUNUSED(event));
   void OnExitClick(wxCommandEvent& WXUNUSED(event));
