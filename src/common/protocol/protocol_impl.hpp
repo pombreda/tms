@@ -8,6 +8,16 @@
 #include <protocol/message/disconnect_request.hpp>
 #include <string/string.hpp>
 
+namespace boost {
+  inline void intrusive_ptr_add_ref(tms::common::protocol::Protocol* model) {
+    ++model->ref_count_;
+  }
+  inline void intrusive_ptr_release(tms::common::protocol::Protocol* model) {
+    --model->ref_count_;
+  }
+}
+
+
 namespace tms {
 namespace common {
 namespace protocol {
@@ -72,7 +82,7 @@ void Protocol::AddMessageClass()
 class Protocol::AsyncHelper {
   typedef boost::shared_ptr<Protocol::AsyncHelper> AsyncHelperP;
  public:
-  AsyncHelper(Protocol &protocol) :
+  AsyncHelper(ProtocolP protocol) :
       buf(),
       protocol_(protocol) {}
 
@@ -106,8 +116,8 @@ class Protocol::AsyncHelper {
     AsyncHelperP ptr(this);
     buf.reset(new uint8_t[sizeof(uint32_t) * 2]);
     HelpersMap::const_iterator it 
-        = protocol_.helpers_by_type_info_.find(rtti::TypeID(*message));
-    if (it == protocol_.helpers_by_type_info_.end()) {
+        = protocol_->helpers_by_type_info_.find(rtti::TypeID(*message));
+    if (it == protocol_->helpers_by_type_info_.end()) {
       std::ostringstream msg;
       msg << "Unknown message type in Protocol::AsyncWriteMessage "
           << "type = '" << typeid(message).name() << "'.";
@@ -181,7 +191,7 @@ class Protocol::AsyncHelper {
       ProtocolExceptionP exception;
       MessageP message;
       try {
-        message = protocol_.helpers_[id]->ReadMessage(&buf[0], size);
+        message = protocol_->helpers_[id]->ReadMessage(&buf[0], size);
         LOG4CPLUS_DEBUG(logger_, 
                         string::WStringFromUTF8String(
 				       "Message of type \"" 
@@ -262,26 +272,26 @@ class Protocol::AsyncHelper {
 
  private:
   boost::scoped_array<uint8_t> buf;
-  Protocol &protocol_;
+  ProtocolP protocol_;
 };
 
 template <class AsyncReadStream>
 void Protocol::AsyncReadMessage(AsyncReadStream &stream, 
                                 AsyncReadHandler handler) {
-  (new AsyncHelper(*this))->AsyncReadMessage(stream, handler);
+  (new AsyncHelper(ProtocolP(this)))->AsyncReadMessage(stream, handler);
 }
 
 template <class AsyncWriteStream>
 void Protocol::AsyncWriteMessage(AsyncWriteStream &stream,
                                  MessageP message,
                                  AsyncWriteHandler handler) {
-  (new AsyncHelper(*this))->AsyncWriteMessage(stream, message, handler);
+  (new AsyncHelper(ProtocolP(this)))->AsyncWriteMessage(stream, message, handler);
 }
 
 template <class AsyncWriteStream>
 void Protocol::AsyncWriteMessage(AsyncWriteStream &stream,
                                  MessageP message) {
-  (new AsyncHelper(*this))->AsyncWriteMessage(stream, 
+  (new AsyncHelper(ProtocolP(this)))->AsyncWriteMessage(stream, 
                                               message, 
                                               boost::bind(&Protocol::DummyHandler, 
                                                           this, 

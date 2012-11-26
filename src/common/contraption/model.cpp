@@ -4,6 +4,7 @@
 #include <contraption/contraption.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/field.hpp>
+#include <contraption/field/simple_field.hpp>
 #include <contraption/model_contraption_array.hpp>
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/filter/all_filter.hpp>
@@ -89,7 +90,7 @@ void Model::InitSchema()
     throw(ModelBackendException) {
   FieldTypeArray values(new boost::scoped_ptr<FieldType>[GetFieldNumber()]);
   vector<RecordP> out(0);
-  for (FieldID field_id = 0, end = fields_.size();
+  for (FieldID field_id = 0, end = fields_.size() - 1;
        field_id < end; ++field_id) {
     fields_[field_id]->GetWriteRecords(values, Contraption::kNewID, out);
   }
@@ -101,12 +102,12 @@ void Model::Save(FieldTypeArray &values,
     throw(ModelBackendException) {
   vector<RecordP> out(0);
 
-  for (FieldID field_id = 0, end = fields_.size();
+  for (FieldID field_id = 0, end = fields_.size() - 1;
        field_id < end; ++field_id) {
     fields_[field_id]->GetWriteRecords(values, id, out);
   }
   backend_->WriteRecords(out, id);
-  for (FieldID field_id = 0, end = fields_.size();
+  for (FieldID field_id = 0, end = fields_.size() - 1;
        field_id < end; ++field_id) {
     fields_[field_id]->FinalizeSave(values, id);
   }
@@ -177,7 +178,7 @@ Model::Model(boost::shared_ptr<ModelBackend> backend) :
     fields_by_name_(),
     backend_(backend),
     initialized_(false),
-    ptr_count_(0) {
+    ptr_count_(0) {  
 }
 
 void Model::CheckInit() const
@@ -210,9 +211,12 @@ void Model::InitFields(const std::vector< Field* > &fields)
           << field->name() << "'";
       throw FieldException(msg.str());
     }
-    fields_by_name_[field->name()] = field_id;
+    fields_by_name_[field->name()] = fields_.size() - 1;
   }
-  for (size_t field_id = 0; field_id < size; ++field_id) {
+  Field *field = new IntField("id", _backend_name = "tms__id_");
+  fields_.push_back(boost::shared_ptr<Field>(field));
+  fields_by_name_["id"] = fields_.size() - 1;
+  for (size_t field_id = 0; field_id < fields_.size(); ++field_id) {
     fields_[field_id]->Initialize(this);
   }
   initialized_ = true;

@@ -20,13 +20,13 @@ Protocol::Protocol()
     throw() :
     initialized_(false),
     helpers_by_type_info_(),
-    helpers_(0) {}
+    helpers_(0), ref_count_(0) {}
 
 Protocol::Protocol(const Protocol &other)
     throw() :
     initialized_(false),
     helpers_by_type_info_(other.helpers_by_type_info_),
-    helpers_(other.helpers_) {}
+    helpers_(other.helpers_), ref_count_(0) {}
 
 bool Protocol::IsInitialized() 
     throw() {

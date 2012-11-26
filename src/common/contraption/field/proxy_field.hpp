@@ -46,23 +46,23 @@ public:
     return array;
   }
   
-  virtual void FinalizeGet(FieldTypeArray &values, ContraptionID /*id*/) const {
+  virtual void FinalizeGet(FieldTypeArray &values, ContraptionID id) const {
     if (!values[static_cast<int>(this->field_id_)]) {
       T val;
-      if (values[static_cast<int>(has_many_column_->field_id())]) {
-	const FieldTypeT<ContraptionArrayP>* type
-	  = dynamic_cast<const FieldTypeT<ContraptionArrayP>*>(
-		 &*values[static_cast<int>(has_many_column_->field_id())]);
-	assert(type);
-	HasManyFieldContraptionArray* array
-          = dynamic_cast<HasManyFieldContraptionArray*>(&*type->data());      
-	assert(array);
-	if (array->size() > 0) {
-	  val = array->at(0)->Get<T>(field_column_);
-	  }
+
+      has_many_column_->FinalizeGet(values, id);
+      const FieldTypeT<ContraptionArrayP>* type
+	= dynamic_cast<const FieldTypeT<ContraptionArrayP>*>(
+							     &*values[static_cast<int>(has_many_column_->field_id())]);
+      assert(type);
+      HasManyFieldContraptionArray* array
+	= dynamic_cast<HasManyFieldContraptionArray*>(&*type->data());      
+      assert(array);
+      if (array->size() > 0) {
+	val = array->at(0)->Get<T>(field_column_);
       }
       values[static_cast<int>(this->field_id_)].reset(
-          new FieldTypeT<T>(val));
+						    new FieldTypeT<T>(val));
     }
   }
   

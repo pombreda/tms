@@ -1,7 +1,7 @@
 #ifndef _TMS_COMMON_PROTOCOL__LOGIN_PROTOCOL_HPP_
 #define _TMS_COMMON_PROTOCOL__LOGIN_PROTOCOL_HPP_
 // boost
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 // common
 #include <protocol/protocol.hpp>
 
@@ -20,7 +20,7 @@ class LoginProtocol : public Protocol {
       throw(ProtocolException);
 };
 
-typedef boost::shared_ptr<LoginProtocol> LoginProtocolP;
+typedef boost::intrusive_ptr<LoginProtocol> LoginProtocolP;
 
 }
 }

@@ -40,10 +40,12 @@ bool ContraptionGrid::SetTable(ContraptionGridTableBase *table,
 
 
 void ContraptionGrid::SetOnCellClick(OnClickFunction on_cell_click) {
+  on_cell_click_.disconnect_all_slots();
   on_cell_click_.connect(on_cell_click);
 }
 
 void ContraptionGrid::SetOnCellDClick(OnClickFunction on_cell_dclick) {
+  on_cell_dclick_.disconnect_all_slots();
   on_cell_dclick_.connect(on_cell_dclick);
 }
 

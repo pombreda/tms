@@ -97,7 +97,7 @@ class Fixture {
     soci_model.reset();
 
     fields.clear();
-    fields.push_back(new IntField("id"));
+    fields.push_back(new IntField("this_id"));
     fields.push_back(new IntField("other_id"));
     through_model.reset(new Model(fields,
                                   new SOCIModelBackend(scheme, "test_con")));
@@ -145,7 +145,7 @@ class Fixture {
                 == LoginResponse::kOk);
     // init through model
     fields.clear();
-    fields.push_back(new IntField("id"));
+    fields.push_back(new IntField("this_id"));
     fields.push_back(new IntField("other_id"));
     through_model.reset(new Model(fields,
                                   new ServerModelBackend(client, "test_con")));
@@ -245,6 +245,12 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
                     10);
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<string>("Surname"),
                     "Du'\"\\mmy");
+  BOOST_CHECK_EQUAL(contraptions->at(0)->Get<ContraptionArrayP>("friends")->size(),
+                    0);
+  BOOST_CHECK_EQUAL(contraptions->at(1)->Get<ContraptionArrayP>("friends")->size(),
+                    2);
+  
+  contraptions->Refresh();
   BOOST_CHECK_EQUAL(contraptions->at(0)->Get<ContraptionArrayP>("friends")->size(),
                     0);
   BOOST_CHECK_EQUAL(contraptions->at(1)->Get<ContraptionArrayP>("friends")->size(),

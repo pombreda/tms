@@ -1,7 +1,7 @@
 #ifndef _TMS_COMMON_PROTOCOL__MODEL_BACKEND_PROTOCOL_HPP_
 #define _TMS_COMMON_PROTOCOL__MODEL_BACKEND_PROTOCOL_HPP_
 // boost
-#include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 // common
 #include <protocol/login_protocol.hpp>
 
@@ -20,7 +20,7 @@ class ModelBackendProtocol : public LoginProtocol {
       throw(ProtocolException);
 };
 
-typedef boost::shared_ptr<ModelBackendProtocol> ModelBackendProtocolP;
+typedef boost::intrusive_ptr<ModelBackendProtocol> ModelBackendProtocolP;
 
 }
 }

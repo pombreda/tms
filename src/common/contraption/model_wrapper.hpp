@@ -23,9 +23,7 @@ class ModelWrapper : public Model {
   typedef T* TP;
   public:
     static ModelP GetModelLink(ModelBackendP backend) {
-      cerr << "before init" << endl;
       TP model = model_ ? dynamic_cast<T*>(&*(model_)) : 0;
-      cerr << "after init" << endl;
       if (!model || true) { //oops!
         model_.reset(new T(backend));
       }
@@ -33,9 +31,7 @@ class ModelWrapper : public Model {
     }
 
     static ModelP GetModelLink(ModelBackend *backend) {
-      cerr << "before init" << endl;
       TP model = model_ ? dynamic_cast<T*>(&*(model_)) : 0;
-      cerr << "after init" << endl;
       if (!model || true) {
         model_.reset(new T(backend));
       }

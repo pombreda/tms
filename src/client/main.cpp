@@ -67,6 +67,8 @@ bool ClientApp::OnInit() {
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/LoginFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/UsersFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/ContactPersonsFrame.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/CompaniesFrame.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/IncomingsFrame.xrc"));  
     if (!wxApp::OnInit())
       return false;
    	login_frame = new LoginFrame();

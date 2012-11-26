@@ -27,12 +27,16 @@
 #include <contraption/field/simple_field.hpp>
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
-#include "contact_persons_frame.hpp"
-#include "users_frame.hpp"
 #include <model/user.hpp>
+// frames
+#include "contact_persons_frame.hpp"
+#include "companies_frame.hpp"
+#include "users_frame.hpp"
+#include "incomings_frame.hpp"
 // project
 #include <project/model/contact_person.hpp>
 #include <project/model/company.hpp>
+#include <project/model/incoming.hpp>
 #include "options.hpp"
 
 namespace tms {
@@ -44,7 +48,8 @@ class GridFrame : public wxFrame {
       wxFrame(),
       grid_books_(), choice_book_(), selected_book_id_(0),
       grid_catalogs_(), choice_catalog_(), selected_catalog_id_(0),
-      table_contact_persons_(), contact_persons_frame_() {}
+      table_contact_persons_(), contact_persons_frame_(), companies_frame_(),
+      users_frame_(), incomings_frame_() {}
   virtual ~GridFrame();
   void Init();
 
@@ -54,24 +59,29 @@ class GridFrame : public wxFrame {
 
   tms::common::widget::ContraptionGrid *grid_books_;
   wxChoice *choice_book_;
+  wxButton *button_add_in_book_;
   int selected_book_id_;
-  // here should be book tables and edit frames 
+  tms::common::widget::ContraptionGridTableBase *table_incomings_;
 
   tms::common::widget::ContraptionGrid *grid_admin_;
   wxChoice *choice_admin_;
+  wxButton *button_add_in_admin_;
   int selected_admin_id_;
   tms::common::widget::ContraptionGridTableBase *table_users_;
-  // here should be admin tables and edit frames
  
   tms::common::widget::ContraptionGrid *grid_catalogs_;
   wxChoice *choice_catalog_;
+  wxButton *button_add_in_catalog_;
   int selected_catalog_id_;
   tms::common::widget::ContraptionGridTableBase *table_contact_persons_;
   tms::common::widget::ContraptionGridTableBase *table_companies_;
-  ContactPersonsFrame* contact_persons_frame_;
-  UsersFrame* users_frame_;
 
-  // here should be more catalog tables and edit frames
+  // frames
+  ContactPersonsFrame* contact_persons_frame_;
+  CompaniesFrame* companies_frame_;
+  UsersFrame* users_frame_;
+  IncomingsFrame* incomings_frame_;
+
 
   void InitContactPersonsTable();
   void ActivateContactPersonsTable();
@@ -79,6 +89,8 @@ class GridFrame : public wxFrame {
   void ActivateCompaniesTable();
   void InitUsersTable();
   void ActivateUsersTable();
+  void InitIncomingsTable();
+  void ActivateIncomingsTable();
   void PrepareModels();
 
   void OnContactPersonsCellClick(tms::common::contraption::ContraptionP contraption,
@@ -90,18 +102,26 @@ class GridFrame : public wxFrame {
   void OnCompaniesCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 
+  void OnIncomingsCellClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
+  void OnIncomingsCellDClick(tms::common::contraption::ContraptionP contraption,
+                   tms::common::contraption::FieldID field_id);
 
   void OnUsersCellClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
   void OnUsersCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 
+  void OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event));
+
   void OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event));
   void OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event));
 
-  void OnCatalogSelect(wxCommandEvent& WXUNUSED(event));
+
   void OnAddInUserClick(wxCommandEvent& WXUNUSED(event));
   void OnPatchClick(wxCommandEvent& WXUNUSED(event));
+  void OnCatalogSelect(wxCommandEvent& WXUNUSED(event));
+  void OnBookSelect(wxCommandEvent& WXUNUSED(event));
   void OnAdminSelect(wxCommandEvent& WXUNUSED(event));
   void OnExitClick(wxCommandEvent& WXUNUSED(event));
 

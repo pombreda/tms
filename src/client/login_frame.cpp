@@ -8,11 +8,15 @@
 #include <protocol/client.hpp>
 #include <protocol/crypto.hpp>
 #include <protocol/message/login_request.hpp>
+#include <protocol/message/patch_client_request.hpp>
+#include <protocol/message/patch_client_response.hpp>
 #include <protocol/message/login_response.hpp>
+#include <patcher/patcher.hpp>
 #include <contraption/model_backend/server_model_backend.hpp>
 #include <contraption/model.hpp>
 #include <string/string.hpp>
 #include <widget/contraption_grid_table_base.hpp>
+#include <config.hpp>
 // client
 #include <client/client.hpp>
 // project
@@ -20,6 +24,8 @@
 // wx
 #include <wx/msgdlg.h>
 #include <wx/grid.h>
+// boost
+#include <boost/filesystem.hpp>
 
 namespace tms {
 namespace client {
@@ -30,6 +36,8 @@ using namespace tms::common::protocol::message;
 using namespace tms::project::model;
 using namespace tms::common::widget;
 using namespace tms::common::string;
+using namespace tms::common::patcher;
+using namespace boost::filesystem;
 
 BEGIN_EVENT_TABLE(LoginFrame,wxFrame)
 END_EVENT_TABLE()
@@ -96,16 +104,34 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
   MessageP ret = client->EvalRequest(*login);
 
   if (LoginResponseP resp = boost::dynamic_pointer_cast<LoginResponse>(ret)) {
-    Options::set_admin(resp->admin());
-
     LOG4CPLUS_INFO(client_logger,
-		   WStringFromUTF8String("Loged in"));
-      
-    grid_frame = new GridFrame();
-    wxXmlResource::Get()->LoadFrame(grid_frame, NULL, _T("GridFrame"));
-    grid_frame->Init();
-    grid_frame->SetTitle(_T("TMS"));
-    grid_frame->Show(true);
+		   WStringFromUTF8String("Testing if a patch needed"));
+    PatchClientRequestP patch_request(new PatchClientRequest());
+    patch_request->set_version(kVersion);
+    patch_request->set_system(kSystem);
+    MessageP ret = client->EvalRequest(*patch_request);
+    if (PatchClientResponseP resp = boost::dynamic_pointer_cast<PatchClientResponse>(ret)) {
+      LOG4CPLUS_INFO(client_logger,
+		     WStringFromUTF8String("Patch needed"));
+      if (resp->patch_archive().size() == 0) {
+	wxMessageDialog(this,
+			WStringFromUTF8String("Данная версия клиента больше не поддержмвается.")).ShowModal();
+      } else {
+	wxMessageDialog(this,
+			WStringFromUTF8String("Запускается обновление системы.")).ShowModal();
+		
+	ofstream fout("latest.patch", ios::out | ios::binary);
+	fout.write(resp->patch_archive().c_str(), resp->patch_archive().size());
+	fout.close();
+	Patch(path("latest.patch"), current_path());  
+	wxMessageDialog(this,
+			WStringFromUTF8String("Обновленме завершено. Перезапустите приложение.")).ShowModal();
+      }      
+      Close();
+      return;
+    } 
+    LOG4CPLUS_INFO(client_logger,
+		   WStringFromUTF8String("Patch not needed"));      
     LOG4CPLUS_INFO(client_logger,
 		   WStringFromUTF8String("Determening user rights"));
 
@@ -113,6 +139,27 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
       LOG4CPLUS_INFO(client_logger,
 		     WStringFromUTF8String("User has admin rights"));
     }
+    
+    Options::set_admin(resp->admin());
+
+    if (resp->secretair()) {
+      LOG4CPLUS_INFO(client_logger,
+		     WStringFromUTF8String("User has admin rights"));
+    }
+    
+    Options::set_secretair(resp->secretair());
+
+
+    LOG4CPLUS_INFO(client_logger,
+		   WStringFromUTF8String("Loged in"));
+      
+    grid_frame = new GridFrame();
+    wxXmlResource::Get()->LoadFrame(grid_frame, 
+				    NULL, 
+				    WStringFromUTF8String("GridFrame"));
+    grid_frame->Init();
+    grid_frame->SetTitle(WStringFromUTF8String("TMS"));
+    grid_frame->Show(true);
 
     Close();
   } else {

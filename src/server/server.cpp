@@ -7,6 +7,7 @@
 #include <protocol/model_backend_request_processor.hpp>
 #include <protocol/login_request_processor.hpp>
 #include <protocol/simple_request_processor.hpp>
+#include <protocol/patcher_request_processor.hpp>
 #include <model/user.hpp>
 #include <project/model/contact_person.hpp>
 #include <project/model/company.hpp>
@@ -15,6 +16,7 @@
 #include <contraption/model_backend/soci_model_backend.hpp>
 #include <project/protocol.hpp>
 #include <config.hpp>
+#include <iostream>
 using namespace std;
 using namespace tms::server;
 using namespace tms::common::protocol;
@@ -32,6 +34,7 @@ ServerP CreateServer(const std::string &port, const std::string &db) {
   ModelP users(User::GetModel());
   SimpleRequestProcessorP request_processor(new SimpleRequestProcessor());
   ModelBackendRequestProcessor::Register(*request_processor, scheme);
+  PatcherRequestProcessor::Register(*request_processor);
   RequestProcessorP processor(
       new LoginRequestProcessor(request_processor, users));
   // Create Server
@@ -43,6 +46,7 @@ ServerP CreateServer(const std::string &port, const std::string &db) {
 }
 
 void InitSchema(const std::string &db) {
+  try {
   {
     SOCIDBScheme scheme(soci::sqlite3, db);
     User::PrepareModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
@@ -63,7 +67,6 @@ void InitSchema(const std::string &db) {
 
     Company::GetModel()->InitSchema();
   }
-  
   {
     SOCIDBScheme scheme(soci::sqlite3, db);
     User::PrepareModel(ModelBackendP(new SOCIModelBackend(scheme, "users")));
@@ -81,7 +84,6 @@ void InitSchema(const std::string &db) {
     
     ModelP contact_persons =
       ContactPerson::GetModel();
-    
     ContraptionP scheme_i = scheme_m->New();
     scheme_i->Set<std::string>("version", kVersion);
     scheme_i->Save();
@@ -90,6 +92,9 @@ void InitSchema(const std::string &db) {
     admin->Set<string>("password_hash", sha256("admin"));
     admin->Set<int>("admin", true);
     admin->Save();
+  }
+  } catch (exception &e) {
+    cerr << e.what();
   }
 }
 

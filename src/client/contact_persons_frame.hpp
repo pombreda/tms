@@ -4,6 +4,7 @@
 // wxWidgets
 #include <wx/frame.h>
 #include <wx/textctrl.h>
+#include <wx/button.h>
 #include <wx/xrc/xmlres.h>
 // boost
 #include <boost/lexical_cast.hpp>
@@ -20,12 +21,13 @@ class ContactPersonsFrame : public wxFrame {
  public:
   ContactPersonsFrame() :
       wxFrame(), tc_name_(), tc_code_(), tc_email_(),
-      tc_phone_(), tc_fax_(), tc_notes_(),
+      tc_phone_(), tc_fax_(), tc_role_(), tc_company_(), tc_notes_(),
+      button_remove_(), button_save_(),
       contraption_(), contraptions_() {}
 	virtual ~ContactPersonsFrame();
 	void Init();
 	void SetUpValues(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::ContraptionArrayP contraptions);
+			 tms::common::contraption::ContraptionArrayP contraptions, bool editable);
 
  private:
   ContactPersonsFrame(const ContactPersonsFrame&);
@@ -36,7 +38,11 @@ class ContactPersonsFrame : public wxFrame {
   wxTextCtrl *tc_email_;
   wxTextCtrl *tc_phone_;
   wxTextCtrl *tc_fax_;
+  wxTextCtrl *tc_role_;
+  wxTextCtrl *tc_company_;
   wxTextCtrl *tc_notes_;
+  wxButton *button_remove_;
+  wxButton *button_save_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;
 

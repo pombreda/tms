@@ -128,12 +128,12 @@ BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
   {
     ModelP test_model(new Model(vector<Field*>(),
                                 new MemoryModelBackend()));
-    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), 0);
+    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), 1);
   }
   {
     ModelP test_model(new Model(fields(),
                                 new MemoryModelBackend()));
-    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), fields_size());
+    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), fields_size() + 1);
   }
   {
     vector<Field*> test_fields;
@@ -142,7 +142,7 @@ BOOST_FIXTURE_TEST_CASE(testModelGetFieldNumber, Fixture) {
     test_fields.push_back(new SimpleFieldT<int>("age"));
     ModelP test_model(new Model(test_fields,
                                 new MemoryModelBackend()));
-    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), test_fields.size());
+    BOOST_CHECK_EQUAL(test_model->GetFieldNumber(), test_fields.size() + 1);
   }
   {
     vector<Field*> test_fields;
@@ -194,7 +194,7 @@ BOOST_FIXTURE_TEST_CASE(testGetField, Fixture) {
   BOOST_CHECK(dynamic_cast<const SimpleFieldT<int>*>(
       test_model->GetField(1)));
   BOOST_CHECK_THROW(
-      test_model->GetField(4),
+      test_model->GetField(5),
       FieldException);
 }
 
@@ -340,7 +340,7 @@ BOOST_FIXTURE_TEST_CASE(testSaveInt, Fixture) {
       test_contraption->Set(1, vector<int>()),
       FieldException);
   BOOST_CHECK_THROW(
-      test_contraption->Set(4, 17),
+      test_contraption->Set(5, 17),
       FieldException);
   BOOST_CHECK_THROW(
       test_contraption->Set(0, 17),
@@ -417,7 +417,7 @@ BOOST_FIXTURE_TEST_CASE(testRefreshGetInt, Fixture) {
                     string("Dummy"));
   BOOST_CHECK_EQUAL(test_backend->int_fields().size(), 1);
   BOOST_CHECK_EQUAL(test_backend->string_fields().size(), 1);
-  BOOST_CHECK_THROW(test_contraption->Get<int>(4),
+  BOOST_CHECK_THROW(test_contraption->Get<int>(5),
                     FieldException);
 }
 
@@ -428,7 +428,7 @@ BOOST_FIXTURE_TEST_CASE(testGetFieldIDName, Fixture) {
       test_contraption->GetID("name")), "name");
   BOOST_CHECK_EQUAL(test_contraption->GetName(
       test_contraption->GetID("age")), "age");
-  BOOST_CHECK_THROW(test_contraption->GetName(4),
+  BOOST_CHECK_THROW(test_contraption->GetName(5),
                     FieldException);
   BOOST_CHECK_THROW(test_contraption->GetID("surname"),
                     FieldException);

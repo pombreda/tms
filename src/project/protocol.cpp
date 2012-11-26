@@ -1,11 +1,11 @@
 #include "protocol.hpp"
 // common
-#include <protocol/model_backend_protocol.hpp>
+#include <protocol/patcher_protocol.hpp>
 using namespace tms::project;
 using namespace tms::common::protocol;
 
 ProtocolP tms::project::AppProtocol() {
-  ProtocolP protocol(new ModelBackendProtocol());
+  ProtocolP protocol(new PatcherProtocol());
   protocol->Initialize();
   return protocol;
 }

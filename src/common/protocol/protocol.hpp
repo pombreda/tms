@@ -15,6 +15,7 @@
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -26,6 +27,20 @@
 #include <protocol/message.hpp>
 #include <protocol/protocol_exception.hpp>
 #include <rtti/typeinfo.hpp>
+
+namespace tms {
+namespace common {
+namespace protocol {
+class Protocol;
+}
+}
+}
+
+namespace boost {
+  inline void intrusive_ptr_add_ref(tms::common::protocol::Protocol* model);
+  inline void intrusive_ptr_release(tms::common::protocol::Protocol* model);
+}
+
 
 namespace tms {
 namespace common {
@@ -73,6 +88,8 @@ class Protocol {
     
   virtual ~Protocol() 
       throw() {}
+  friend void boost::intrusive_ptr_add_ref(Protocol* model);
+  friend void boost::intrusive_ptr_release(Protocol* model);  
  private:
   void DummyHandler (ProtocolExceptionP exception)
       throw(ProtocolException);
@@ -90,9 +107,10 @@ class Protocol {
   typedef boost::unordered_map<rtti::TypeInfo, MessageHelperCP> HelpersMap;
   HelpersMap helpers_by_type_info_;
   std::vector<MessageHelperCP> helpers_;
+  int ref_count_;
 };
 
-typedef boost::shared_ptr<Protocol> ProtocolP;
+typedef boost::intrusive_ptr<Protocol> ProtocolP;
 
 }
 }

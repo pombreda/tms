@@ -1,6 +1,7 @@
 #include "has_many_field_contraption_array.hpp"
 // std
 #include <algorithm>
+#include <cassert>
 // common
 #include <contraption/field_type.hpp>
 #include <contraption/contraption_accessor.hpp>
@@ -102,7 +103,7 @@ HasManyFieldContraptionArray::HasManyFieldContraptionArray(
     ContraptionAccessor accessor(&*contraption);
     accessor.id() = static_cast<ContraptionID>(
         links->at(pos)->Get<int>(other_id_column_->field_id()));
-    push_back(contraption);
+    ContraptionArray::push_back(contraption);
   }
 
   Init();

@@ -1,6 +1,7 @@
 #include "patcher_request_processor.hpp"
 // std
 #include <cassert>
+#include <cstdlib>
 #include <sstream>
 // log4cplus
 #include <log4cplus/loggingmacros.h>
@@ -12,6 +13,7 @@
 #include <protocol/message/patch_client_request.hpp>
 #include <protocol/message/patch_client_response.hpp>
 #include <protocol/message/patch_server_request.hpp>
+#include <protocol/message/error_response.hpp>
 #include <protocol/server.hpp>
 #include <string/string.hpp>
 #include <contraption/field_type.hpp>
@@ -53,28 +55,56 @@ RequestProcessorP PatcherRequestProcessor::Duplicate() const {
 MessageP PatcherRequestProcessor::PatchServer(
 			     const PatchServerRequest &request, 
 			     Server &server) {
+  LOG4CPLUS_INFO(logger_, 
+		 WStringFromUTF8String("Patching server"));  
+  ContraptionP user = server.Get<ContraptionP>("user");  
+  if (!user->Get<int>("admin")) {
+    return MessageP(new ErrorResponse());
+  }
   server.Stop();
   ofstream fout("latest.patch", ios::out | ios::binary);
   fout.write(request.patch_archive().c_str(), request.patch_archive().size());
   fout.close();
   Patch(path("latest.patch"), current_path());  
+  LOG4CPLUS_INFO(logger_, 
+		 WStringFromUTF8String("Patch request evaled"));  
+  exit(0);
+  return MessageP();
 }
 
 MessageP PatcherRequestProcessor::PatchClient(
 			     const PatchClientRequest &request,
-			     Server &server) {
-  path patch = current_path() / path(request.version()) / path(request.system());
-  ostringstream sout;
-  ifstream fin(patch.string().c_str(), ios::in | ios::binary);
-  const int bufsize = 10240;
-  char buf[bufsize];
-  while (!fin.eof()) {
-    fin.read(buf, bufsize);
-    sout.write(buf, fin.gcount());
+			     Server &/*server*/) {
+  LOG4CPLUS_INFO(logger_, 
+		 WStringFromUTF8String("Patching client"));  
+  
+  if (request.version() != kVersion) {
+  
+    path patch = current_path() / path("patches") 
+      / path(request.version()) / path(request.system());
+    
+    ostringstream sout;
+    if (exists(patch)) {
+      LOG4CPLUS_INFO(logger_, 
+		     WStringFromUTF8String("Patch " + patch.string() + " found"));
+      ifstream fin(patch.string().c_str(), ios::in | ios::binary);
+      
+      const int bufsize = 10240;
+      char buf[bufsize];
+      while (!fin.eof()) {
+	fin.read(buf, bufsize);
+	sout.write(buf, fin.gcount());
+      }
+    }  else {
+      LOG4CPLUS_INFO(logger_, 
+		     WStringFromUTF8String("Patch " + patch.string() + " not found"));
+    }
+    PatchClientResponseP response(new PatchClientResponse());
+    response->set_patch_archive(sout.str());
+    return response;
+  } else {
+    return MessageP(new ErrorResponse());
   }
-  PatchClientResponseP response(new PatchClientResponse());
-  response->set_patch_archive(sout.str());
-  return response;
 }
 
 

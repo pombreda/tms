@@ -34,7 +34,7 @@ class HasManyFieldImpl : public FieldT<ContraptionArrayP> {
                                 args[_is_writable | true]),
       model_(args[_model]),
       through_model_(args[_through_model]),
-      id_column_(args[_id_column | "id"]),
+      id_column_(args[_id_column | "this_id"]),
       other_id_column_(args[_other_id_column | "other_id"]) {
     try {
     } catch (FieldException &e) {

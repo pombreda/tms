@@ -5,6 +5,7 @@
 #include <wx/frame.h>
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
+#include <wx/button.h>
 #include <wx/xrc/xmlres.h>
 // boost
 #include <boost/lexical_cast.hpp>
@@ -35,6 +36,7 @@ class UsersFrame : public wxFrame {
   wxTextCtrl *tc_password_;
   wxCheckBox *cb_admin_;
   wxCheckBox *cb_secretair_;
+  wxButton *button_remove_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;
 

@@ -28,15 +28,25 @@ void tms::common::patcher::Patch(path patch, path root) {
   ifstream descr(patch_description.string().c_str());
   const int bufsize = 1024;
   char buf[bufsize];
+  LOG4CPLUS_INFO(logger, 
+		 WStringFromUTF8String("Applying patch." ));  
   while (!descr.eof()) {
     descr.getline(buf, bufsize);
     if (std::string(buf) == "") break;
     path patched_file = patch_folder / path(buf);
     path dest_file = root / path(buf);
-    cerr << patched_file.string() << " " << dest_file.string() << endl;
+    LOG4CPLUS_INFO(logger, 
+		   WStringFromUTF8String("Patching " 
+					 + patched_file.string() + "." ));  
+    if (exists(dest_file) && is_directory(dest_file)) {
+      continue;
+    }
     if (exists(dest_file)) {
       rename(dest_file, path(dest_file.string() + ".old"));
     }
     copy(patched_file, dest_file);
   }
+  LOG4CPLUS_INFO(logger, 
+		 WStringFromUTF8String("Patch applied." ));  
+
 }

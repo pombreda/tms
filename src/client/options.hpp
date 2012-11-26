@@ -37,6 +37,10 @@ class Options {
   static void set_admin(bool admin) {
     admin_ = admin;
   }
+  static void set_secretair(bool secretair) {
+    secretair_ = secretair;
+  }
+
 
   static std::string password_hash() {
     return contraption_->Get<std::string>("password_hash");
@@ -48,6 +52,9 @@ class Options {
 
   static bool admin() {
     return admin_;
+  }
+  static bool secretair() {
+    return secretair_;
   }
   static std::string server() {
     return contraption_->Get<std::string>("server");
@@ -76,6 +83,7 @@ class Options {
   static common::protocol::ClientP client_;
   static common::contraption::ContraptionP contraption_;
   static bool admin_;
+  static bool secretair_;
 };
 
 }

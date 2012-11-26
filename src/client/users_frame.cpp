@@ -44,14 +44,24 @@ void UsersFrame::SetUpValues(ContraptionP contraption,
   contraption_ = contraption;
   contraptions_ = contraptions;
   tc_name_ = (wxTextCtrl*)FindWindowByName("ID_TEXTNAME");
+  tc_password_ = (wxTextCtrl*)FindWindowByName("ID_TEXTPASSWORD");
+  cb_admin_ = (wxCheckBox*)FindWindowByName("ID_CHECKBOXADMIN");
+  cb_secretair_ = (wxCheckBox*)FindWindowByName("ID_CHECKBOXSECRETAIR");
+  button_remove_ = (wxButton*)FindWindowByName("ID_BUTTONREMOVE", this);
+
+  if (contraption->IsNew()) {
+    button_remove_->Show(false);
+  } else {
+    button_remove_->Show(true);
+  }
+
   tc_name_->ChangeValue(wxString::FromUTF8(
       contraption_->Get<std::string>("name").c_str()));
-  tc_password_ = (wxTextCtrl*)FindWindowByName("ID_TEXTPASSWORD");
   tc_password_->ChangeValue(wxString::FromUTF8(""));
-  cb_admin_ = (wxCheckBox*)FindWindowByName("ID_CHECKBOXADMIN");
   cb_admin_->SetValue(contraption_->Get<int>("admin"));
-  cb_secretair_ = (wxCheckBox*)FindWindowByName("ID_CHECKBOXSECRETAIR");
   cb_secretair_->SetValue(contraption_->Get<int>("secretair"));
+  Fit();
+  Layout();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Values set up"));
 }

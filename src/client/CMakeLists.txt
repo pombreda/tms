@@ -10,6 +10,7 @@ add_executable(client_app
                login_frame
                grid_frame
                contact_persons_frame
+	       incomings_frame
 	       users_frame
 	       companies_frame
                options_model

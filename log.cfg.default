@@ -1,8 +1,7 @@
  # Set options for appender named "A1".
  # Appender "A1" will be a SyslogAppender
- log4cplus.appender.A1=log4cplus::FileAppender
- log4cplus.appender.A1.File=log.txt
-
+ log4cplus.appender.A1=log4cplus::RollingFileAppender
+ log4cplus.appender.A1.File=main.log
  # A1's layout is a PatternLayout, using the conversion pattern
  # r %-5p c{2} M.L x - m. Thus, the log output will
  # include # the relative time since the start of the application in

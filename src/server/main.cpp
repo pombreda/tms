@@ -12,7 +12,7 @@ using namespace tms::common::protocol;
 using namespace tms::common::string;
 using namespace std;
 using namespace log4cplus;
-
+Logger logger = Logger::getInstance(WStringFromUTF8String("server"));
 namespace po = boost::program_options;
 int main(int argc, char** argv){
   try {    
@@ -38,7 +38,13 @@ int main(int argc, char** argv){
 
     if (vm.count("init")) {
       if (vm.count("db")) {
+	LOG4CPLUS_INFO(logger, 
+		       WStringFromUTF8String("Initializing database" ));  
+	cerr << "Initializing database..." << endl;
         InitSchema(vm["db"].as<string>());
+	LOG4CPLUS_INFO(logger, 
+		       WStringFromUTF8String("Database initialized" ));  
+	cerr << "Database initialized." << endl;
         return 0;
       } else {
         cerr << "error: db must be provided if init flag is passed\n";
@@ -46,7 +52,24 @@ int main(int argc, char** argv){
     }        
     
     if (vm.count("db") && vm.count("port")) {
-      CreateServer(vm["port"].as<string>(), vm["db"].as<string>())->ListenHere();
+      LOG4CPLUS_INFO(logger, 
+		     WStringFromUTF8String("Starting server" ));  
+
+      cerr << "Server started." << endl;
+      try {
+	CreateServer(vm["port"].as<string>(), vm["db"].as<string>())->ListenHere(); 
+      } catch(exception &e) {
+	LOG4CPLUS_INFO(logger, 
+		       WStringFromUTF8String(e.what()));  
+      } catch (...) {
+	LOG4CPLUS_INFO(logger, 
+		       WStringFromUTF8String("Unknown problem occured"));  
+	
+      }
+      LOG4CPLUS_INFO(logger, 
+		     WStringFromUTF8String("Server stoped." ));  
+
+      cerr << "Server stoped.";
     } else {
       cerr << "error: db and port must be provided\n";
     }

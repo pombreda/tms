@@ -55,6 +55,7 @@ else(NOT system)
 endif(NOT system)
 
 string(TOUPPER "${system}" SYSTEM)
+
 if (${CMAKE_SOURCE_DIR}/src/config.hpp.in IS_NEWER_THAN ${CMAKE_SOURCE_DIR}/bin/config.hpp)
   configure_file (
     ${CMAKE_SOURCE_DIR}/src/config.hpp.in
@@ -83,8 +84,8 @@ add_subdirectory(src bin)
 
 if(UNIX)
   file(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.so")
-  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/*app")
-  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/*app")
+  file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/client*")
+  file(GLOB server "${CMAKE_SOURCE_DIR}/bin/server/server*")
 elseif(WIN32)
   file(GLOB libs "${CMAKE_SOURCE_DIR}/lib/*.dll")
   file(GLOB client "${CMAKE_SOURCE_DIR}/bin/client/*.exe")
@@ -124,6 +125,7 @@ if(WIN32)
           "libsoci_sqlite3_3_1.dll"
           "libsqlite3-0.dll"
           "liblog4cplus-1-0-4.dll"
+          "libarchive-12.dll"
           )
     message("${lib}")
     unset(lib_path CACHE)
@@ -152,11 +154,6 @@ install(FILES
   DESTINATION ${CMAKE_SOURCE_DIR}/release/server RENAME log.cfg)
 
 install(FILES
-  "log.cfg.default"
-  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
-  DESTINATION ${CMAKE_SOURCE_DIR}/release/client RENAME log.cfg)
-
-install(FILES
   ${libs}
   PERMISSIONS OWNER_READ OWNER_WRITE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/server)
@@ -173,6 +170,11 @@ install(FILES
   ${client}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
   DESTINATION ${CMAKE_SOURCE_DIR}/release/client)
+
+install(FILES
+  "log.cfg.default"
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+  DESTINATION ${CMAKE_SOURCE_DIR}/release/client RENAME log.cfg)
 
 install(FILES
   ${libs}

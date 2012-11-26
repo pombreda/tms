@@ -15,6 +15,16 @@ add_executable(server_app
   main
   )
 
+
+add_executable(server_init
+  server_init
+  )
+
+add_executable(server_start
+  server_start
+  )
+
+
 target_link_libraries(server_app
   tms_protocol
   tms_contraption
