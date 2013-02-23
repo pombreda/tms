@@ -33,6 +33,7 @@
 #include "companies_frame.hpp"
 #include "users_frame.hpp"
 #include "incomings_frame.hpp"
+#include "frames_collection.hpp"
 // project
 #include <project/model/contact_person.hpp>
 #include <project/model/company.hpp>
@@ -48,8 +49,7 @@ class GridFrame : public wxFrame {
       wxFrame(),
       grid_books_(), choice_book_(), selected_book_id_(0),
       grid_catalogs_(), choice_catalog_(), selected_catalog_id_(0),
-      table_contact_persons_(), contact_persons_frame_(), companies_frame_(),
-      users_frame_(), incomings_frame_() {}
+      table_contact_persons_() {}
   virtual ~GridFrame();
   void Init();
 
@@ -75,12 +75,6 @@ class GridFrame : public wxFrame {
   int selected_catalog_id_;
   tms::common::widget::ContraptionGridTableBase *table_contact_persons_;
   tms::common::widget::ContraptionGridTableBase *table_companies_;
-
-  // frames
-  ContactPersonsFrame* contact_persons_frame_;
-  CompaniesFrame* companies_frame_;
-  UsersFrame* users_frame_;
-  IncomingsFrame* incomings_frame_;
 
 
   void InitContactPersonsTable();

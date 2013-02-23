@@ -7,6 +7,7 @@ endif(WIN32)
 add_executable(client_app
                main
                client               
+	       frames_collection
                login_frame
                grid_frame
                contact_persons_frame

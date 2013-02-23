@@ -6,8 +6,11 @@
 // project
 #include <project/model/company.hpp>
 #include <project/model/contact_person.hpp>
+#include <model/user.hpp>
+
 using namespace tms::project::model;
 using namespace tms::common::contraption;
+using namespace tms::common::model;
 using namespace std;
 
 void Incoming::Initialize() {
@@ -39,8 +42,26 @@ void Incoming::Initialize() {
 		       _id_column = "id",
 		       _other_id_column = "contact_person_id");
   ret.push_back(contact_person_field);
-  ret.push_back(new ProxyField<std::string>("contact_person_name",
+  ret.push_back(new ProxyField<std::string>("contact_name",
 					    contact_person_field,
+					    "name"));
+  ret.push_back(new ProxyField<std::string>("contact_email",
+					    contact_person_field,
+					    "email"));
+  ret.push_back(new ProxyField<std::string>("contact_phone",
+					    contact_person_field,
+					    "phone"));
+
+  ret.push_back(new IntField("manager_id"));
+  HasManyField* manager_field 
+    = new HasManyField("mamager", 
+		       boost::ref(*User::GetModel()),
+		       boost::ref(*Incoming::GetModel()),
+		       _id_column = "id",
+		       _other_id_column = "manager_id");
+  ret.push_back(manager_field);
+  ret.push_back(new ProxyField<std::string>("manager_name",
+					    manager_field,
 					    "name"));
 
   InitFields(ret);

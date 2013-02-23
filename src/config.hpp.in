@@ -6,7 +6,7 @@
 #ifndef ${SYSTEM}
 #define ${SYSTEM}
 #endif ${SYSTEM}
-const std::string kVersion = "0.6";
+const std::string kVersion = "0.7";
 const std::string kSystem = "${system}";
 #define BOOST_PARAMETER_MAX_ARITY 10
 

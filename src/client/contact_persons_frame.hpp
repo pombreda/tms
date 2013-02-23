@@ -22,7 +22,7 @@ class ContactPersonsFrame : public wxFrame {
   ContactPersonsFrame() :
       wxFrame(), tc_name_(), tc_code_(), tc_email_(),
       tc_phone_(), tc_fax_(), tc_role_(), tc_company_(), tc_notes_(),
-      button_remove_(), button_save_(),
+      button_remove_(), button_save_(), button_cancel_(),
       contraption_(), contraptions_() {}
 	virtual ~ContactPersonsFrame();
 	void Init();
@@ -43,15 +43,16 @@ class ContactPersonsFrame : public wxFrame {
   wxTextCtrl *tc_notes_;
   wxButton *button_remove_;
   wxButton *button_save_;
+  wxButton *button_cancel_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;
-
-	void OnSaveClick(wxCommandEvent& WXUNUSED(event));
-	void OnDeleteClick(wxCommandEvent& WXUNUSED(event));
-	void OnExitClick(wxCommandEvent& WXUNUSED(event));
+  
+  void OnSaveClick(wxCommandEvent& WXUNUSED(event));
+  void OnDeleteClick(wxCommandEvent& WXUNUSED(event));
+  void OnExitClick(wxCommandEvent& WXUNUSED(event));
   void OnTryClose(wxCloseEvent& event);
-
-	DECLARE_EVENT_TABLE()
+  
+  DECLARE_EVENT_TABLE()
 };
 
 }

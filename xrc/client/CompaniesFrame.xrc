@@ -311,48 +311,6 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT18">
-														<label>Генеральный директор</label>
-													</object>
-													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-													<border>5</border>
-													<option>1</option>
-												</object>
-												<object class="sizeritem">
-													<object class="wxChoice" name="ID_CHOICEGENDIR" />
-													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-													<border>5</border>
-													<option>1</option>
-												</object>
-											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-											<border>5</border>
-											<option>1</option>
-										</object>
-										<object class="sizeritem">
-											<object class="wxBoxSizer">
-												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT20">
-														<label>Главный бухгалтер</label>
-													</object>
-													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-													<border>5</border>
-													<option>1</option>
-												</object>
-												<object class="sizeritem">
-													<object class="wxChoice" name="ID_CHOICEGLAVBUH" />
-													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-													<border>5</border>
-													<option>1</option>
-												</object>
-											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-											<border>5</border>
-											<option>1</option>
-										</object>
-										<object class="sizeritem">
-											<object class="wxBoxSizer">
-												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT21">
 														<label>Контактное лицо</label>
 													</object>
@@ -400,8 +358,10 @@
 												<object class="sizeritem">
 													<object class="wxBoxSizer">
 														<object class="sizeritem">
-															<object class="CustomClass" name="ID_GRID_CONTACT_PERSON">
-																<style>0</style>
+															<object class="unknown" name="ID_GRID_CONTACT_PERSON">
+																<style></style>
+																<size>-1,-1</size>
+																<style></style>
 															</object>
 															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 															<border>5</border>

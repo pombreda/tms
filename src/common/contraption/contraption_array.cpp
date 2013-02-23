@@ -64,6 +64,7 @@ void ContraptionArray::OnChange() {
 
 void ContraptionArray::Refresh() {
   swap(*(Duplicate()));
+  connections_.clear();
   Init();
   OnChange();
 }

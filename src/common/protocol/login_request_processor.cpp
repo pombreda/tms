@@ -64,6 +64,7 @@ MessageP LoginRequestProcessor::Eval(const Message &message, Server &server) {
       LoginResponseP response(new LoginResponse);
       response->set_admin(users->at(0)->Get<int>("admin"));
       response->set_secretair(users->at(0)->Get<int>("secretair"));
+      response->set_manager(users->at(0)->Get<int>("manager"));
       return response;      
     } else {
       LOG4CPLUS_INFO(logger_, 

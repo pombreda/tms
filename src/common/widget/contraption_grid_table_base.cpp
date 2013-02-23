@@ -21,7 +21,7 @@ ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraption
     }
   }
   contraptions_->SetOnChange(boost::bind
-                             (&ContraptionGridTableBase::OnChange, this));
+			     (&ContraptionGridTableBase::OnChange, this));
 }
 
 wxString ContraptionGridTableBase::GetValue(int row, int col) {
@@ -90,12 +90,12 @@ void ContraptionGridTableBase::OnChange() {
     GetView()->DeleteRows(static_cast<int>(contraptions_->size()), delta);
   }
   old_size_ = contraptions_->size();
+  GetView()->Refresh();
 }
 
 void ContraptionGridTableBase::OnTimer(wxTimerEvent &WXUNUSED(event)) {
   if (GetView() != NULL) {
     contraptions_->Refresh();
-    OnChange();
   }
 }
 

@@ -11,6 +11,7 @@ ContraptionP Options::contraption_ = ContraptionP();
 ClientP Options::client_ = ClientP();
 bool Options::admin_ = false;
 bool Options::secretair_ = false;
+bool Options::manager_ = false;
 
 void Options::Init() {
   std::string options_db("options.sqlite3");

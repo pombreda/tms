@@ -94,6 +94,8 @@ endif(UNIX)
 
 if(WIN32)
   foreach(lib
+          "libiconv-2.dll"
+          "libexpat-1.dll"
           "libgcc_s_dw2-1.dll"
           "libstdc++-6.dll"
           "libboost_signals-mgw47-mt-1_50.dll"

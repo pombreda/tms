@@ -4,6 +4,7 @@
 #include <log4cplus/loggingmacros.h>
 // common
 #include <string/string.hpp>
+#include <widget/contraption_grid.hpp>
 #include <gui_exception/gui_exception.hpp>
 #include <gui_exception/gui_exception_report.hpp>
 #include <protocol/message/patch_server_request.hpp>
@@ -39,26 +40,27 @@ void GridFrame::Init() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing frames"));
 
-  contact_persons_frame_ = new ContactPersonsFrame();
-  wxXmlResource::Get()->LoadFrame(contact_persons_frame_, this,
+  FramesCollection::contact_persons_frame = new ContactPersonsFrame();
+  wxXmlResource::Get()->LoadFrame(FramesCollection::contact_persons_frame, this,
 				  _T("ContactPersonsFrame"));
-  contact_persons_frame_->Init();
+  FramesCollection::contact_persons_frame->Init();
 
-  companies_frame_ = new CompaniesFrame();
-  wxXmlResource::Get()->LoadFrame(companies_frame_, this,
+  FramesCollection::companies_frame = new CompaniesFrame();
+  wxXmlResource::Get()->LoadFrame(FramesCollection::companies_frame, this,
 				  _T("CompaniesFrame"));
-  companies_frame_->Init();
+  FramesCollection::companies_frame->Init();
 
-  users_frame_ = new UsersFrame();
-  wxXmlResource::Get()->LoadFrame(users_frame_, this,
+  FramesCollection::users_frame = new UsersFrame();
+  wxXmlResource::Get()->LoadFrame(FramesCollection::users_frame, this,
 				  _T("UsersFrame"));
-  users_frame_->Init();
+  FramesCollection::users_frame->Init();
 
-  incomings_frame_ = new IncomingsFrame(companies_frame_);
-  wxXmlResource::Get()->LoadFrame(incomings_frame_, this,
+  FramesCollection::incomings_frame = new IncomingsFrame();
+  wxXmlResource::Get()->LoadFrame(FramesCollection::incomings_frame, this,
 				  _T("IncomingsFrame"));
-  incomings_frame_->Init();
+  FramesCollection::incomings_frame->Init();
 
+  FramesCollection::grid_frame = this;
   // frames done
   PrepareModels();
   wxNotebook* notebook = (wxNotebook*) FindWindowByName("ID_NOTEBOOK_MAIN");
@@ -142,8 +144,10 @@ void GridFrame::InitContactPersonsTable() {
     std::vector<Column> cols;
     ModelP model = ContactPerson::GetModel();
     cols.push_back(Column(model->GetFieldID("name"), "Имя", 150));
-    cols.push_back(Column(model->GetFieldID("code"), "Код", 100));
-    cols.push_back(Column(model->GetFieldID("email"), "Email", 50));
+    cols.push_back(Column(model->GetFieldID("company_name"), "Компания", 100));
+    cols.push_back(Column(model->GetFieldID("role"), "Должность", 100));
+    cols.push_back(Column(model->GetFieldID("email"), "Email", 100));
+    cols.push_back(Column(model->GetFieldID("code"), "Код", 50));
     cols.push_back(Column(model->GetFieldID("phone"), "Телефон", 100));
     cols.push_back(Column(model->GetFieldID("fax"), "Факс", 100));
     cols.push_back(Column(model->GetFieldID("note"), "Заметки", 200));
@@ -164,10 +168,13 @@ void GridFrame::InitIncomingsTable() {
     ModelP model = Incoming::GetModel();
     cols.push_back(Column(model->GetFieldID("ID"), "ID", 150));
     cols.push_back(Column(model->GetFieldID("company_name"), "Компания", 100));
-    /* cols.push_back(Column(model->GetFieldID("contact_person_name"), "Контактное лицр", 150));*/
+    cols.push_back(Column(model->GetFieldID("contact_name"), "Контактное лицо", 150));
+    cols.push_back(Column(model->GetFieldID("contact_email"), "Контактный e-mail", 150));
+    cols.push_back(Column(model->GetFieldID("contact_phone"), "Контактный телефон", 150));
+    cols.push_back(Column(model->GetFieldID("manager_name"), "Адресат", 100));
     cols.push_back(Column(model->GetFieldID("type_in"), "Тип приема", 100));
     cols.push_back(Column(model->GetFieldID("time_in"), "Время приема", 100));
-    cols.push_back(Column(model->GetFieldID("time_out"), "Время передачи", 200));
+    cols.push_back(Column(model->GetFieldID("time_out"), "Время передачи", 100));
     table_incomings_ =
       new ContraptionGridTableBase(model->All(), cols);
     
@@ -253,6 +260,9 @@ void GridFrame::InitCompaniesTable() {
     ModelP model = Company::GetModel();
     cols.push_back(Column(model->GetFieldID("short_name"), "Название", 150));
     cols.push_back(Column(model->GetFieldID("gruppa"), "Группа", 100));
+    cols.push_back(Column(model->GetFieldID("contact_name"), "Контактное лицо", 100));
+    cols.push_back(Column(model->GetFieldID("contact_email"), "Контактный e-mail", 100));
+    cols.push_back(Column(model->GetFieldID("contact_phone"), "Контактный телефон", 100));
     table_companies_ =
       new ContraptionGridTableBase(model->All(), cols);
 
@@ -270,8 +280,8 @@ void GridFrame::OnContactPersonsCellDClick(ContraptionP contraption, FieldID /*f
   ContraptionArrayP contraptions =
     dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
     contraptions();
-  contact_persons_frame_->SetUpValues(contraption, contraptions, false);
-  contact_persons_frame_->Show(true);  
+  FramesCollection::contact_persons_frame->SetUpValues(contraption, contraptions, false);
+  FramesCollection::contact_persons_frame->Show(true);  
 }
 
 void GridFrame::OnCompaniesCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
@@ -283,8 +293,8 @@ void GridFrame::OnCompaniesCellDClick(ContraptionP contraption, FieldID /*field_
   ContraptionArrayP contraptions =
     dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
     contraptions();
-  companies_frame_->SetUpValues(contraption, contraptions);
-  companies_frame_->Show(true);  
+  FramesCollection::companies_frame->SetUpValues(contraption, contraptions);
+  FramesCollection::companies_frame->Show(true);  
 }
 
 void GridFrame::OnIncomingsCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
@@ -296,8 +306,8 @@ void GridFrame::OnIncomingsCellDClick(ContraptionP contraption, FieldID /*field_
   ContraptionArrayP contraptions =
     dynamic_cast<ContraptionGridTableBase*>(grid_books_->GetTable())->
     contraptions();
-  incomings_frame_->SetUpValues(contraption, contraptions);
-  incomings_frame_->Show(true);  
+  FramesCollection::incomings_frame->SetUpValues(contraption, contraptions);
+  FramesCollection::incomings_frame->Show(true);  
 }
 
 
@@ -311,8 +321,8 @@ void GridFrame::OnUsersCellDClick(ContraptionP contraption, FieldID /*field_id*/
     ContraptionArrayP contraptions =
       dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
       contraptions();
-    users_frame_->SetUpValues(contraption, contraptions);
-    users_frame_->Show(true);
+    FramesCollection::users_frame->SetUpValues(contraption, contraptions);
+    FramesCollection::users_frame->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
@@ -327,8 +337,8 @@ void GridFrame::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) {
       dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
       contraptions();
     ContraptionP contraption = contraptions->model()->New();
-    contact_persons_frame_->SetUpValues(contraption, contraptions, false);
-    contact_persons_frame_->Show(true);
+    FramesCollection::contact_persons_frame->SetUpValues(contraption, contraptions, false);
+    FramesCollection::contact_persons_frame->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
@@ -343,8 +353,8 @@ void GridFrame::OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event)) {
       dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
       contraptions();
     ContraptionP contraption = contraptions->model()->New();
-    companies_frame_->SetUpValues(contraption, contraptions);
-    companies_frame_->Show(true);
+    FramesCollection::companies_frame->SetUpValues(contraption, contraptions);
+    FramesCollection::companies_frame->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
@@ -359,8 +369,8 @@ void GridFrame::OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event)) {
       dynamic_cast<ContraptionGridTableBase*>(grid_books_->GetTable())->
       contraptions();
     ContraptionP contraption = contraptions->model()->New();
-    incomings_frame_->SetUpValues(contraption, contraptions);
-    incomings_frame_->Show(true);
+    FramesCollection::incomings_frame->SetUpValues(contraption, contraptions);
+    FramesCollection::incomings_frame->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
@@ -438,8 +448,8 @@ void GridFrame::OnAddInUserClick(wxCommandEvent& WXUNUSED(event)) {
     dynamic_cast<ContraptionGridTableBase*>(grid_admin_->GetTable())->
     contraptions();
   ContraptionP contraption = contraptions->model()->New();
-  users_frame_->SetUpValues(contraption, contraptions);
-  users_frame_->Show(true);
+  FramesCollection::users_frame->SetUpValues(contraption, contraptions);
+  FramesCollection::users_frame->Show(true);
 }
 
 void GridFrame::OnAdminSelect(wxCommandEvent& event) {

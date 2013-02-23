@@ -36,6 +36,7 @@ class UsersFrame : public wxFrame {
   wxTextCtrl *tc_password_;
   wxCheckBox *cb_admin_;
   wxCheckBox *cb_secretair_;
+  wxCheckBox *cb_manager_;
   wxButton *button_remove_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;

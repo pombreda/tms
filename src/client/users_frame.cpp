@@ -10,6 +10,10 @@
 #include <gui_exception/gui_exception_report.hpp>
 // common
 #include <protocol/crypto.hpp>
+// frames
+#include "frames_collection.hpp"
+#include "grid_frame.hpp"
+
 namespace tms {
 namespace client {
 
@@ -47,6 +51,7 @@ void UsersFrame::SetUpValues(ContraptionP contraption,
   tc_password_ = (wxTextCtrl*)FindWindowByName("ID_TEXTPASSWORD");
   cb_admin_ = (wxCheckBox*)FindWindowByName("ID_CHECKBOXADMIN");
   cb_secretair_ = (wxCheckBox*)FindWindowByName("ID_CHECKBOXSECRETAIR");
+  cb_manager_ = (wxCheckBox*)FindWindowByName("ID_CHECKBOXMANAGER");
   button_remove_ = (wxButton*)FindWindowByName("ID_BUTTONREMOVE", this);
 
   if (contraption->IsNew()) {
@@ -60,6 +65,7 @@ void UsersFrame::SetUpValues(ContraptionP contraption,
   tc_password_->ChangeValue(wxString::FromUTF8(""));
   cb_admin_->SetValue(contraption_->Get<int>("admin"));
   cb_secretair_->SetValue(contraption_->Get<int>("secretair"));
+  cb_manager_->SetValue(contraption_->Get<int>("manager"));
   Fit();
   Layout();
   LOG4CPLUS_INFO(client_logger, 
@@ -93,8 +99,10 @@ void UsersFrame::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
   }
   contraption_->Set<int>("admin", cb_admin_->GetValue());
   contraption_->Set<int>("secretair", cb_secretair_->GetValue());
+  contraption_->Set<int>("manager", cb_manager_->GetValue());
   contraption_->Save();
   contraptions_->Refresh();
+  FramesCollection::grid_frame->Refresh();
   } catch (GUIException &e) {
     Report(e);
   }
@@ -107,6 +115,7 @@ void UsersFrame::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
 void UsersFrame::OnDeleteClick(wxCommandEvent& WXUNUSED(event)) {
   contraption_->Delete();
   contraptions_->Refresh();
+  FramesCollection::grid_frame->Refresh();
   Hide();
 }
 

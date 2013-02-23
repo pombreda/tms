@@ -144,10 +144,17 @@ void LoginFrame::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
 
     if (resp->secretair()) {
       LOG4CPLUS_INFO(client_logger,
-		     WStringFromUTF8String("User has admin rights"));
+		     WStringFromUTF8String("User has secretair rights"));
     }
     
     Options::set_secretair(resp->secretair());
+
+    if (resp->manager()) {
+      LOG4CPLUS_INFO(client_logger,
+		     WStringFromUTF8String("User has manager rights"));
+    }
+    
+    Options::set_manager(resp->manager());
 
 
     LOG4CPLUS_INFO(client_logger,

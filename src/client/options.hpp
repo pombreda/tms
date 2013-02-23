@@ -37,6 +37,9 @@ class Options {
   static void set_admin(bool admin) {
     admin_ = admin;
   }
+  static void set_manager(bool manager) {
+    manager_ = manager;
+  }
   static void set_secretair(bool secretair) {
     secretair_ = secretair;
   }
@@ -52,6 +55,9 @@ class Options {
 
   static bool admin() {
     return admin_;
+  }
+  static bool manager() {
+    return manager_;
   }
   static bool secretair() {
     return secretair_;
@@ -83,6 +89,7 @@ class Options {
   static common::protocol::ClientP client_;
   static common::contraption::ContraptionP contraption_;
   static bool admin_;
+  static bool manager_;
   static bool secretair_;
 };
 

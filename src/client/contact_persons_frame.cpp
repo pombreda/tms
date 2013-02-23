@@ -31,9 +31,6 @@ void ContactPersonsFrame::Init() {
           (wxObjectEventFunction)&ContactPersonsFrame::OnDeleteClick);
 
 
-  Connect(XRCID("ID_BUTTON3"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&ContactPersonsFrame::OnExitClick);
-
   Bind(wxEVT_CLOSE_WINDOW, &ContactPersonsFrame::OnTryClose, this);
 
   LOG4CPLUS_INFO(client_logger, 
@@ -55,6 +52,7 @@ void ContactPersonsFrame::SetUpValues(ContraptionP contraption,
   tc_company_ = (wxTextCtrl*)FindWindowByName("ID_TEXTCOMPANY", this);
   button_remove_ = (wxButton*)FindWindowByName("ID_BUTTON2", this);
   button_save_ = (wxButton*)FindWindowByName("ID_BUTTON1", this);
+  button_cancel_ = (wxButton*)FindWindowByName("ID_BUTTON3", this);
 
   contraption_ = contraption;
   contraptions_ = contraptions;
@@ -62,7 +60,15 @@ void ContactPersonsFrame::SetUpValues(ContraptionP contraption,
   button_save_->Show(true);
   if (contraption->IsNew()) {
     button_remove_->Show(false);
-  } 
+    contraption->Save();
+    button_cancel_->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED);
+    button_cancel_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+			    (wxObjectEventFunction)&ContactPersonsFrame::OnDeleteClick, 0, this);
+  } else {
+    button_cancel_->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED);
+    button_cancel_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+			    (wxObjectEventFunction)&ContactPersonsFrame::OnExitClick, 0, this);
+  }
   if (!editable) {
     button_remove_->Show(false);
     button_save_->Show(false);
@@ -91,7 +97,7 @@ void ContactPersonsFrame::SetUpValues(ContraptionP contraption,
 		  WStringFromUTF8String("role set"));
 
   tc_company_->ChangeValue(wxString::FromUTF8(
-      contraption_->Get<std::string>("company").c_str()));
+      contraption_->Get<std::string>("company_name").c_str()));
   LOG4CPLUS_DEBUG(client_logger, 
 		  WStringFromUTF8String("company set"));
 
@@ -122,6 +128,7 @@ void ContactPersonsFrame::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
   contraption_->Set<std::string>("email", tc_email_->GetValue().utf8_str().data());
   contraption_->Set<std::string>("phone", tc_phone_->GetValue().utf8_str().data());
   contraption_->Set<std::string>("fax", tc_fax_->GetValue().utf8_str().data());
+  contraption_->Set<std::string>("role", tc_role_->GetValue().utf8_str().data());
   contraption_->Set<std::string>("note", tc_notes_->GetValue().utf8_str().data());
   contraption_->Save();
   contraptions_->Refresh();
@@ -140,7 +147,8 @@ void ContactPersonsFrame::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
 
 void ContactPersonsFrame::OnTryClose(wxCloseEvent& event) {
   event.Veto();
-  Hide();
+  wxCloseEvent new_event(wxEVT_COMMAND_BUTTON_CLICKED);
+  button_cancel_->ProcessWindowEvent(new_event);
 }
 
 }
