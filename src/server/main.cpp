@@ -14,7 +14,11 @@ using namespace std;
 using namespace log4cplus;
 Logger logger = Logger::getInstance(WStringFromUTF8String("server"));
 namespace po = boost::program_options;
+
+#include <iostream>
+using namespace std;
 int main(int argc, char** argv){
+  cerr << "Server stoped." << endl;
   try {    
     PropertyConfigurator config(WStringFromUTF8String("log.cfg"));
     config.configure();
@@ -38,12 +42,12 @@ int main(int argc, char** argv){
 
     if (vm.count("init")) {
       if (vm.count("db")) {
-	LOG4CPLUS_INFO(logger, 
-		       WStringFromUTF8String("Initializing database" ));  
+        LOG4CPLUS_INFO(logger, 
+                       WStringFromUTF8String("Initializing database" ));
 	cerr << "Initializing database..." << endl;
         InitSchema(vm["db"].as<string>());
-	LOG4CPLUS_INFO(logger, 
-		       WStringFromUTF8String("Database initialized" ));  
+        LOG4CPLUS_INFO(logger, 
+                       WStringFromUTF8String("Database initialized" ));  
 	cerr << "Database initialized." << endl;
         return 0;
       } else {
@@ -81,6 +85,5 @@ int main(int argc, char** argv){
   catch(...) {
     cerr << "Exception of unknown type!\n";
   }
-  
   return 0;
 }

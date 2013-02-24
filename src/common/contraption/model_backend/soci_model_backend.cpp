@@ -95,7 +95,7 @@ void SOCIModelBackend::ReadRecords(
       msg << "Unsupported record type int SOCIModelBackend::ReadRecords. "
           << "Type: '"  << typeid(*record).name() << "'.";
       throw ModelBackendException(msg.str());
-    }    
+    }
     query <<" FROM " << table_name_ << " WHERE " << id_column_
           << " = :v";
     st.exchange(soci::use(id));
@@ -239,6 +239,7 @@ template<typename T>
 static bool PrepareCreateColumn(RecordP record_p,
                          map<string, Record*> &done,
                          ostringstream &query) {
+  cerr << "z" << query.fail()  << " " << (int) (&query) << endl;
   RecordT<T> *record = dynamic_cast<RecordT<T>*>(record_p.get());
   if (record) {
     query << ", " << record->field << " " << SQLTypeName(T());
@@ -252,8 +253,9 @@ static bool PrepareCreateColumn(RecordP record_p,
             << "Name: '"  << record->field << "'.";
         throw ModelBackendException(msg.str());
       }
+    } else {
+      done[record->field] = record;
     }
-    it->second = record;
     return true;
   } 
   return false;
@@ -267,12 +269,12 @@ void SOCIModelBackend::InitSchema(
     map<string, Record*> done;
     ostringstream query;
     session_ << "DROP TABLE IF EXISTS " << table_name_;
-    query << "CREATE TABLE " << table_name_ << " ("<< id_column_ 
-          << " INTEGER"; 
+    query << "CREATE TABLE " << table_name_ << " ("<< id_column_        
+          << " INTEGER";
     BOOST_FOREACH(RecordP record, records) {
       if (PrepareCreateColumn<int>(record, done, query)) {
         continue;
-      }
+      }      
       if (PrepareCreateColumn<string>(record, done, query)) {
         continue;
       }

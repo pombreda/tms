@@ -37,14 +37,16 @@ class Protocol;
 }
 
 namespace boost {
-  inline void intrusive_ptr_add_ref(tms::common::protocol::Protocol* model);
-  inline void intrusive_ptr_release(tms::common::protocol::Protocol* model);
 }
 
 
 namespace tms {
 namespace common {
 namespace protocol {
+
+inline void intrusive_ptr_add_ref(tms::common::protocol::Protocol* model);
+inline void intrusive_ptr_release(tms::common::protocol::Protocol* model);
+
 
 class Protocol {
  public:
@@ -88,8 +90,8 @@ class Protocol {
     
   virtual ~Protocol() 
       throw() {}
-  friend void boost::intrusive_ptr_add_ref(Protocol* model);
-  friend void boost::intrusive_ptr_release(Protocol* model);  
+  friend void intrusive_ptr_add_ref(Protocol* model);
+  friend void intrusive_ptr_release(Protocol* model);  
  private:
   void DummyHandler (ProtocolExceptionP exception)
       throw(ProtocolException);

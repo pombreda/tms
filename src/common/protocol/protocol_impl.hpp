@@ -9,18 +9,20 @@
 #include <string/string.hpp>
 
 namespace boost {
-  inline void intrusive_ptr_add_ref(tms::common::protocol::Protocol* model) {
-    ++model->ref_count_;
-  }
-  inline void intrusive_ptr_release(tms::common::protocol::Protocol* model) {
-    --model->ref_count_;
-  }
 }
 
 
 namespace tms {
 namespace common {
 namespace protocol {
+
+  inline void intrusive_ptr_add_ref(tms::common::protocol::Protocol* model) {
+    ++model->ref_count_;
+  }
+  inline void intrusive_ptr_release(tms::common::protocol::Protocol* model) {
+    --model->ref_count_;
+  }
+
 
 class Protocol::MessageHelper {
  public:
