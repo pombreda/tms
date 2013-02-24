@@ -239,7 +239,6 @@ template<typename T>
 static bool PrepareCreateColumn(RecordP record_p,
                          map<string, Record*> &done,
                          ostringstream &query) {
-  cerr << "z" << query.fail()  << " " << (int) (&query) << endl;
   RecordT<T> *record = dynamic_cast<RecordT<T>*>(record_p.get());
   if (record) {
     query << ", " << record->field << " " << SQLTypeName(T());
