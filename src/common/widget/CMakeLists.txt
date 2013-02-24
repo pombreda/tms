@@ -1,3 +1,4 @@
+add_subdirectory(validators)
 add_library(tms_contraption_grid SHARED
             contraption_grid
             contraption_grid_table_base

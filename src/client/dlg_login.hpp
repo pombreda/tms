@@ -7,30 +7,30 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 // common
+#include <protocol/message/login_response.hpp>
 #include "grid_frame.hpp"
-#include "options.hpp"
 
 namespace tms {
 namespace client{
 
-class LoginFrame : public wxFrame {
+class DlgLogin : public wxDialog {
  public:
-  LoginFrame() :
-      wxFrame(), grid_frame() {}
-	virtual ~LoginFrame();
+  DlgLogin();
+  virtual ~DlgLogin();
   void Init();
 
  private:
-  LoginFrame(const LoginFrame&);
-  LoginFrame& operator=(const LoginFrame&);
+  DlgLogin(const DlgLogin&);
+  DlgLogin& operator=(const DlgLogin&);
 
   GridFrame *grid_frame;
   tms::common::widget::ContraptionGridTableBase *base_;
 
+  void TryLogin();
+  void Patch();
+  void SetPermissions(tms::common::protocol::message::LoginResponseP resp);
   void OnOKButtonClick(wxCommandEvent& event);
   void OnExitButtonClick(wxCommandEvent& event);
-  void LoadOptions();
-  void SaveOptions();
 
   DECLARE_EVENT_TABLE()
 };

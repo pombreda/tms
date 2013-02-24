@@ -19,6 +19,7 @@
 #include "options_model.hpp"
 // client
 #include <client/client.hpp>
+#include <client/dlg_login.hpp>
 
 namespace tms {
 namespace client {

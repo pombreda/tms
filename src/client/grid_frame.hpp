@@ -38,7 +38,6 @@
 #include <project/model/contact_person.hpp>
 #include <project/model/company.hpp>
 #include <project/model/incoming.hpp>
-#include "options.hpp"
 
 namespace tms {
 namespace client {

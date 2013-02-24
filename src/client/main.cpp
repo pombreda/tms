@@ -34,7 +34,7 @@
 // common
 #include <gui_exception/gui_exception.hpp>
 // frames
-#include <client/login_frame.hpp>
+#include <client/dlg_login.hpp>
 
 using namespace tms::client;
 using namespace tms::common::string;
@@ -49,7 +49,7 @@ class ClientApp : public wxApp {
   ClientApp(const ClientApp&);
   ClientApp& operator=(const ClientApp&);
 
-  LoginFrame *login_frame;
+  DlgLogin *login_frame;
 };
 
 IMPLEMENT_APP(ClientApp)
@@ -64,16 +64,23 @@ bool ClientApp::OnInit() {
     wxXmlResource::Get()->InitAllHandlers();
     wxInitAllImageHandlers();
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/GridFrame.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/LoginFrame.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_login.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/UsersFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/ContactPersonsFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/CompaniesFrame.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/IncomingsFrame.xrc"));  
-    if (!wxApp::OnInit())
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/IncomingsFrame.xrc"));
+    if (!wxsOK) {
+      LOG4CPLUS_ERROR(client_logger,
+                      WStringFromUTF8String("Error while loading xrc resources"));
       return false;
-   	login_frame = new LoginFrame();
-   	wxXmlResource::Get()->LoadFrame(login_frame, NULL, _T("LoginFrame"));
-   	login_frame->Init();
+    }
+    if (!wxApp::OnInit()) {
+      return false;
+      LOG4CPLUS_ERROR(client_logger,
+                      WStringFromUTF8String("Error during application initialization"));     
+    }
+    login_frame = new DlgLogin();
+    login_frame->Init();
     login_frame->Show(true);
   } catch (tms::common::GUIException &e) {
     std::cerr << e.message() << std::endl;

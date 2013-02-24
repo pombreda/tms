@@ -8,7 +8,7 @@ add_executable(client_app
                main
                client               
 	       frames_collection
-               login_frame
+               dlg_login
                grid_frame
                contact_persons_frame
 	       incomings_frame
@@ -32,6 +32,7 @@ find_package(Sqlite3 REQUIRED)
 include_directories(SYSTEM ${SOCI_INCLUDE_DIRS} ${SQLITE3_INCLUDE_DIR})
 
 target_link_libraries(client_app
+  tms_validators
   tms_soci_contraption
   tms_contraption
   tms_contraption_grid

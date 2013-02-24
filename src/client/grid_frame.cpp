@@ -15,7 +15,7 @@
 // std
 #include <fstream>
 #include <sstream>
-
+#include "options.hpp"
 
 namespace tms{
 namespace client {
