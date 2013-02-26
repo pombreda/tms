@@ -4,16 +4,16 @@ namespace tms {
 namespace client {
 class ContactPersonsFrame;
 class CompaniesFrame;
-class UsersFrame;
+class DlgUser;
 class IncomingsFrame;
-class GridFrame;
+class FrmGrid;
 class FramesCollection {
 public:
   static ContactPersonsFrame *contact_persons_frame;
-  static UsersFrame *users_frame;
+  static DlgUser *dlg_user;
   static IncomingsFrame *incomings_frame;
   static CompaniesFrame *companies_frame;
-  static GridFrame *grid_frame;
+  static FrmGrid *frm_grid;
 };
 }
 }

@@ -13,12 +13,15 @@
 #include <protocol/crypto.hpp>
 // frames
 #include "frames_collection.hpp"
-#include "grid_frame.hpp"
+#include "frm_grid.hpp"
 // models
 #include <project/model/contact_person.hpp>
+// boost
+#include <boost/lexical_cast.hpp>
 namespace tms {
 namespace client {
 
+using namespace boost;
 using namespace tms::common::contraption;
 using namespace tms::common::string;
 using namespace tms::common;
@@ -103,6 +106,22 @@ void CompaniesFrame::SetUpValues(ContraptionP contraption,
   bool is_new = contraption->IsNew();
   if (is_new) {
     button_remove_->Show(false);
+    std::string id = "0";
+    if (contraptions_->size() > 0) {
+      int p = contraptions_->size() - 1;
+      while (p >= 0 && contraptions_->at(p)->Get<std::string>("ID") == "") {
+	--p;
+      }
+      if (p >= 0) {
+	ContraptionP last = contraptions_->at(p);
+	std::string last_id = last->Get<std::string>("ID");
+        try {
+          id = lexical_cast<std::string>(1 + lexical_cast<int>(last_id));
+        } catch (...) {
+        }
+      }
+    }
+    contraption->Set<std::string>("ID", id);
     contraption->Save();
     button_cancel_->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED);
     button_cancel_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
@@ -215,7 +234,7 @@ void CompaniesFrame::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
 
   contraption_->Save();
   contraptions_->Refresh();
-  FramesCollection::grid_frame->Refresh();
+  FramesCollection::frm_grid->Refresh();
   Hide();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Values saved"));
@@ -228,7 +247,7 @@ void CompaniesFrame::OnDeleteClick(wxCommandEvent& WXUNUSED(event)) {
   }
   contraption_->Delete();
   contraptions_->Refresh();
-  FramesCollection::grid_frame->Refresh();
+  FramesCollection::frm_grid->Refresh();
   Hide();
 }
 

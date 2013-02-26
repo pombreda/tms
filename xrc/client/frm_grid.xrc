@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="frmGrid">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>502,322</size>
+		<title>TMS</title>
+		<centered>1</centered>
+		<object class="wxNotebook" name="nbMain">
+			<object class="notebookpage">
+				<label>Журналы</label>
+				<selected>0</selected>
+				<object class="wxPanel" name="pnlBook">
+					<style>wxTAB_TRAVERSAL</style>
+					<object class="wxBoxSizer">
+						<orient>wxVERTICAL</orient>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxEXPAND</flag>
+							<border>5</border>
+							<object class="wxBoxSizer">
+								<minsize>-1,38</minsize>
+								<orient>wxHORIZONTAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxChoice" name="chcBook">
+										<size>130,-1</size>
+										<selection>0</selection>
+										<content>
+											<item>Входящие</item>
+											<item>КП</item>
+										</content>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxButton" name="btnBookAdd">
+										<label>Добавить</label>
+										<default>0</default>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>5</border>
+							<object class="unknown" name="cgrBook" />
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="notebookpage">
+				<label>Каталоги</label>
+				<selected>1</selected>
+				<object class="wxPanel" name="pnlCatalog">
+					<style>wxTAB_TRAVERSAL</style>
+					<object class="wxBoxSizer">
+						<orient>wxVERTICAL</orient>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxEXPAND</flag>
+							<border>5</border>
+							<object class="wxBoxSizer">
+								<minsize>-1,38</minsize>
+								<orient>wxHORIZONTAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxChoice" name="chcCatalog">
+										<size>130,-1</size>
+										<selection>0</selection>
+										<content>
+											<item>Контактные лица</item>
+											<item>Компании</item>
+											<item>Оборудование</item>
+										</content>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxButton" name="btnCatalogAdd">
+										<label>Добавить</label>
+										<default>0</default>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>5</border>
+							<object class="unknown" name="cgrCatalog" />
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="notebookpage">
+				<label>Администрирование</label>
+				<selected>0</selected>
+				<object class="wxPanel" name="pnlAdmin">
+					<style>wxTAB_TRAVERSAL</style>
+					<object class="wxBoxSizer">
+						<orient>wxVERTICAL</orient>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxEXPAND</flag>
+							<border>5</border>
+							<object class="wxBoxSizer">
+								<minsize>-1,38</minsize>
+								<orient>wxHORIZONTAL</orient>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxChoice" name="chcAdmin">
+										<size>130,-1</size>
+										<selection>0</selection>
+										<content>
+											<item>Пользователи</item>
+										</content>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxButton" name="btnAdminAdd">
+										<label>Добавить</label>
+										<default>0</default>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALL</flag>
+									<border>5</border>
+									<object class="wxButton" name="btnAdminUpdate">
+										<label>Обновить систему</label>
+										<default>0</default>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>5</border>
+							<object class="unknown" name="cgrAdmin" />
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

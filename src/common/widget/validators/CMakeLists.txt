@@ -1,6 +1,7 @@
 add_library(tms_validators SHARED
   string_validator
   password_validator
+  bool_validator
 )
 
 find_package(wxWidgets COMPONENTS base core REQUIRED)

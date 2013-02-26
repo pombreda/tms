@@ -98,6 +98,12 @@ if(WIN32)
           "libexpat-1.dll"
           "libgcc_s_dw2-1.dll"
           "libstdc++-6.dll"
+          "libboost_signals-mgw47-mt-1_53.dll"
+          "libboost_system-mgw47-mt-1_53.dll"
+          "libboost_thread-mgw47-mt-1_53.dll"
+          "libboost_chrono-mgw47-mt-1_53.dll"
+          "libboost_filesystem-mgw47-mt-1_53.dll"
+          "libboost_program_options-mgw47-mt-1_53.dll"
           "libboost_signals-mgw47-mt-1_50.dll"
           "libboost_system-mgw47-mt-1_50.dll"
           "libboost_thread-mgw47-mt-1_50.dll"
@@ -127,9 +133,10 @@ if(WIN32)
           "libsoci_sqlite3_3_1.dll"
           "libsqlite3-0.dll"
           "liblog4cplus-1-0-4.dll"
+          "liblog4cplusU.dll"
           "libarchive-12.dll"
+          "libarchive-13.dll"
           )
-    message("${lib}")
     unset(lib_path CACHE)
     find_file(
       lib_path
@@ -139,6 +146,8 @@ if(WIN32)
     if(lib_path)
       message("${lib_path}")
       list(APPEND system_libs ${lib_path})
+    else(lib_path)
+      message("${lib} not found")
     endif(lib_path)
   endforeach(lib)
   unset(lib_path CACHE)

@@ -95,9 +95,13 @@ HasManyFieldContraptionArray::HasManyFieldContraptionArray(
     id_(id),
     to_add_() {
   ContraptionArrayP links 
-      = through_model_->Filter(Compare(id_column_, 
-                                       kEqual, 
-                                       static_cast<int>(id_)));
+      = through_model_->Filter(And(
+          Compare(id_column_, 
+                  kEqual, 
+                  static_cast<int>(id_)),
+          Compare(other_id_column_, 
+                  kNotEqual, 
+                  static_cast<int>(Contraption::kNewID))));
   for (size_t pos = 0, end = links->size(); pos < end; ++pos) {
     ContraptionP contraption(model_->New());
     ContraptionAccessor accessor(&*contraption);

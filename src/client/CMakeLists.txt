@@ -9,10 +9,10 @@ add_executable(client_app
                client               
 	       frames_collection
                dlg_login
-               grid_frame
+	       dlg_user
+	       frm_grid
                contact_persons_frame
 	       incomings_frame
-	       users_frame
 	       companies_frame
                options_model
 	       logger

@@ -1,5 +1,5 @@
-#ifndef _TMS_CLIENT__LOGIN_FRAME_HPP_
-#define _TMS_CLIENT__LOGIN_FRAME_HPP_
+#ifndef _TMS_CLIENT__DLG_LOGIN_HPP_
+#define _TMS_CLIENT__DLG_LOGIN_HPP_
 
 // wxWidgets
 #include <wx/button.h>
@@ -8,7 +8,7 @@
 #include <wx/textctrl.h>
 // common
 #include <protocol/message/login_response.hpp>
-#include "grid_frame.hpp"
+#include "frm_grid.hpp"
 
 namespace tms {
 namespace client{
@@ -23,7 +23,7 @@ class DlgLogin : public wxDialog {
   DlgLogin(const DlgLogin&);
   DlgLogin& operator=(const DlgLogin&);
 
-  GridFrame *grid_frame;
+  FrmGrid *grid_frame;
   tms::common::widget::ContraptionGridTableBase *base_;
 
   void TryLogin();
@@ -37,4 +37,4 @@ class DlgLogin : public wxDialog {
 
 }
 }
-#endif // _TMS_CLIENT__LOGIN_FRAME_HPP_
+#endif // _TMS_CLIENT__DLG_LOGIN_HPP_

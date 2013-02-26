@@ -1,4 +1,5 @@
 #include <cstdarg> // for log4cplus
+#include <sstream>
 #include "options.hpp"
 
 namespace tms {
@@ -12,6 +13,7 @@ ClientP Options::client_ = ClientP();
 bool Options::admin_ = false;
 bool Options::secretair_ = false;
 bool Options::manager_ = false;
+map<std::string, ColumnLayout> Options::incoming_columns_ = map<std::string, ColumnLayout>();
 
 void Options::Init() {
   std::string options_db("options.sqlite3");
@@ -32,9 +34,16 @@ void Options::Init() {
     contraption_->Set<std::string>("password_hash", "");
     contraption_->Set<std::string>("server", "127.0.0.1");
     contraption_->Set<std::string>("port", "3300");
-    contraption_->Save();
   } else {
     contraption_ = contraptions->at(0);
+    std::istringstream incoming_layout_stream(contraption_->Get<std::string>("incoming_column_layout"));
+    while (!incoming_layout_stream.eof()) {
+      std::string column_name;
+      ColumnLayout column_layout;
+      incoming_layout_stream >> column_name >> column_layout.width >> column_layout.pos
+                    >> column_layout.enabled;
+      incoming_columns_[column_name] = column_layout;
+    }
   }
 }
 

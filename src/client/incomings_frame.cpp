@@ -1,5 +1,5 @@
 #include "incomings_frame.hpp"
-#include "grid_frame.hpp"
+#include "frm_grid.hpp"
 #include "frames_collection.hpp"
 #include "options.hpp"
 // wx
@@ -252,7 +252,7 @@ void IncomingsFrame::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
   contraptions_->Refresh();
   
   Hide();
-  FramesCollection::grid_frame->Refresh();
+  FramesCollection::frm_grid->Refresh();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Values saved"));
 }
@@ -386,7 +386,7 @@ void IncomingsFrame::OnAddContactPersonTimer(wxTimerEvent& WXUNUSED(event))  {
 void IncomingsFrame::OnDeleteClick(wxCommandEvent& WXUNUSED(event)) {
   contraption_->Delete();
   contraptions_->Refresh();
-  FramesCollection::grid_frame->Refresh();
+  FramesCollection::frm_grid->Refresh();
   Hide();
 }
 

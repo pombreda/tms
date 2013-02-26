@@ -1,8 +1,10 @@
+
 #ifndef _TMS_CLIENT__OPTIONS_HPP_
 #define _TMS_CLIENT__OPTIONS_HPP_
 
 // std
 #include <string>
+#include <map>
 // boost
 #include <boost/filesystem.hpp>
 // soci
@@ -24,6 +26,12 @@
 namespace tms {
 namespace client {
 
+struct ColumnLayout {
+  int width;
+  int pos;
+  bool enabled;
+};
+
 class Options {
  public:
   static void Init();
@@ -33,7 +41,6 @@ class Options {
   }
   static void set_name(std::string value) {
     contraption_->Set<std::string>("name", value);
-    contraption_->Save();
   }
   static void set_admin(bool admin) {
     admin_ = admin;
@@ -51,7 +58,6 @@ class Options {
   }
   static void set_password_hash(std::string value) {
     contraption_->Set<std::string>("password_hash", value);
-    contraption_->Save();
   }
 
   static bool admin() {
@@ -68,7 +74,6 @@ class Options {
   }
   static void set_server(std::string value) {
     contraption_->Set<std::string>("server", value);
-    contraption_->Save();
   }
 
   static std::string port() {
@@ -76,7 +81,6 @@ class Options {
   }
   static void set_port(std::string value) {
     contraption_->Set<std::string>("port", value);
-    contraption_->Save();
   }
 
   static common::protocol::ClientP client() {
@@ -86,12 +90,25 @@ class Options {
     client_ = client;
   }
 
+  static ColumnLayout incoming_column_layout(std::string column) {
+    return incoming_columns_[column];
+  }
+
+  static void set_incoming_column_layout(std::string column, ColumnLayout layout) {
+    incoming_columns_[column] = layout;
+  }
+
+  static void Save() {
+    contraption_->Save();
+  }
+
  private:
   static common::protocol::ClientP client_;
   static common::contraption::ContraptionP contraption_;
   static bool admin_;
   static bool manager_;
   static bool secretair_;
+  static std::map<std::string, ColumnLayout> incoming_columns_;
 };
 
 }

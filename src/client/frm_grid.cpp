@@ -1,4 +1,4 @@
-#include "grid_frame.hpp"
+#include "frm_grid.hpp"
 // log4cplus
 #include <client/logger.hpp>
 #include <log4cplus/loggingmacros.h>
@@ -16,6 +16,12 @@
 #include <fstream>
 #include <sstream>
 #include "options.hpp"
+// frames
+#include "contact_persons_frame.hpp"
+#include "companies_frame.hpp"
+#include "dlg_user.hpp"
+#include "incomings_frame.hpp"
+#include "frames_collection.hpp"
 
 namespace tms{
 namespace client {
@@ -29,17 +35,26 @@ using namespace tms::common;
 using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
 
-BEGIN_EVENT_TABLE(GridFrame,wxFrame)
+BEGIN_EVENT_TABLE(FrmGrid,wxFrame)
 END_EVENT_TABLE()
 
-GridFrame::~GridFrame() {
+
+FrmGrid::FrmGrid() :
+    wxFrame(),
+    grid_books_(), choice_book_(), selected_book_id_(0),
+    grid_catalogs_(), choice_catalog_(), selected_catalog_id_(0),
+    table_contact_persons_() {
+  wxXmlResource::Get()->LoadFrame(this, 
+                                  NULL, 
+                                  WStringFromUTF8String("frmGrid"));
 }
 
-void GridFrame::Init() {
-  // frames
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Initializing frames"));
+FrmGrid::~FrmGrid() {
+}
 
+void FrmGrid::InitDialogs() {
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Initializing dialogs"));
   FramesCollection::contact_persons_frame = new ContactPersonsFrame();
   wxXmlResource::Get()->LoadFrame(FramesCollection::contact_persons_frame, this,
 				  _T("ContactPersonsFrame"));
@@ -50,79 +65,88 @@ void GridFrame::Init() {
 				  _T("CompaniesFrame"));
   FramesCollection::companies_frame->Init();
 
-  FramesCollection::users_frame = new UsersFrame();
-  wxXmlResource::Get()->LoadFrame(FramesCollection::users_frame, this,
-				  _T("UsersFrame"));
-  FramesCollection::users_frame->Init();
+  FramesCollection::dlg_user = new DlgUser();
 
   FramesCollection::incomings_frame = new IncomingsFrame();
   wxXmlResource::Get()->LoadFrame(FramesCollection::incomings_frame, this,
 				  _T("IncomingsFrame"));
   FramesCollection::incomings_frame->Init();
 
-  FramesCollection::grid_frame = this;
-  // frames done
-  PrepareModels();
-  wxNotebook* notebook = (wxNotebook*) FindWindowByName("ID_NOTEBOOK_MAIN");
+  FramesCollection::frm_grid = this;  
+}
+
+void FrmGrid::InitBooks() {
   grid_books_ = new ContraptionGrid(this, wxID_ANY);
-  choice_book_ = (wxChoice *)FindWindowByName("ID_CHOICE_BOOK");
-  Connect(XRCID("ID_CHOICE_BOOK"), wxEVT_COMMAND_CHOICE_SELECTED,
-	  (wxObjectEventFunction)&GridFrame::OnBookSelect);
-  button_add_in_book_ = (wxButton*) FindWindowByName("ID_BUTTON_ADD_IN_BOOK");
+  choice_book_ = (wxChoice *)FindWindowByName("chcBook");
+  Connect(XRCID("chcBook"), wxEVT_COMMAND_CHOICE_SELECTED,
+	  (wxObjectEventFunction)&FrmGrid::OnBookSelect);
+  button_add_in_book_ = (wxButton*) FindWindowByName("btnBookAdd");
     
 
   InitIncomingsTable();
   ActivateIncomingsTable();
+  wxXmlResource::Get()->AttachUnknownControl("cgrBook", (wxWindow *)grid_books_);
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Books initialized"));
-  //grid_books_->SetOnCellClick(boost::bind(&GridFrame::OnCellClick, this, _1, _2));
-  //grid_books_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2));
-  wxXmlResource::Get()->AttachUnknownControl("ID_GRID_BOOKS", (wxWindow *)grid_books_);
-  //Connect(XRCID("ID_BUTTON_ADD_IN_BOOK"), wxEVT_COMMAND_BUTTON_CLICKED,
-  //        (wxObjectEventFunction)&GridFrame::OnAddClick);
+}
 
-  if (Options::admin()) {
-    LOG4CPLUS_INFO(client_logger, 
-		   WStringFromUTF8String("Loading admin page"));
-    grid_admin_ = new ContraptionGrid(this, wxID_ANY);
-    choice_admin_ = (wxChoice*) FindWindowByName("ID_CHOICE_ADMIN");
-    button_add_in_admin_ = (wxButton*) FindWindowByName("ID_BUTTON_ADD_IN_ADMIN");
-    Connect(XRCID("ID_CHOICE_ADMIN"), wxEVT_COMMAND_CHOICE_SELECTED,
-	    (wxObjectEventFunction)&GridFrame::OnAdminSelect);
-    Connect(XRCID("ID_BUTTON_PATCH"), wxEVT_COMMAND_BUTTON_CLICKED,
-	    (wxObjectEventFunction)&GridFrame::OnPatchClick);
-    InitUsersTable();
-    ActivateUsersTable();
-    LOG4CPLUS_INFO(client_logger, 
-		   WStringFromUTF8String("Admin initialized"));
-    //grid_books_->SetOnCellClick(boost::bind(&GridFrame::OnCellClick, this, _1, _2));
-    //grid_books_->SetOnCellDClick(boost::bind(&GridFrame::OnCellDClick, this, _1, _2));
-    wxXmlResource::Get()->AttachUnknownControl("ID_GRID_ADMIN", (wxWindow *)grid_admin_);
-  } else {
-    notebook->RemovePage(2);
-  }
-  //Connect(XRCID("ID_BUTTON_ADD_IN_BOOK"), wxEVT_COMMAND_BUTTON_CLICKED,
-  //        (wxObjectEventFunction)&GridFrame::OnAddClick);
+void FrmGrid::InitAdmin() {
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Loading admin page"));
+  grid_admin_ = new ContraptionGrid(this, wxID_ANY);
+  choice_admin_ = (wxChoice*) FindWindowByName("chcAdmin");
+  button_add_in_admin_ = (wxButton*) FindWindowByName("btnAdminAdd");
+  Connect(XRCID("chcAdmin"), wxEVT_COMMAND_CHOICE_SELECTED,
+          (wxObjectEventFunction)&FrmGrid::OnAdminSelect);
+  Connect(XRCID("btnAdminUpdate"), wxEVT_COMMAND_BUTTON_CLICKED,
+          (wxObjectEventFunction)&FrmGrid::OnPatchClick);
+  InitUsersTable();
+  ActivateUsersTable();
+  wxXmlResource::Get()->AttachUnknownControl("cgrAdmin", (wxWindow *)grid_admin_);
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Admin initialized"));
+}
 
+void FrmGrid::InitCatalogs() {
   grid_catalogs_ = new ContraptionGrid(this, wxID_ANY);
-  choice_catalog_ =(wxChoice*) FindWindowByName("ID_CHOICE_CATALOG");
-  button_add_in_catalog_ = (wxButton*) FindWindowByName("ID_BUTTON_ADD_IN_CATALOG");
-  wxXmlResource::Get()->AttachUnknownControl("ID_GRID_CATALOGS", (wxWindow *)grid_catalogs_);
-  Connect(XRCID("ID_CHOICE_CATALOG"), wxEVT_COMMAND_CHOICE_SELECTED,
-          (wxObjectEventFunction)&GridFrame::OnCatalogSelect);
+  choice_catalog_ = (wxChoice*) FindWindowByName("chcCatalog");
+  button_add_in_catalog_ = (wxButton*) FindWindowByName("btnCatalogAdd");
+  wxXmlResource::Get()->AttachUnknownControl("cgrCatalog", (wxWindow *)grid_catalogs_);
+  Connect(XRCID("chcCatalog"), wxEVT_COMMAND_CHOICE_SELECTED,
+          (wxObjectEventFunction)&FrmGrid::OnCatalogSelect);
   InitContactPersonsTable();
   InitCompaniesTable();
   ActivateContactPersonsTable();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Catalogs initialized"));
-  Centre();
-  GetSizer()->RecalcSizes();
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("GridFrame initialized"));
-  Maximize(true);
+  
 }
 
-void GridFrame::PrepareModels() {
+void FrmGrid::Init() {
+  Bind(wxEVT_CLOSE_WINDOW, &FrmGrid::OnClose, this);
+  InitDialogs();
+  PrepareModels();
+  
+  wxNotebook* notebook = (wxNotebook*) FindWindowByName("nbMain");
+
+  InitBooks();
+  
+  InitCatalogs();
+
+  if (Options::admin()) {
+    InitAdmin();
+  } else {
+    notebook->RemovePage(2);
+  }
+  
+  Centre();
+  Maximize(true);
+  
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("FrmGrid initialized"));
+}
+
+void FrmGrid::PrepareModels() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Preparing models"));  
   User::PrepareModel(ModelBackendP(
@@ -136,7 +160,7 @@ void GridFrame::PrepareModels() {
 
 }
 
-void GridFrame::InitContactPersonsTable() {
+void FrmGrid::InitContactPersonsTable() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing ContactPersons table"));
   try {
@@ -159,7 +183,7 @@ void GridFrame::InitContactPersonsTable() {
   }
 }
 
-void GridFrame::InitIncomingsTable() {
+void FrmGrid::InitIncomingsTable() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing Incomings table"));
   try {
@@ -184,54 +208,57 @@ void GridFrame::InitIncomingsTable() {
 }
 
 
-void GridFrame::ActivateCompaniesTable() {
+void FrmGrid::ActivateCompaniesTable() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Activating companies table"));  
   button_add_in_catalog_->Show(true);
+  grid_catalogs_->ResetColPos();
   grid_catalogs_->SetTable(table_companies_, wxGrid::wxGridSelectRows, 2500);
-  grid_catalogs_->SetOnCellClick(boost::bind(&GridFrame::OnCompaniesCellClick,
+  grid_catalogs_->SetOnCellClick(boost::bind(&FrmGrid::OnCompaniesCellClick,
 					     this, _1, _2));
-  grid_catalogs_->SetOnCellDClick(boost::bind(&GridFrame::OnCompaniesCellDClick,
+  grid_catalogs_->SetOnCellDClick(boost::bind(&FrmGrid::OnCompaniesCellDClick,
 					      this, _1, _2));  
 
-  Disconnect(XRCID("ID_BUTTON_ADD_IN_CATALOG"), wxEVT_COMMAND_BUTTON_CLICKED);
-  Connect(XRCID("ID_BUTTON_ADD_IN_CATALOG"), wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction)&GridFrame::OnAddInCompanyClick);
+  Disconnect(XRCID("btnCatalogAdd"), wxEVT_COMMAND_BUTTON_CLICKED);
+  Connect(XRCID("btnCatalogAdd"), wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction)&FrmGrid::OnAddInCompanyClick);
   Layout();
 }
 
-void GridFrame::ActivateContactPersonsTable() {
+void FrmGrid::ActivateContactPersonsTable() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Activating contact persons table"));  
   button_add_in_catalog_->Show(false);
+  grid_catalogs_->ResetColPos();
   grid_catalogs_->SetTable(table_contact_persons_, wxGrid::wxGridSelectRows, 2500);
-  grid_catalogs_->SetOnCellClick(boost::bind(&GridFrame::OnContactPersonsCellClick,
+  grid_catalogs_->SetOnCellClick(boost::bind(&FrmGrid::OnContactPersonsCellClick,
 					     this, _1, _2));
-  grid_catalogs_->SetOnCellDClick(boost::bind(&GridFrame::OnContactPersonsCellDClick,
+  grid_catalogs_->SetOnCellDClick(boost::bind(&FrmGrid::OnContactPersonsCellDClick,
 					      this, _1, _2));  
 
-  Disconnect(XRCID("ID_BUTTON_ADD_IN_CATALOG"), wxEVT_COMMAND_BUTTON_CLICKED);
-  Connect(XRCID("ID_BUTTON_ADD_IN_CATALOG"), wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction)&GridFrame::OnAddInContactPersonClick);
+  Disconnect(XRCID("btnCatalogAdd"), wxEVT_COMMAND_BUTTON_CLICKED);
+  Connect(XRCID("btnCatalogAdd"), wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction)&FrmGrid::OnAddInContactPersonClick);
   Layout();
 }
 
-void GridFrame::ActivateIncomingsTable() {
+void FrmGrid::ActivateIncomingsTable() {
   LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Activating incomings table"));  
+                 WStringFromUTF8String("Activating incomings table"));
+  grid_books_->ResetColPos();
   grid_books_->SetTable(table_incomings_, wxGrid::wxGridSelectRows, 2500);
-  grid_books_->SetOnCellClick(boost::bind(&GridFrame::OnIncomingsCellClick,
+  grid_books_->SetOnCellClick(boost::bind(&FrmGrid::OnIncomingsCellClick,
 					     this, _1, _2));
-  grid_books_->SetOnCellDClick(boost::bind(&GridFrame::OnIncomingsCellDClick,
+  grid_books_->SetOnCellDClick(boost::bind(&FrmGrid::OnIncomingsCellDClick,
 					      this, _1, _2));  
 
-  Disconnect(XRCID("ID_BUTTON_ADD_IN_BOOK"), wxEVT_COMMAND_BUTTON_CLICKED);
-  Connect(XRCID("ID_BUTTON_ADD_IN_BOOK"), wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction)&GridFrame::OnAddInIncomingClick);
+  Disconnect(XRCID("btnBookAdd"), wxEVT_COMMAND_BUTTON_CLICKED);
+  Connect(XRCID("btnBookAdd"), wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction)&FrmGrid::OnAddInIncomingClick);
 }
 
 
-void GridFrame::InitUsersTable() {
+void FrmGrid::InitUsersTable() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing Users table"));
   std::vector<Column> cols;
@@ -243,26 +270,28 @@ void GridFrame::InitUsersTable() {
 
 }
 
-void GridFrame::ActivateUsersTable() {
+void FrmGrid::ActivateUsersTable() {
+  grid_admin_->ResetColPos();
   grid_admin_->SetTable(table_users_, wxGrid::wxGridSelectRows, 2500);
-  Disconnect(XRCID("ID_BUTTON_ADD_IN_ADMIN"), wxEVT_COMMAND_BUTTON_CLICKED);
-  Connect(XRCID("ID_BUTTON_ADD_IN_ADMIN"), wxEVT_COMMAND_BUTTON_CLICKED,
-	  (wxObjectEventFunction)&GridFrame::OnAddInUserClick);
-  grid_admin_->SetOnCellClick(boost::bind(&GridFrame::OnUsersCellClick, this, _1, _2));
-  grid_admin_->SetOnCellDClick(boost::bind(&GridFrame::OnUsersCellDClick, this, _1, _2));
+  Disconnect(XRCID("btnAdminAdd"), wxEVT_COMMAND_BUTTON_CLICKED);
+  Connect(XRCID("btnAdminAdd"), wxEVT_COMMAND_BUTTON_CLICKED,
+	  (wxObjectEventFunction)&FrmGrid::OnAddInUserClick);
+  grid_admin_->SetOnCellClick(boost::bind(&FrmGrid::OnUsersCellClick, this, _1, _2));
+  grid_admin_->SetOnCellDClick(boost::bind(&FrmGrid::OnUsersCellDClick, this, _1, _2));
 }
 
-void GridFrame::InitCompaniesTable() {
+void FrmGrid::InitCompaniesTable() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing Companies table"));
   try {
     std::vector<Column> cols;
     ModelP model = Company::GetModel();
+    cols.push_back(Column(model->GetFieldID("ID"), "ID", 30));
     cols.push_back(Column(model->GetFieldID("short_name"), "Название", 150));
     cols.push_back(Column(model->GetFieldID("gruppa"), "Группа", 100));
-    cols.push_back(Column(model->GetFieldID("contact_name"), "Контактное лицо", 100));
-    cols.push_back(Column(model->GetFieldID("contact_email"), "Контактный e-mail", 100));
-    cols.push_back(Column(model->GetFieldID("contact_phone"), "Контактный телефон", 100));
+    cols.push_back(Column(model->GetFieldID("contact_name"), "Контактное лицо", 120));
+    cols.push_back(Column(model->GetFieldID("contact_email"), "Контактный e-mail", 130));
+    cols.push_back(Column(model->GetFieldID("contact_phone"), "Контактный телефон", 150));
     table_companies_ =
       new ContraptionGridTableBase(model->All(), cols);
 
@@ -271,10 +300,10 @@ void GridFrame::InitCompaniesTable() {
   }
 }
 
-void GridFrame::OnContactPersonsCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
+void FrmGrid::OnContactPersonsCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
 }
 
-void GridFrame::OnContactPersonsCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
+void FrmGrid::OnContactPersonsCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnContactPersonsCellDClick"));
   ContraptionArrayP contraptions =
@@ -284,10 +313,10 @@ void GridFrame::OnContactPersonsCellDClick(ContraptionP contraption, FieldID /*f
   FramesCollection::contact_persons_frame->Show(true);  
 }
 
-void GridFrame::OnCompaniesCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
+void FrmGrid::OnCompaniesCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
 }
 
-void GridFrame::OnCompaniesCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
+void FrmGrid::OnCompaniesCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnCompaniesCellDClick"));
   ContraptionArrayP contraptions =
@@ -297,10 +326,10 @@ void GridFrame::OnCompaniesCellDClick(ContraptionP contraption, FieldID /*field_
   FramesCollection::companies_frame->Show(true);  
 }
 
-void GridFrame::OnIncomingsCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
+void FrmGrid::OnIncomingsCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
 }
 
-void GridFrame::OnIncomingsCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
+void FrmGrid::OnIncomingsCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnIncomingsCellDClick"));
   ContraptionArrayP contraptions =
@@ -311,25 +340,25 @@ void GridFrame::OnIncomingsCellDClick(ContraptionP contraption, FieldID /*field_
 }
 
 
-void GridFrame::OnUsersCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
+void FrmGrid::OnUsersCellClick(ContraptionP /*contraption*/, FieldID /*field_id*/) {
 }
 
-void GridFrame::OnUsersCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
+void FrmGrid::OnUsersCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnAdminCellDClick"));
   try {
     ContraptionArrayP contraptions =
       dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
       contraptions();
-    FramesCollection::users_frame->SetUpValues(contraption, contraptions);
-    FramesCollection::users_frame->Show(true);
+    FramesCollection::dlg_user->SetUpValues(contraption, contraptions);
+    FramesCollection::dlg_user->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
 }
 
 
-void GridFrame::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) {
+void FrmGrid::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnAddInContactPersonClick"));
   try {
@@ -344,7 +373,7 @@ void GridFrame::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) {
   }
 }
 
-void GridFrame::OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event)) {
+void FrmGrid::OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event)) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnAddInCompanyClick"));
   try {
@@ -361,7 +390,7 @@ void GridFrame::OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-void GridFrame::OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event)) {
+void FrmGrid::OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event)) {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnAddInIncomingClick"));
   try {
@@ -377,38 +406,39 @@ void GridFrame::OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event)) {
 }
 
 
-void GridFrame::OnPatchClick(wxCommandEvent& event) {
+void FrmGrid::OnPatchClick(wxCommandEvent& event) {
   wxFileDialog *fd = new wxFileDialog(this, "Select a patch to install", "", "", "*.patch");
-  fd->ShowModal();
-  ostringstream sout;
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Installing patch " + std::string(fd->GetPath().utf8_str().data())));
+  if (fd->ShowModal() == wxID_OK) {
+    ostringstream sout;
+    LOG4CPLUS_INFO(client_logger, 
+                   WStringFromUTF8String("Installing patch " + std::string(fd->GetPath().utf8_str().data())));
+  
+    ifstream fin(fd->GetPath().utf8_str().data(), ios::in | ios::binary);
+    const int bufsize = 10240;
+    char buf[bufsize];
+    while (!fin.eof()) {
+      fin.read(buf, bufsize);
+      sout.write(buf, fin.gcount());
+    }
+    LOG4CPLUS_INFO(client_logger, 
+                   WStringFromUTF8String("Patch read"));
 
-  ifstream fin(fd->GetPath().utf8_str().data(), ios::in | ios::binary);
-  const int bufsize = 10240;
-  char buf[bufsize];
-  while (!fin.eof()) {
-    fin.read(buf, bufsize);
-    sout.write(buf, fin.gcount());
+    PatchServerRequestP request(new PatchServerRequest());
+    request->set_patch_archive(sout.str());
+    LOG4CPLUS_INFO(client_logger, 
+                   WStringFromUTF8String("Request created"));
+
+    ClientP client = Options::client();
+    client->EvalRequest(*request);
+    LOG4CPLUS_INFO(client_logger, 
+                   WStringFromUTF8String(std::string(fd->GetPath().utf8_str().data()) + " installed"));
+
+    OnExitClick(event);
   }
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Patch read"));
-
-  PatchServerRequestP request(new PatchServerRequest());
-  request->set_patch_archive(sout.str());
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Request created"));
-
-  ClientP client = Options::client();
-  client->EvalRequest(*request);
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String(std::string(fd->GetPath().utf8_str().data()) + " installed"));
-
-  OnExitClick(event);
 }
 
 
-void GridFrame::OnCatalogSelect(wxCommandEvent& event) {
+void FrmGrid::OnCatalogSelect(wxCommandEvent& event) {
   switch (event.GetSelection()) {
     case 0:
       selected_catalog_id_ = event.GetSelection();
@@ -427,7 +457,7 @@ void GridFrame::OnCatalogSelect(wxCommandEvent& event) {
   }
 }
 
-void GridFrame::OnBookSelect(wxCommandEvent& event) {
+void FrmGrid::OnBookSelect(wxCommandEvent& event) {
   switch (event.GetSelection()) {
     case 0:
       selected_book_id_ = event.GetSelection();
@@ -443,16 +473,16 @@ void GridFrame::OnBookSelect(wxCommandEvent& event) {
 }
 
 
-void GridFrame::OnAddInUserClick(wxCommandEvent& WXUNUSED(event)) {
+void FrmGrid::OnAddInUserClick(wxCommandEvent& WXUNUSED(event)) {
   ContraptionArrayP contraptions =
     dynamic_cast<ContraptionGridTableBase*>(grid_admin_->GetTable())->
     contraptions();
   ContraptionP contraption = contraptions->model()->New();
-  FramesCollection::users_frame->SetUpValues(contraption, contraptions);
-  FramesCollection::users_frame->Show(true);
+  FramesCollection::dlg_user->SetUpValues(contraption, contraptions);
+  FramesCollection::dlg_user->Show(true);
 }
 
-void GridFrame::OnAdminSelect(wxCommandEvent& event) {
+void FrmGrid::OnAdminSelect(wxCommandEvent& event) {
   switch (event.GetSelection()) {
     case 0:
       selected_admin_id_ = event.GetSelection();
@@ -468,9 +498,16 @@ void GridFrame::OnAdminSelect(wxCommandEvent& event) {
 }
 
 
-void GridFrame::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
+void FrmGrid::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
   Close();
 }
+
+void FrmGrid::OnClose(wxCloseEvent& event) {
+  
+  Options::Save();
+  event.Skip();
+}
+
 
 }
 }

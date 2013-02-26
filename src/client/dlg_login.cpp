@@ -142,10 +142,7 @@ void DlgLogin::TryLogin() {
     LOG4CPLUS_INFO(client_logger,
                    WStringFromUTF8String("Loged in"));
       
-    grid_frame = new GridFrame();
-    wxXmlResource::Get()->LoadFrame(grid_frame, 
-                                    NULL, 
-                                    WStringFromUTF8String("GridFrame"));
+    grid_frame = new FrmGrid();
     grid_frame->Init();
     grid_frame->SetTitle(WStringFromUTF8String("TMS"));
     grid_frame->Show(true);

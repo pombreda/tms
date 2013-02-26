@@ -1,5 +1,5 @@
-#ifndef _TMS_CLIENT__GRID_FRAME_HPP_
-#define _TMS_CLIENT__GRID_FRAME_HPP_
+#ifndef _TMS_CLIENT__FRM_GRID_HPP_
+#define _TMS_CLIENT__FRM_GRID_HPP_
 
 // wxWidgets
 #include <wx/frame.h>
@@ -28,12 +28,6 @@
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
 #include <model/user.hpp>
-// frames
-#include "contact_persons_frame.hpp"
-#include "companies_frame.hpp"
-#include "users_frame.hpp"
-#include "incomings_frame.hpp"
-#include "frames_collection.hpp"
 // project
 #include <project/model/contact_person.hpp>
 #include <project/model/company.hpp>
@@ -42,19 +36,19 @@
 namespace tms {
 namespace client {
 
-class GridFrame : public wxFrame {
+class FrmGrid : public wxFrame {
  public:
-  GridFrame() :
-      wxFrame(),
-      grid_books_(), choice_book_(), selected_book_id_(0),
-      grid_catalogs_(), choice_catalog_(), selected_catalog_id_(0),
-      table_contact_persons_() {}
-  virtual ~GridFrame();
+  FrmGrid();
+  virtual ~FrmGrid();
   void Init();
 
  private:
-  GridFrame(const GridFrame&);
-  GridFrame& operator=(const GridFrame&);
+  void InitDialogs();
+  void InitBooks();
+  void InitCatalogs();
+  void InitAdmin();
+  FrmGrid(const FrmGrid&);
+  FrmGrid& operator=(const FrmGrid&);
 
   tms::common::widget::ContraptionGrid *grid_books_;
   wxChoice *choice_book_;
@@ -117,6 +111,7 @@ class GridFrame : public wxFrame {
   void OnBookSelect(wxCommandEvent& WXUNUSED(event));
   void OnAdminSelect(wxCommandEvent& WXUNUSED(event));
   void OnExitClick(wxCommandEvent& WXUNUSED(event));
+  void OnClose(wxCloseEvent& event);
 
   DECLARE_EVENT_TABLE()
 };
@@ -124,4 +119,4 @@ class GridFrame : public wxFrame {
 }
 }
 
-#endif // _TMS_CLIENT__GRID_FRAME_HPP_
+#endif // _TMS_CLIENT__FRM_GRID_HPP_
