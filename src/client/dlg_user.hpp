@@ -1,5 +1,5 @@
-#ifndef _TMS_CLIENT__USERS_FRAME_HPP_
-#define _TMS_CLIENT__USERS_FRAME_HPP_
+#ifndef _TMS_CLIENT__DLG_USER_HPP_
+#define _TMS_CLIENT__DLG_USER_HPP_
 
 // wxWidgets
 #include <wx/dialog.h>
@@ -20,17 +20,16 @@ namespace client {
 
 class DlgUser : public wxDialog {
  public:
-  DlgUser();
+  DlgUser(wxWindow *parent);
   virtual ~DlgUser();
   void SetUpValues(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::ContraptionArrayP contraptions);
 
  private:
   void Init();
-  DlgUser(const DlgUser&);
   DlgUser& operator=(const DlgUser&);
 
-  wxButton *button_remove_;
+  wxButton *button_delete_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;
 
@@ -45,4 +44,4 @@ class DlgUser : public wxDialog {
 }
 }
 
-#endif // _TMS_CLIENT__USERS_FRAME_HPP_
+#endif // _TMS_CLIENT__DLG_USER_HPP_

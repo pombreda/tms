@@ -10,7 +10,7 @@ void User::Initialize() {
   ret.push_back(new SimpleFieldT<std::string>("name"));
   ret.push_back(new SimpleFieldT<std::string>("password_hash"));
   ret.push_back(new SimpleFieldT<int>("admin"));
-  ret.push_back(new SimpleFieldT<int>("secretair"));
+  ret.push_back(new SimpleFieldT<int>("secretary"));
   ret.push_back(new SimpleFieldT<int>("manager"));
   InitFields(ret);
 }

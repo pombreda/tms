@@ -38,7 +38,6 @@ bool ContraptionGrid::SetTable(ContraptionGridTableBase *table,
   return res;
 }
 
-
 void ContraptionGrid::SetOnCellClick(OnClickFunction on_cell_click) {
   on_cell_click_.disconnect_all_slots();
   on_cell_click_.connect(on_cell_click);

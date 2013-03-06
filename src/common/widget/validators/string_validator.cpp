@@ -9,9 +9,9 @@ StringValidator::StringValidator(GetterFunction getter, SetterFunction setter) :
     setter_(setter) {}
 
 StringValidator::StringValidator(const StringValidator &validator) :
+    wxTextValidator(validator),
     getter_(validator.getter_),
-    setter_(validator.setter_),
-    wxTextValidator(validator) {}
+    setter_(validator.setter_) {}
 
 
 bool StringValidator::TransferToWindow() {
@@ -19,7 +19,7 @@ bool StringValidator::TransferToWindow() {
   wxTextEntry * const text = GetTextEntry();
   if ( !text )
     return false;
-  text->SetValue(value);
+  text->SetValue(wxString::FromUTF8(value.c_str()));
   return true;
 }
 
@@ -28,7 +28,7 @@ bool StringValidator::TransferFromWindow() {
   if ( !text )
     return false;
   
-  setter_(text->GetValue().ToStdString());
+  setter_(text->GetValue().utf8_str().data());
   return true;
 }
 

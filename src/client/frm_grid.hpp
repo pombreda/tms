@@ -47,6 +47,9 @@ class FrmGrid : public wxFrame {
   void InitBooks();
   void InitCatalogs();
   void InitAdmin();
+  void DeactivateBooks();
+  void DeactivateAdmin();
+  void DeactivateCatalogs();
   FrmGrid(const FrmGrid&);
   FrmGrid& operator=(const FrmGrid&);
 
@@ -72,30 +75,29 @@ class FrmGrid : public wxFrame {
 
   void InitContactPersonsTable();
   void ActivateContactPersonsTable();
+  void DeactivateContactPersonsTable();
   void InitCompaniesTable();
   void ActivateCompaniesTable();
+  void DeactivateCompaniesTable();
   void InitUsersTable();
   void ActivateUsersTable();
+  void DeactivateUsersTable();
   void InitIncomingsTable();
   void ActivateIncomingsTable();
+  void DeactivateIncomingsTable();
   void PrepareModels();
 
-  void OnContactPersonsCellClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
+
+  void OnBooksLabelRightClick(wxGridEvent &e);
   void OnContactPersonsCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
-  void OnCompaniesCellClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
+
   void OnCompaniesCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 
-  void OnIncomingsCellClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
   void OnIncomingsCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 
-  void OnUsersCellClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
   void OnUsersCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 

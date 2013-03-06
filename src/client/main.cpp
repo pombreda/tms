@@ -66,7 +66,8 @@ bool ClientApp::OnInit() {
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/frm_grid.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_login.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_user.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/ContactPersonsFrame.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_contact_person.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_check_column.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/CompaniesFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/IncomingsFrame.xrc"));
     if (!wxsOK) {
@@ -80,8 +81,7 @@ bool ClientApp::OnInit() {
                       WStringFromUTF8String("Error during application initialization"));     
     }
     login_frame = new DlgLogin();
-    login_frame->Init();
-    login_frame->Show(true);
+    login_frame->ShowModal();
   } catch (tms::common::GUIException &e) {
     std::cerr << e.message() << std::endl;
   }

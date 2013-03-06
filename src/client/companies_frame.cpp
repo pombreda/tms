@@ -37,6 +37,7 @@ CompaniesFrame::~CompaniesFrame() {
 void CompaniesFrame::Init() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing CompaniesFrame"));
+  dlg_contact_person_ = new DlgContactPerson(this);  
   Connect(XRCID("ID_BUTTON1"), wxEVT_COMMAND_BUTTON_CLICKED,
           (wxObjectEventFunction)&CompaniesFrame::OnSaveClick);
   Connect(XRCID("ID_BUTTONREMOVE"), wxEVT_COMMAND_BUTTON_CLICKED,
@@ -291,18 +292,19 @@ void CompaniesFrame::OnContactPersonsCellDClick(ContraptionP contraption, FieldI
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("OnContactPersonsCellDClick"));
   cur_contact_person_id_ = -1;
-  if (choice_contact_person_->GetSelection() != wxNOT_FOUND && choice_contact_person_->GetSelection() < contact_persons_id_.size()) {
+  if (choice_contact_person_->GetSelection() != wxNOT_FOUND
+      &&
+      static_cast<size_t>(choice_contact_person_->GetSelection()) < contact_persons_id_.size()) {
     cur_contact_person_id_ = contact_persons_id_[choice_contact_person_->GetSelection()];
   }
   ContraptionArrayP contraptions =
     dynamic_cast<ContraptionGridTableBase*>(grid_contact_persons_->GetTable())->
     contraptions();
-  FramesCollection::contact_persons_frame->SetUpValues(contraption, contraptions, true);
-  FramesCollection::contact_persons_frame->Show(true);  
-  Enable(false);
-  Disconnect(wxEVT_TIMER);
-  Connect(wxEVT_TIMER, (wxObjectEventFunction)&CompaniesFrame::OnTimerContactPerson);
-  timer_->Start(300);
+  dlg_contact_person_->SetUpValues(contraption, contraptions, true);
+  dlg_contact_person_->Show();
+  dlg_contact_person_->ShowModal();
+  Refresh();
+  InitChoiceContactPersson(cur_contact_person_id_);
 }
 
 void CompaniesFrame::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) {
@@ -311,19 +313,19 @@ void CompaniesFrame::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) 
   try {
     if (contraption_) {   
       cur_contact_person_id_ = -1;
-      if (choice_contact_person_->GetSelection() != wxNOT_FOUND && choice_contact_person_->GetSelection() < contact_persons_id_.size()) {
+      if (choice_contact_person_->GetSelection() != wxNOT_FOUND
+          &&
+          static_cast<size_t>(choice_contact_person_->GetSelection()) < contact_persons_id_.size()) {
 	cur_contact_person_id_ = contact_persons_id_[choice_contact_person_->GetSelection()];
-      }
+      }                                                                                                    
       ContraptionArrayP contraptions =
 	dynamic_cast<ContraptionGridTableBase*>(grid_contact_persons_->GetTable())->contraptions();
       ContraptionP contraption = contraptions->model()->New();
       contraption->Set<int>("company_id", contraption_->Get<int>("id"));
-      FramesCollection::contact_persons_frame->SetUpValues(contraption, contraptions, true);
-      FramesCollection::contact_persons_frame->Show(true);
-      Enable(false);
-      Disconnect(wxEVT_TIMER);
-      Connect(wxEVT_TIMER, (wxObjectEventFunction)&CompaniesFrame::OnTimerContactPerson);
-      timer_->Start(300);
+      dlg_contact_person_->SetUpValues(contraption, contraptions, true);
+      dlg_contact_person_->ShowModal();
+      Refresh();
+      InitChoiceContactPersson(cur_contact_person_id_);
     }
   } catch (GUIException &e) {
     Report(e);

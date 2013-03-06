@@ -30,6 +30,10 @@ struct ColumnLayout {
   int width;
   int pos;
   bool enabled;
+  ColumnLayout() :
+      width(-1),
+      pos(-1),
+      enabled(true) {}
 };
 
 class Options {
@@ -48,8 +52,8 @@ class Options {
   static void set_manager(bool manager) {
     manager_ = manager;
   }
-  static void set_secretair(bool secretair) {
-    secretair_ = secretair;
+  static void set_secretary(bool secretary) {
+    secretary_ = secretary;
   }
 
 
@@ -66,8 +70,8 @@ class Options {
   static bool manager() {
     return manager_;
   }
-  static bool secretair() {
-    return secretair_;
+  static bool secretary() {
+    return secretary_;
   }
   static std::string server() {
     return contraption_->Get<std::string>("server");
@@ -98,16 +102,14 @@ class Options {
     incoming_columns_[column] = layout;
   }
 
-  static void Save() {
-    contraption_->Save();
-  }
+  static void Save();
 
  private:
   static common::protocol::ClientP client_;
   static common::contraption::ContraptionP contraption_;
   static bool admin_;
   static bool manager_;
-  static bool secretair_;
+  static bool secretary_;
   static std::map<std::string, ColumnLayout> incoming_columns_;
 };
 

@@ -16,7 +16,7 @@ std::vector<Field*> OptionsModel::fields() {
   ret.push_back(new SimpleFieldT<std::string>("password_hash"));
   ret.push_back(new SimpleFieldT<std::string>("server"));
   ret.push_back(new SimpleFieldT<std::string>("port"));
-  ret.push_back(new SimpleFieldT<std::string>("column_layout"));
+  ret.push_back(new SimpleFieldT<std::string>("incoming_column_layout"));
   return ret;
 }
 

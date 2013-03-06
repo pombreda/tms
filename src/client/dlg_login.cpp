@@ -28,6 +28,10 @@
 // boost
 #include <boost/filesystem.hpp>
 
+#ifdef FindWindow // MSW workaround
+  #include <wx/msw/winundef.h>
+#endif //FindWindow
+
 namespace tms {
 namespace client {
 
@@ -47,14 +51,7 @@ END_EVENT_TABLE()
 DlgLogin::DlgLogin() :
   wxDialog(), grid_frame() {
   wxXmlResource::Get()->LoadDialog(this, NULL, _T("dlgLogin"));
-  static_cast<wxTextCtrl*>(FindWindowByName("txtLogin"))->SetValidator(
-      StringValidator(Options::name, Options::set_name));
-  static_cast<wxTextCtrl*>(FindWindowByName("txtIP"))->SetValidator(
-      StringValidator(Options::server, Options::set_server));
-  static_cast<wxTextCtrl*>(FindWindowByName("txtPort"))->SetValidator(
-      StringValidator(Options::port, Options::set_port));
-  static_cast<wxTextCtrl*>(FindWindowByName("txtPassword"))->SetValidator(
-      PasswordValidator(Options::set_password_hash));
+  Init();
 }
 
 DlgLogin::~DlgLogin() {
@@ -62,9 +59,34 @@ DlgLogin::~DlgLogin() {
 
 void DlgLogin::Init() {
   Centre();
-  Connect(XRCID("btnLogin"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&DlgLogin::OnOKButtonClick);
+  XRCCTRL(*this, "txtLogin", wxTextCtrl)->SetValidator(
+      StringValidator(Options::name, Options::set_name));
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Login binded"));
+    
+  XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValidator(
+      StringValidator(Options::server, Options::set_server));
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("IP binded"));
+    
+  XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValidator(
+      StringValidator(Options::port, Options::set_port));
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Port binded"));
+  
+  XRCCTRL(*this, "txtPassword", wxTextCtrl)->SetValidator(
+      PasswordValidator(Options::set_password_hash));
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Password binded"));
+
+  XRCCTRL(*this, "btnLogin", wxButton)->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                                                (wxObjectEventFunction)&DlgLogin::OnOKButtonClick,
+                                                0,
+                                                this);
   Options::Init();
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("DlgLogin initialized"));
+  
   TransferDataToWindow();
 }
 
@@ -92,8 +114,8 @@ void DlgLogin::Patch() {
       tms::common::patcher::Patch(path("latest.patch"), current_path());  
       wxMessageDialog(this,
                       WStringFromUTF8String("Обновленме завершено. Перезапустите приложение.")).ShowModal();
-    }      
-    Close();
+    }
+    EndModal(wxOK);
     return;
   } 
   LOG4CPLUS_INFO(client_logger,
@@ -111,12 +133,12 @@ void DlgLogin::SetPermissions(LoginResponseP resp) {
     
   Options::set_admin(resp->admin());
 
-  if (resp->secretair()) {
+  if (resp->secretary()) {
     LOG4CPLUS_INFO(client_logger,
-                   WStringFromUTF8String("User has secretair rights"));
+                   WStringFromUTF8String("User has secretary rights"));
   }
     
-  Options::set_secretair(resp->secretair());
+  Options::set_secretary(resp->secretary());
 
   if (resp->manager()) {
     LOG4CPLUS_INFO(client_logger,
@@ -141,16 +163,17 @@ void DlgLogin::TryLogin() {
     SetPermissions(resp);
     LOG4CPLUS_INFO(client_logger,
                    WStringFromUTF8String("Loged in"));
-      
     grid_frame = new FrmGrid();
+
     grid_frame->Init();
+
     grid_frame->SetTitle(WStringFromUTF8String("TMS"));
     grid_frame->Show(true);
-
-    Close();
+    EndModal(wxOK);
   } else {
     LOG4CPLUS_INFO(client_logger,
                    WStringFromUTF8String("Logging in failed"));
+
     wxMessageDialog *msg = new wxMessageDialog(this,
                                                wxString::FromUTF8("Неверный логин или пароль"),
                                                wxString::FromUTF8("Ошибка"));
@@ -168,13 +191,14 @@ void DlgLogin::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
     
     ClientP client = CreateClient(Options::server(), Options::port());
     Options::set_client(client);
+
     TryLogin();
   }
 
 }
 
 void DlgLogin::OnExitButtonClick(wxCommandEvent& WXUNUSED(event)) {
-  Close();
+  EndModal(wxOK);
 }
 
 }

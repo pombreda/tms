@@ -1,6 +1,7 @@
 #include "dlg_user.hpp"
 // wx
 #include <wx/msgdlg.h>
+#include <wx/xrc/xmlres.h>
 // log4cplus
 #include <client/logger.hpp>
 #include <log4cplus/loggingmacros.h>
@@ -20,6 +21,10 @@
 #include "frames_collection.hpp"
 #include "frm_grid.hpp"
 
+#ifdef FindWindow // MSW workaround
+  #include <wx/msw/winundef.h>
+#endif //FindWindow
+
 namespace tms {
 namespace client {
 
@@ -34,39 +39,59 @@ END_EVENT_TABLE()
 DlgUser::~DlgUser() {
 }
 
-DlgUser::DlgUser() :
+DlgUser::DlgUser(wxWindow *parent) :
     wxDialog(), contraption_(), contraptions_() {
+  wxXmlResource::Get()->LoadDialog(this, parent,
+                                   _T("dlgUser"));
   Init();
 }
 
 void DlgUser::Init() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing DlgUsers"));
-  wxXmlResource::Get()->LoadDialog(this, FramesCollection::frm_grid,
-                                   _T("dlgUser"));
 
-  Connect(XRCID("btnSave"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&DlgUser::OnSaveClick);
-  Connect(XRCID("btnDelete"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&DlgUser::OnDeleteClick);
-  Connect(XRCID("btnCancel"), wxEVT_COMMAND_BUTTON_CLICKED,
-          (wxObjectEventFunction)&DlgUser::OnExitClick);
-  Bind(wxEVT_CLOSE_WINDOW, &DlgUser::OnTryClose, this);
-  FindWindowByName("txtName", this)->SetValidator(
+  XRCCTRL(*this, "txtName", wxTextCtrl)->SetValidator(
       StringValidator(ContraptionGetter<std::string>(contraption_, "name"),
                       ContraptionSetter<std::string>(contraption_, "name")));
-  FindWindowByName("txtPassword", this)->SetValidator(
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Name binded"));
+  
+  XRCCTRL(*this, "txtPassword", wxTextCtrl)->SetValidator(
       PasswordValidator(ContraptionSetter<std::string>(contraption_, "password_hash")));
-  FindWindowByName("chkAdmin", this)->SetValidator(
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Password binded"));
+    
+  XRCCTRL(*this, "chkAdmin", wxCheckBox)->SetValidator(
       BoolValidator(ContraptionGetter<bool>(contraption_, "admin"),
                     ContraptionSetter<bool>(contraption_, "admin")));
-  FindWindowByName("chkSecretary", this)->SetValidator(
-      BoolValidator(ContraptionGetter<bool>(contraption_, "secretair"),
-                    ContraptionSetter<bool>(contraption_, "secretair")));
-  FindWindowByName("chkManager", this)->SetValidator(
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Admin binded"));
+  
+  XRCCTRL(*this, "chkSecretary", wxCheckBox)->SetValidator(
+      BoolValidator(ContraptionGetter<bool>(contraption_, "secretary"),
+                    ContraptionSetter<bool>(contraption_, "secretary")));
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Secretary binded"));
+  
+  XRCCTRL(*this, "chkManager", wxCheckBox)->SetValidator(
       BoolValidator(ContraptionGetter<bool>(contraption_, "manager"),
                     ContraptionSetter<bool>(contraption_, "manager")));
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("Manager binded"));
 
+  XRCCTRL(*this, "btnSave", wxButton)->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                                               (wxObjectEventFunction)&DlgUser::OnSaveClick,
+                                               0, this);
+  button_delete_ = XRCCTRL(*this, "btnDelete", wxButton);
+  button_delete_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                          (wxObjectEventFunction)&DlgUser::OnDeleteClick,
+                          0, this);
+  XRCCTRL(*this, "btnCancel", wxButton)->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+                                               (wxObjectEventFunction)&DlgUser::OnExitClick,
+                                               0, this);
+  
+  Bind(wxEVT_CLOSE_WINDOW, &DlgUser::OnTryClose, this);
+  
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("DlgUser Initialized"));
 }
@@ -78,12 +103,11 @@ void DlgUser::SetUpValues(ContraptionP contraption,
   contraption_ = contraption;
 
   contraptions_ = contraptions;
-  button_remove_ = (wxButton*)FindWindowByName("btnDelete", this);
-
+  
   if (contraption->IsNew()) {
-    button_remove_->Show(false);
+    button_delete_->Show(false);
   } else {
-    button_remove_->Show(true);
+    button_delete_->Show(true);
   }
 
 
@@ -104,30 +128,36 @@ void DlgUser::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
     }
     contraption_->Save();
     contraptions_->Refresh();
-    FramesCollection::frm_grid->Refresh();
   } catch (GUIException &e) {
     Report(e);
   }
 			     
-  Hide();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Values saved"));
+  EndModal(wxOK);
 }
 
 void DlgUser::OnDeleteClick(wxCommandEvent& WXUNUSED(event)) {
   contraption_->Delete();
   contraptions_->Refresh();
   FramesCollection::frm_grid->Refresh();
-  Hide();
+
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("User deleted"));
+  EndModal(wxOK);
 }
 
 void DlgUser::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
-  Hide();
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Closed"));
+  EndModal(wxOK);
 }
 
 void DlgUser::OnTryClose(wxCloseEvent& event) {
   event.Veto();
-  Hide();
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Closed"));
+  EndModal(wxOK);
 }
 
 }

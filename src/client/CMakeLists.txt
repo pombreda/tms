@@ -10,8 +10,12 @@ add_executable(client_app
 	       frames_collection
                dlg_login
 	       dlg_user
+	       dlg_contact_person
+	       dlg_check_column
 	       frm_grid
-               contact_persons_frame
+	       frm_grid_incomings
+	       frm_grid_companies
+	       frm_grid_users	
 	       incomings_frame
 	       companies_frame
                options_model

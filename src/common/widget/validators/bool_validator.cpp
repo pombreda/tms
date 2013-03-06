@@ -15,9 +15,9 @@ BoolValidator::BoolValidator(GetterFunction getter, SetterFunction setter) :
     setter_(setter) {}
 
 BoolValidator::BoolValidator(const BoolValidator &validator) :
+    wxValidator(),
     getter_(validator.getter_),
-    setter_(validator.setter_),
-    wxValidator() {}
+    setter_(validator.setter_) {}
 
 
 bool BoolValidator::TransferToWindow() {

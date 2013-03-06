@@ -75,9 +75,9 @@ void IncomingsFrame::SetUpValues(ContraptionP contraption,
   contraption_ = contraption;
   contraptions_ = contraptions;
   ModelP user_model = User::GetModel();
-  const SimpleFieldT<int> *is_manager
+  /*const SimpleFieldT<int> *is_manager
       = dynamic_cast<const SimpleFieldT<int>*>(
-          user_model->GetField("manager"));
+          user_model->GetField("manager"));*/
 
   users_ = user_model->All();
   // Load controls
@@ -113,7 +113,7 @@ void IncomingsFrame::SetUpValues(ContraptionP contraption,
     button_cancel_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
 			    (wxObjectEventFunction)&IncomingsFrame::OnExitClick, 0, this);
   }
-  if (!Options::secretair() || contraption->Get<std::string>("time_out") != "") {
+  if (!Options::secretary() || contraption->Get<std::string>("time_out") != "") {
     button_remove_->Show(false);
     button_save_->Show(false);
   }

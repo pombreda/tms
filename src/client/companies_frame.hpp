@@ -19,7 +19,7 @@
 #include <contraption/contraption_array.hpp>
 #include <widget/contraption_grid.hpp>
 // frames
-#include "contact_persons_frame.hpp"
+#include "dlg_contact_person.hpp"
 namespace tms {
 namespace client {
 
@@ -74,6 +74,7 @@ class CompaniesFrame : public wxFrame {
   wxButton *button_remove_;
   wxButton *button_cancel_;
   wxTimer *timer_;
+  DlgContactPerson *dlg_contact_person_;
   int cur_contact_person_id_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;

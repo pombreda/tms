@@ -63,7 +63,7 @@ MessageP LoginRequestProcessor::Eval(const Message &message, Server &server) {
                                     + " logged in"));  
       LoginResponseP response(new LoginResponse);
       response->set_admin(users->at(0)->Get<int>("admin"));
-      response->set_secretair(users->at(0)->Get<int>("secretair"));
+      response->set_secretary(users->at(0)->Get<int>("secretary"));
       response->set_manager(users->at(0)->Get<int>("manager"));
       return response;      
     } else {
