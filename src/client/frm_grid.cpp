@@ -12,6 +12,7 @@
 #include <wx/notebook.h>
 #include <wx/filedlg.h>
 #include <wx/button.h>
+#include <wx/app.h>
 // std
 #include <fstream>
 #include <sstream>
@@ -92,6 +93,7 @@ void FrmGrid::InitBooks() {
                   WStringFromUTF8String("btnBookAdd binded"));
   
   InitIncomingsTable();
+  selected_book_id_ = 0;
   ActivateIncomingsTable();
   wxXmlResource::Get()->AttachUnknownControl("cgrBook", (wxWindow *)grid_books_);
   grid_books_->Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,
@@ -122,6 +124,7 @@ void FrmGrid::InitAdmin() {
                                                       (wxObjectEventFunction)&FrmGrid::OnPatchClick,
                                                       0, this);
   InitUsersTable();
+  selected_admin_id_ = 0;
   ActivateUsersTable();
   wxXmlResource::Get()->AttachUnknownControl("cgrAdmin", (wxWindow *)grid_admin_);
   LOG4CPLUS_INFO(client_logger, 
@@ -138,6 +141,7 @@ void FrmGrid::InitCatalogs() {
                            0, this);
   InitContactPersonsTable();
   InitCompaniesTable();
+  selected_catalog_id_ = 0;
   ActivateContactPersonsTable();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Catalogs initialized"));
@@ -145,7 +149,6 @@ void FrmGrid::InitCatalogs() {
 }
 
 void FrmGrid::Init() {
-  Bind(wxEVT_CLOSE_WINDOW, &FrmGrid::OnClose, this);
   InitDialogs();
   PrepareModels();
   
@@ -163,6 +166,7 @@ void FrmGrid::Init() {
   
   Centre();
   Maximize(true);
+  Bind(wxEVT_CLOSE_WINDOW, &FrmGrid::OnClose, this);
   
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("FrmGrid initialized"));
@@ -335,7 +339,7 @@ void FrmGrid::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void FrmGrid::DeactivateBooks() {
-  switch (selected_admin_id_) {
+  switch (selected_book_id_) {
     case 0:
       DeactivateIncomingsTable();
       break;
@@ -367,7 +371,7 @@ void FrmGrid::OnClose(wxCloseEvent& event) {
   DeactivateAdmin();
   DeactivateCatalogs();
   Options::Save();
-  event.Skip();
+  Close(true);
 }
 
 }

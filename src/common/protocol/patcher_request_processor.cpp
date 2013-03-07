@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <sstream>
+#include <fstream>
 // log4cplus
 #include <log4cplus/loggingmacros.h>
 // protobuf

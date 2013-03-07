@@ -3,7 +3,8 @@
 #include <client/logger.hpp>
 // log4cplus
 #include <log4cplus/configurator.h>
-
+// std
+#include <fstream>
 // common
 #include <protocol/client.hpp>
 #include <protocol/message/login_request.hpp>
@@ -25,6 +26,7 @@
 // wx
 #include <wx/msgdlg.h>
 #include <wx/grid.h>
+#include <wx/app.h>
 // boost
 #include <boost/filesystem.hpp>
 
@@ -79,15 +81,17 @@ void DlgLogin::Init() {
   LOG4CPLUS_DEBUG(client_logger, 
                   WStringFromUTF8String("Password binded"));
 
-  XRCCTRL(*this, "btnLogin", wxButton)->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                                                (wxObjectEventFunction)&DlgLogin::OnOKButtonClick,
-                                                0,
-                                                this);
+  XRCCTRL(*this, "btnLogin", wxButton)->
+      Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+              (wxObjectEventFunction)&DlgLogin::OnOKButtonClick,
+              0,
+              this);
   Options::Init();
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("DlgLogin initialized"));
   
   TransferDataToWindow();
+  Bind(wxEVT_CLOSE_WINDOW, &DlgLogin::OnClose, this);  
 }
 
 void DlgLogin::Patch() {
@@ -199,6 +203,16 @@ void DlgLogin::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
 
 void DlgLogin::OnExitButtonClick(wxCommandEvent& WXUNUSED(event)) {
   EndModal(wxOK);
+}
+
+void DlgLogin::OnClose(wxCloseEvent& event) {
+  if (wxTheApp->GetExitOnFrameDelete()) {
+    wxMessageDialog *msg = new wxMessageDialog(this,
+                                               wxString::FromUTF8("Неверный логин или пароль"),
+                                               wxString::FromUTF8("Ошибка"));
+    msg->ShowModal();
+  }
+  event.Skip();
 }
 
 }

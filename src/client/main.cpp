@@ -42,14 +42,11 @@ using namespace log4cplus;
 
 class ClientApp : public wxApp {
  public:
-  ClientApp() :
-      login_frame() {}
+  ClientApp() {}
   virtual bool OnInit();
  private:
   ClientApp(const ClientApp&);
   ClientApp& operator=(const ClientApp&);
-
-  DlgLogin *login_frame;
 };
 
 IMPLEMENT_APP(ClientApp)
@@ -60,14 +57,17 @@ bool ClientApp::OnInit() {
   LOG4CPLUS_INFO(client_logger,
                  WStringFromUTF8String("Client started"));
   bool wxsOK = true;
+  wxTheApp->SetExitOnFrameDelete(true);
   try {
     wxXmlResource::Get()->InitAllHandlers();
     wxInitAllImageHandlers();
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/frm_grid.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_login.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_user.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_contact_person.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_check_column.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T(
+        "xrc/client/dlg_contact_person.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T(
+        "xrc/client/dlg_check_column.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/CompaniesFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/IncomingsFrame.xrc"));
     if (!wxsOK) {
@@ -76,11 +76,12 @@ bool ClientApp::OnInit() {
       return false;
     }
     if (!wxApp::OnInit()) {
-      return false;
       LOG4CPLUS_ERROR(client_logger,
-                      WStringFromUTF8String("Error during application initialization"));     
+                      WStringFromUTF8String(
+                          "Error during application initialization"));     
+      return false;
     }
-    login_frame = new DlgLogin();
+    DlgLogin *login_frame = new DlgLogin();
     login_frame->ShowModal();
   } catch (tms::common::GUIException &e) {
     std::cerr << e.message() << std::endl;

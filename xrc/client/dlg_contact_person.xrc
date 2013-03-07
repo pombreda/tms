@@ -168,7 +168,6 @@
 									<style>wxTE_MULTILINE|wxTE_PROCESS_ENTER|wxTE_WORDWRAP</style>
 									<size>-1,60</size>
 									<value></value>
-									<maxlength>0</maxlength>
 								</object>
 							</object>
 						</object>

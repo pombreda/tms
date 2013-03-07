@@ -31,6 +31,7 @@ class DlgLogin : public wxDialog {
   void SetPermissions(tms::common::protocol::message::LoginResponseP resp);
   void OnOKButtonClick(wxCommandEvent& event);
   void OnExitButtonClick(wxCommandEvent& event);
+  void OnClose(wxCloseEvent& event);
 
   DECLARE_EVENT_TABLE()
 };

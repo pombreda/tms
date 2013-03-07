@@ -23,6 +23,9 @@ ContraptionGrid::ContraptionGrid(wxWindow *parent, wxWindowID id,
 }
 
 ContraptionGrid::~ContraptionGrid() {
+  if (GetTable() != NULL) {
+    dynamic_cast<ContraptionGridTableBase*>(GetTable())->StopTimer();
+  }  
 }
 
 bool ContraptionGrid::SetTable(ContraptionGridTableBase *table,

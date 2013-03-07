@@ -20,7 +20,7 @@ cmake_minimum_required(VERSION 2.6)
 
 include(ExternalProject)
 
-add_definitions(-g -O2 --verbose -fsigned-char -freg-struct-return -Wall -Wextra -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Winit-self -Wunreachable-code -pedantic -DBOOST_THREAD_USE_LIB -DUNICODE -D_UNICODE)
+add_definitions(-g -O2 -fsigned-char -freg-struct-return -Wall -Wextra -Woverloaded-virtual -Wctor-dtor-privacy -Wnon-virtual-dtor -Winit-self -Wunreachable-code -pedantic -DBOOST_THREAD_USE_LIB -DUNICODE)
 
 if (WIN32)
   add_definitions(-D_WIN32_WINNT=0x0501) # for asio
