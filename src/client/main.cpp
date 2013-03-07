@@ -34,6 +34,7 @@
 // common
 #include <gui_exception/gui_exception.hpp>
 // frames
+#include <client/frm_grid.hpp>
 #include <client/dlg_login.hpp>
 
 using namespace tms::client;
@@ -94,8 +95,12 @@ bool ClientApp::OnInit() {
                           "Error during application initialization"));     
       return false;
     }
-    DlgLogin *login_frame = new DlgLogin();
-    login_frame->Show(true);
+    if (DlgLogin().ShowModal() == wxOK) {
+      (new FrmGrid())->Show(true);
+    } else {
+      OnExit();
+      return false;
+    }
   } catch (tms::common::GUIException &e) {
     std::cerr << e.message() << std::endl;
   }

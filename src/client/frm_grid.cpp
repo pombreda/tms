@@ -22,6 +22,7 @@
 #include "dlg_check_column.hpp"
 #include "companies_frame.hpp"
 #include "dlg_user.hpp"
+#include "dlg_login.hpp"
 #include "incomings_frame.hpp"
 #include "frames_collection.hpp"
 
@@ -53,6 +54,8 @@ FrmGrid::FrmGrid() :
   wxXmlResource::Get()->LoadFrame(this, 
                                   NULL, 
                                   WStringFromUTF8String("frmGrid"));
+  Init();
+  SetTitle(WStringFromUTF8String("TMS"));
 }
 
 FrmGrid::~FrmGrid() {

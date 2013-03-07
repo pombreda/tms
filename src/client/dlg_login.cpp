@@ -52,7 +52,7 @@ END_EVENT_TABLE()
 
 DlgLogin::DlgLogin() :
   wxDialog(), grid_frame() {
-  wxXmlResource::Get()->LoadDialog(this, NULL, _T("dlgLogin"));
+  wxXmlResource::Get()->LoadDialog(this, 0, _T("dlgLogin"));
   Init();
 }
 
@@ -167,13 +167,7 @@ void DlgLogin::TryLogin() {
     SetPermissions(resp);
     LOG4CPLUS_INFO(client_logger,
                    WStringFromUTF8String("Loged in"));
-    grid_frame = new FrmGrid();
-
-    grid_frame->Init();
-
-    grid_frame->SetTitle(WStringFromUTF8String("TMS"));
-    grid_frame->Show(true);
-    Destroy();
+    EndModal(wxOK);
   } else {
     LOG4CPLUS_INFO(client_logger,
                    WStringFromUTF8String("Logging in failed"));
@@ -202,11 +196,11 @@ void DlgLogin::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void DlgLogin::OnExitButtonClick(wxCommandEvent& WXUNUSED(event)) {
-  Destroy();
+  EndModal(wxCANCEL);
 }
 
 void DlgLogin::OnClose(wxCloseEvent& event) {
-  Destroy();
+  EndModal(wxCANCEL);
 }
 
 }

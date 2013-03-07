@@ -41,7 +41,6 @@ class FrmGrid : public wxFrame {
   FrmGrid();
   virtual ~FrmGrid();
   void Init();
-
  private:
   void InitDialogs();
   void InitBooks();
