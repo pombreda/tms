@@ -371,7 +371,7 @@ void FrmGrid::OnClose(wxCloseEvent& event) {
   DeactivateAdmin();
   DeactivateCatalogs();
   Options::Save();
-  Close(true);
+  event.Skip();
 }
 
 }

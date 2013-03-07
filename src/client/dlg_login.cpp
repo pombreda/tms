@@ -173,7 +173,7 @@ void DlgLogin::TryLogin() {
 
     grid_frame->SetTitle(WStringFromUTF8String("TMS"));
     grid_frame->Show(true);
-    EndModal(wxOK);
+    Destroy();
   } else {
     LOG4CPLUS_INFO(client_logger,
                    WStringFromUTF8String("Logging in failed"));
@@ -202,17 +202,11 @@ void DlgLogin::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void DlgLogin::OnExitButtonClick(wxCommandEvent& WXUNUSED(event)) {
-  EndModal(wxOK);
+  Destroy();
 }
 
 void DlgLogin::OnClose(wxCloseEvent& event) {
-  if (wxTheApp->GetExitOnFrameDelete()) {
-    wxMessageDialog *msg = new wxMessageDialog(this,
-                                               wxString::FromUTF8("Неверный логин или пароль"),
-                                               wxString::FromUTF8("Ошибка"));
-    msg->ShowModal();
-  }
-  event.Skip();
+  Destroy();
 }
 
 }

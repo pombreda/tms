@@ -44,12 +44,25 @@ class ClientApp : public wxApp {
  public:
   ClientApp() {}
   virtual bool OnInit();
+  virtual int OnExit();
  private:
   ClientApp(const ClientApp&);
   ClientApp& operator=(const ClientApp&);
 };
 
 IMPLEMENT_APP(ClientApp)
+
+int ClientApp::OnExit() {
+  wxXmlResource::Get()->Unload(_T("xrc/client/frm_grid.xrc"));
+  wxXmlResource::Get()->Unload(_T("xrc/client/dlg_login.xrc"));
+  wxXmlResource::Get()->Unload(_T("xrc/client/dlg_user.xrc"));
+  wxXmlResource::Get()->Unload(_T("xrc/client/dlg_contact_person.xrc"));
+  wxXmlResource::Get()->Unload(_T("xrc/client/dlg_check_column.xrc"));
+  wxXmlResource::Get()->Unload(_T("xrc/client/CompaniesFrame.xrc"));
+  wxXmlResource::Get()->Unload(_T("xrc/client/IncomingsFrame.xrc"));
+  delete (wxXmlResource::Set(0));
+  return 0;
+}
 
 bool ClientApp::OnInit() {
   PropertyConfigurator config(WStringFromUTF8String("log.cfg"));
@@ -82,7 +95,7 @@ bool ClientApp::OnInit() {
       return false;
     }
     DlgLogin *login_frame = new DlgLogin();
-    login_frame->ShowModal();
+    login_frame->Show(true);
   } catch (tms::common::GUIException &e) {
     std::cerr << e.message() << std::endl;
   }
