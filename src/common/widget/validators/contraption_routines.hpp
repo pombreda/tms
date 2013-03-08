@@ -70,6 +70,18 @@ class ContraptionSetter<bool> {
   std::string field_;  
 };
 
+class ContraptionIsNew {
+ public:
+  ContraptionIsNew(tms::common::contraption::ContraptionP &ptr) :
+      ptr_(ptr) {
+  }
+  bool operator()() {
+    return ptr_->IsNew();
+  }
+ private:
+  tms::common::contraption::ContraptionP &ptr_;
+};
+
 
 }
 }

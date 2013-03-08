@@ -20,7 +20,7 @@ class BoolValidator : public wxValidator {
   BoolValidator(const BoolValidator &validator);
   bool TransferToWindow();
   bool TransferFromWindow();
-bool Validate(wxWindow * WXUNUSED(parent));
+  bool Validate(wxWindow * WXUNUSED(parent));
   wxObject* Clone() const;
  protected:
   GetterFunction getter_;

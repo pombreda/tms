@@ -4,6 +4,8 @@
 // wxWidget
 #include <wx/grid.h>
 #include <wx/event.h>
+#include <wx/button.h>
+#include <wx/choice.h>
 // boost
 #include <boost/signals.hpp>
 #include <boost/function.hpp>
@@ -40,21 +42,36 @@ class ContraptionGrid : public wxGrid {
   virtual ~ContraptionGrid();
   void SetOnCellClick(OnClickFunction on_cell_click);
   void SetOnCellDClick(OnClickFunction on_cell_dclick);
-  bool SetTable(ContraptionGridTableBase *table,
-                wxGridSelectionModes selmode,
-                int interval);
+  bool SetTable(ContraptionGridTableBase *table);
+  void AddTable(ContraptionGridTableBase *table);
+  bool ChooseTable(int id);
 
+  void AddContraption();
+  void set_add_button(wxButton *add_button) {
+    add_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+                     boost::bind(&ContraptionGrid::AddContraption,
+                                 this));
+  }
+  
+  void set_table_choice(wxChoice *table_choice);
  private:
   ContraptionGrid(const ContraptionGrid&);
   ContraptionGrid& operator=(const ContraptionGrid&);
-
-  ContraptionGridTableBase *base_;
+  void ReleaseTable();
+  void UpdateChoice();
+  wxButton *add_button_;
+  wxChoice *table_choice_;
+  std::vector<ContraptionGridTableBase *>bases_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_click_;
   boost::signal<void(ContraptionP contraption,
                      FieldID field_id)> on_cell_dclick_;
 
- private:
+  wxGridSelectionModes selmode_;
+  int interval_;
+  int id_;
+
+  void OnChoiceChange(wxCommandEvent &event);
   void OnCellClick(wxGridEvent &e);
   void OnCellDClick(wxGridEvent &e);
 };

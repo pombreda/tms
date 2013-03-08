@@ -18,6 +18,7 @@
 #include <contraption/contraption_array.hpp>
 #include <contraption/field.hpp>
 #include <contraption/field_type.hpp>
+#include <widget/contraption_dialog.hpp>
 #include "printer.hpp"
 #include "column.hpp"
 
@@ -29,6 +30,9 @@ using namespace contraption;
 
 class ContraptionGridTableBase : public wxGridTableBase {
  public:
+  ContraptionGridTableBase(ContraptionArrayP contraptions,
+                           std::string name,
+                           std::vector<Column> &cols);
   ContraptionGridTableBase(ContraptionArrayP contraptions,
                            std::vector<Column> &cols);
   ~ContraptionGridTableBase() {}
@@ -42,13 +46,27 @@ class ContraptionGridTableBase : public wxGridTableBase {
   bool DeleteRows(size_t pos = 0, size_t numRows = 1);
   void RefreshViewColumns();
   void StartTimer(int interval);
-  void StopTimer();
+  void StopTimer();           
+  void set_contraption_dialog(ContraptionDialog *contraption_dialog) {
+    contraption_dialog_ = contraption_dialog;
+  }
+
+  ContraptionDialog *contraption_dialog() {
+    return contraption_dialog_;
+  }
+  
   const ContraptionArrayP contraptions() {
     return contraptions_;
   }
+
   const ModelP model() {
     return model_;
   }
+
+  const std::string name() {
+    return name_;
+  }
+
   const std::vector<Column> cols() {
     return cols_;
   }
@@ -60,7 +78,9 @@ class ContraptionGridTableBase : public wxGridTableBase {
   std::vector<boost::shared_ptr<Printer> > printer_;
   int old_size_;
   wxTimer* timer_;
-
+  ContraptionDialog *contraption_dialog_;
+  std::string name_;
+  void Init();
   void OnChange();
   void OnTimer(wxTimerEvent &event);
 

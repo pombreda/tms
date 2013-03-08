@@ -146,11 +146,13 @@ void CompaniesFrame::SetUpValues(ContraptionP contraption,
   cols.push_back(Column(model->GetFieldID("phone"), "Телефон", 50));
   table_contact_persons_ =
     new ContraptionGridTableBase(contact_persons_, cols);
-  grid_contact_persons_->SetTable(table_contact_persons_, wxGrid::wxGridSelectRows, 2500);
-  grid_contact_persons_->SetOnCellClick(boost::bind(&CompaniesFrame::OnContactPersonsCellClick,
-						    this, _1, _2));
-  grid_contact_persons_->SetOnCellDClick(boost::bind(&CompaniesFrame::OnContactPersonsCellDClick,
-						     this, _1, _2));  
+  grid_contact_persons_->SetTable(table_contact_persons_);
+  grid_contact_persons_->SetOnCellClick(boost::bind(
+      &CompaniesFrame::OnContactPersonsCellClick,
+      this, _1, _2));
+  grid_contact_persons_->SetOnCellDClick(boost::bind(
+      &CompaniesFrame::OnContactPersonsCellDClick,
+      this, _1, _2));  
   grid_contact_persons_->Fit();
   grid_contact_persons_->Layout();
   Fit();
@@ -159,12 +161,18 @@ void CompaniesFrame::SetUpValues(ContraptionP contraption,
                   WStringFromUTF8String("Personal controls loaded"));   
 
   // general
-  tc_id_->ChangeValue(wxString::FromUTF8(contraption_->Get<std::string>("ID").c_str()));
-  tc_full_name_->ChangeValue(wxString::FromUTF8(contraption_->Get<std::string>("full_name").c_str()));
-  tc_short_name_->ChangeValue(wxString::FromUTF8(contraption_->Get<std::string>("short_name").c_str()));
-  tc_gruppa_->ChangeValue(wxString::FromUTF8(contraption_->Get<std::string>("gruppa").c_str()));
-  tc_okonh_->ChangeValue(wxString::FromUTF8(contraption_->Get<std::string>("okonh").c_str()));
-  tc_ogrn_->ChangeValue(wxString::FromUTF8(contraption_->Get<std::string>("ogrn").c_str()));
+  tc_id_->ChangeValue(
+      wxString::FromUTF8(contraption_->Get<std::string>("ID").c_str()));
+  tc_full_name_->ChangeValue(
+      wxString::FromUTF8(contraption_->Get<std::string>("full_name").c_str()));
+  tc_short_name_->ChangeValue(
+      wxString::FromUTF8(contraption_->Get<std::string>("short_name").c_str()));
+  tc_gruppa_->ChangeValue(
+      wxString::FromUTF8(contraption_->Get<std::string>("gruppa").c_str()));
+  tc_okonh_->ChangeValue(
+      wxString::FromUTF8(contraption_->Get<std::string>("okonh").c_str()));
+  tc_ogrn_->ChangeValue(
+      wxString::FromUTF8(contraption_->Get<std::string>("ogrn").c_str()));
 
   LOG4CPLUS_DEBUG(client_logger, 
 		 WStringFromUTF8String("General values set"));       

@@ -32,41 +32,8 @@ void FrmGrid::InitUsersTable() {
   cols.push_back(Column(model->GetFieldID("name"), "Имя", 150));
 
   table_users_ =
-    new ContraptionGridTableBase(model->All(), cols);
-
-}
-
-void FrmGrid::ActivateUsersTable() {
-  grid_admin_->ResetColPos();
-  grid_admin_->SetTable(table_users_, wxGrid::wxGridSelectRows, 2500);
-  button_add_in_admin_->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED);
-  button_add_in_admin_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                       (wxObjectEventFunction)&FrmGrid::OnAddInUserClick,
-                       0, this);
-  grid_admin_->SetOnCellDClick(boost::bind(&FrmGrid::OnUsersCellDClick, this, _1, _2));
-}
-
-void FrmGrid::OnUsersCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("OnAdminCellDClick"));
-  try {
-    ContraptionArrayP contraptions =
-      dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
-      contraptions();
-    FramesCollection::dlg_user->SetUpValues(contraption, contraptions);
-    FramesCollection::dlg_user->ShowModal();
-  } catch (GUIException &e) {
-    Report(e);
-  }
-}
-
-void FrmGrid::OnAddInUserClick(wxCommandEvent& WXUNUSED(event)) {
-  ContraptionArrayP contraptions =
-    dynamic_cast<ContraptionGridTableBase*>(grid_admin_->GetTable())->
-    contraptions();
-  ContraptionP contraption = contraptions->model()->New();
-  FramesCollection::dlg_user->SetUpValues(contraption, contraptions);
-  FramesCollection::dlg_user->ShowModal();
+      new ContraptionGridTableBase(model->All(), "Пользователи", cols);
+  table_users_->set_contraption_dialog(FramesCollection::dlg_user);
 }
 
 }

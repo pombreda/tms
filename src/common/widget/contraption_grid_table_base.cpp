@@ -7,9 +7,23 @@ namespace widget {
 using namespace contraption;
 
 ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraptions,
+                                                   std::string name,
                                                    std::vector<Column> &cols) :
     contraptions_(contraptions), model_(), cols_(cols),
-    printer_(), old_size_(0), timer_(new wxTimer()) {
+    printer_(), old_size_(0), timer_(new wxTimer()),
+    contraption_dialog_(0), name_(name) {
+  Init();
+}
+
+ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraptions,
+                                                   std::vector<Column> &cols) :
+    contraptions_(contraptions), model_(), cols_(cols),
+    printer_(), old_size_(0), timer_(new wxTimer()),
+    contraption_dialog_(0), name_("") {
+  Init();
+}
+
+void ContraptionGridTableBase::Init() {
   model_ = contraptions_->model();
   old_size_ = contraptions_->size();
   for (size_t j = 0; j < cols_.size(); j++) {
@@ -25,7 +39,8 @@ ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraption
 }
 
 wxString ContraptionGridTableBase::GetValue(int row, int col) {
-  if (model_->GetField(cols_[static_cast<long unsigned>(col)].field_id)->IsReadable()) {
+  if (model_->GetField(
+          cols_[static_cast<long unsigned>(col)].field_id)->IsReadable()) {
     return wxString::FromUTF8(
         printer_[col]->ToString(*(contraptions_->at(row)->
                                   GetFieldValue(cols_[col].field_id))).c_str());

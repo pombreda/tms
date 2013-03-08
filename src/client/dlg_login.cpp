@@ -199,7 +199,7 @@ void DlgLogin::OnExitButtonClick(wxCommandEvent& WXUNUSED(event)) {
   EndModal(wxCANCEL);
 }
 
-void DlgLogin::OnClose(wxCloseEvent& event) {
+void DlgLogin::OnClose(wxCloseEvent& WXUNUSED(event)) {
   EndModal(wxCANCEL);
 }
 

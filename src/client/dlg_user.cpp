@@ -17,6 +17,7 @@
 #include <widget/validators/string_validator.hpp>
 #include <widget/validators/bool_validator.hpp>
 #include <widget/validators/password_validator.hpp>
+#include <widget/validators/hide_if_validator.hpp>
 // frames
 #include "frames_collection.hpp"
 #include "frm_grid.hpp"
@@ -33,14 +34,12 @@ using namespace tms::common::widget::validators;
 using namespace tms::common::string;
 using namespace tms::common;
 using namespace tms::common::protocol;
-BEGIN_EVENT_TABLE(DlgUser,wxDialog)
-END_EVENT_TABLE()
 
 DlgUser::~DlgUser() {
 }
 
 DlgUser::DlgUser(wxWindow *parent) :
-    wxDialog(), contraption_(), contraptions_() {
+    ContraptionDialog() {
   wxXmlResource::Get()->LoadDialog(this, parent,
                                    _T("dlgUser"));
   Init();
@@ -70,6 +69,7 @@ void DlgUser::Init() {
   XRCCTRL(*this, "chkSecretary", wxCheckBox)->SetValidator(
       BoolValidator(ContraptionGetter<bool>(contraption_, "secretary"),
                     ContraptionSetter<bool>(contraption_, "secretary")));
+
   LOG4CPLUS_DEBUG(client_logger, 
                   WStringFromUTF8String("Secretary binded"));
   
@@ -79,86 +79,28 @@ void DlgUser::Init() {
   LOG4CPLUS_DEBUG(client_logger, 
                   WStringFromUTF8String("Manager binded"));
 
-  XRCCTRL(*this, "btnSave", wxButton)->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                                               (wxObjectEventFunction)&DlgUser::OnSaveClick,
-                                               0, this);
-  button_delete_ = XRCCTRL(*this, "btnDelete", wxButton);
-  button_delete_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                          (wxObjectEventFunction)&DlgUser::OnDeleteClick,
-                          0, this);
-  XRCCTRL(*this, "btnCancel", wxButton)->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                                               (wxObjectEventFunction)&DlgUser::OnExitClick,
-                                               0, this);
+  XRCCTRL(*this, "btnSave", wxButton)->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+                                            boost::bind(&DlgUser::Save, this));
+
+  wxButton *button_delete = XRCCTRL(*this, "btnDelete", wxButton);
+  button_delete->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+                      boost::bind(&DlgUser::Delete, this));
+  button_delete->SetValidator(
+      HideIfValidator(ContraptionIsNew(contraption_)));
+
+
   
-  Bind(wxEVT_CLOSE_WINDOW, &DlgUser::OnTryClose, this);
+
+  XRCCTRL(*this, "btnCancel", wxButton)->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+                                              boost::bind(&DlgUser::Exit, this));
+
+
+  Bind(wxEVT_CLOSE_WINDOW, boost::bind(&DlgUser::Exit, this));
   
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("DlgUser Initialized"));
 }
 
-void DlgUser::SetUpValues(ContraptionP contraption,
-                            ContraptionArrayP contraptions) {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Setting up DlgUser values"));
-  contraption_ = contraption;
-
-  contraptions_ = contraptions;
-  
-  if (contraption->IsNew()) {
-    button_delete_->Show(false);
-  } else {
-    button_delete_->Show(true);
-  }
-
-
-  TransferDataToWindow();
-
-  Fit();
-  Layout();
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Values set up"));
-}
-
-void DlgUser::OnSaveClick(wxCommandEvent& WXUNUSED(event)) {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Saving values"));
-  try {
-    if (!Validate() || !TransferDataFromWindow()) {
-      return;
-    }
-    contraption_->Save();
-    contraptions_->Refresh();
-  } catch (GUIException &e) {
-    Report(e);
-  }
-			     
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Values saved"));
-  EndModal(wxOK);
-}
-
-void DlgUser::OnDeleteClick(wxCommandEvent& WXUNUSED(event)) {
-  contraption_->Delete();
-  contraptions_->Refresh();
-  FramesCollection::frm_grid->Refresh();
-
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("User deleted"));
-  EndModal(wxOK);
-}
-
-void DlgUser::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Closed"));
-  EndModal(wxOK);
-}
-
-void DlgUser::OnTryClose(wxCloseEvent& event) {
-  event.Veto();
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Closed"));
-  EndModal(wxOK);
-}
 
 }
 }

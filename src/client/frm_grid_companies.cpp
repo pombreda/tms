@@ -59,7 +59,7 @@ void FrmGrid::ActivateCompaniesTable() {
                  WStringFromUTF8String("Activating companies table"));  
   button_add_in_catalog_->Show(true);
   grid_catalogs_->ResetColPos();
-  grid_catalogs_->SetTable(table_companies_, wxGrid::wxGridSelectRows, 2500);
+  grid_catalogs_->SetTable(table_companies_);
   grid_catalogs_->SetOnCellDClick(boost::bind(&FrmGrid::OnCompaniesCellDClick,
 					      this, _1, _2));  
 

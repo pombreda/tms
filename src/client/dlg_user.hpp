@@ -14,31 +14,19 @@
 // common
 #include <contraption/contraption.hpp>
 #include <contraption/contraption_array.hpp>
+#include <widget/contraption_dialog.hpp>
 
 namespace tms {
 namespace client {
 
-class DlgUser : public wxDialog {
+class DlgUser : public tms::common::widget::ContraptionDialog {
  public:
   DlgUser(wxWindow *parent);
   virtual ~DlgUser();
-  void SetUpValues(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::ContraptionArrayP contraptions);
-
  private:
   void Init();
+  DlgUser(const DlgUser&);
   DlgUser& operator=(const DlgUser&);
-
-  wxButton *button_delete_;
-  tms::common::contraption::ContraptionP contraption_;
-  tms::common::contraption::ContraptionArrayP contraptions_;
-
-  void OnSaveClick(wxCommandEvent& WXUNUSED(event));
-  void OnDeleteClick(wxCommandEvent& WXUNUSED(event));
-  void OnExitClick(wxCommandEvent& WXUNUSED(event));
-  void OnTryClose(wxCloseEvent& event);
-
-  DECLARE_EVENT_TABLE()
 };
 
 }

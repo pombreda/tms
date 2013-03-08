@@ -170,7 +170,7 @@ MyFrame::MyFrame(const wxString& title)
   ContraptionGridTableBase *grid_base =
     new ContraptionGridTableBase(contraptions, cols);
   grid = new ContraptionGrid(this, wxID_ANY, wxPoint(0, 0), wxSize(400, 300));
-  grid->SetTable(grid_base, wxGrid::wxGridSelectRows, 2500);
+  grid->SetTable(grid_base);
   function<void(ContraptionP, FieldID)> f = bind(&OnClick, _1, _2, contraptions);
   grid->SetOnCellClick(f);
   wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);

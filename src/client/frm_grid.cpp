@@ -100,7 +100,8 @@ void FrmGrid::InitBooks() {
   ActivateIncomingsTable();
   wxXmlResource::Get()->AttachUnknownControl("cgrBook", (wxWindow *)grid_books_);
   grid_books_->Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,
-                       (wxObjectEventFunction)&FrmGrid::OnBooksLabelRightClick, 0, this);
+                       (wxObjectEventFunction)&FrmGrid::OnBooksLabelRightClick,
+                       0, this);
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Books initialized"));
 }
@@ -109,26 +110,25 @@ void FrmGrid::InitAdmin() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Loading admin page"));
   grid_admin_ = new ContraptionGrid(this, wxID_ANY);
-  choice_admin_ = XRCCTRL(*this, "chcAdmin", wxChoice);
-  LOG4CPLUS_DEBUG(client_logger, 
-                  WStringFromUTF8String("chcAdmin binded"));
-
-  button_add_in_admin_ = XRCCTRL(*this, "btnAdminAdd", wxButton);
+  grid_admin_->set_add_button(XRCCTRL(*this, "btnAdminAdd", wxButton));
   LOG4CPLUS_DEBUG(client_logger, 
                   WStringFromUTF8String("btnAdminAdd binded"));
+  grid_admin_->set_table_choice(XRCCTRL(*this, "chcAdmin", wxChoice));
+  LOG4CPLUS_DEBUG(client_logger, 
+                  WStringFromUTF8String("chcAdmin binded"));
+ 
     
-  choice_admin_->Connect(wxEVT_COMMAND_CHOICE_SELECTED,
-                         (wxObjectEventFunction)&FrmGrid::OnAdminSelect,
-                         0, this);
+  XRCCTRL(*this, "btnAdminUpdate", wxButton)->
+      Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+              (wxObjectEventFunction)&FrmGrid::OnPatchClick,
+              0, this);
   LOG4CPLUS_DEBUG(client_logger, 
                   WStringFromUTF8String("btnAdminUpdate binded"));
-    
-  XRCCTRL(*this, "btnAdminUpdate", wxButton)->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                                                      (wxObjectEventFunction)&FrmGrid::OnPatchClick,
-                                                      0, this);
+
   InitUsersTable();
   selected_admin_id_ = 0;
-  ActivateUsersTable();
+  grid_admin_->AddTable(table_users_);
+  grid_admin_->ChooseTable(0);
   wxXmlResource::Get()->AttachUnknownControl("cgrAdmin", (wxWindow *)grid_admin_);
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Admin initialized"));
@@ -217,7 +217,7 @@ void FrmGrid::ActivateContactPersonsTable() {
                  WStringFromUTF8String("Activating contact persons table"));  
   button_add_in_catalog_->Show(false);
   grid_catalogs_->ResetColPos();
-  grid_catalogs_->SetTable(table_contact_persons_, wxGrid::wxGridSelectRows, 2500);
+  grid_catalogs_->SetTable(table_contact_persons_);
   grid_catalogs_->SetOnCellDClick(boost::bind(&FrmGrid::OnContactPersonsCellDClick,
 					      this, _1, _2));  
   button_add_in_catalog_->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED);
@@ -297,7 +297,8 @@ void FrmGrid::OnCatalogSelect(wxCommandEvent& event) {
       break;
     default:
       wxMessageDialog mes(this,
-                          _T("Данный каталог не поддерживается.\nПожалуйста, обратитесь к разработчику."));
+                          _T("Данный каталог не поддерживается.\n"
+                             "Пожалуйста, обратитесь к разработчику."));
       mes.ShowModal();
       choice_catalog_->SetSelection(selected_catalog_id_);
       break;
@@ -313,29 +314,13 @@ void FrmGrid::OnBookSelect(wxCommandEvent& event) {
       break;
     default:
       wxMessageDialog mes(this,
-                          _T("Данный журнал не поддерживается.\nПожалуйста, обратитесь к разработчику."));
+                          _T("Данный журнал не поддерживается.\n"
+                             "Пожалуйста, обратитесь к разработчику."));
       mes.ShowModal();
       choice_book_->SetSelection(selected_book_id_);
       break;
   }
 }
-
-void FrmGrid::OnAdminSelect(wxCommandEvent& event) {
-  DeactivateAdmin();
-  switch (event.GetSelection()) {
-    case 0:
-      selected_admin_id_ = event.GetSelection();
-      ActivateUsersTable();
-      break;
-    default:
-      wxMessageDialog mes(this,
-                          _T("Данный каталог не поддерживается.\nПожалуйста, обратитесь к разработчику."));
-      mes.ShowModal();
-      choice_admin_->SetSelection(selected_admin_id_);
-      break;
-  }
-}
-
 
 void FrmGrid::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
   Close();

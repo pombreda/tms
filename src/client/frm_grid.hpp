@@ -79,7 +79,6 @@ class FrmGrid : public wxFrame {
   void ActivateCompaniesTable();
   void DeactivateCompaniesTable();
   void InitUsersTable();
-  void ActivateUsersTable();
   void DeactivateUsersTable();
   void InitIncomingsTable();
   void ActivateIncomingsTable();
@@ -97,20 +96,14 @@ class FrmGrid : public wxFrame {
   void OnIncomingsCellDClick(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::FieldID field_id);
 
-  void OnUsersCellDClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
-
   void OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event));
 
   void OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event));
   void OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event));
 
-
-  void OnAddInUserClick(wxCommandEvent& WXUNUSED(event));
   void OnPatchClick(wxCommandEvent& WXUNUSED(event));
   void OnCatalogSelect(wxCommandEvent& WXUNUSED(event));
   void OnBookSelect(wxCommandEvent& WXUNUSED(event));
-  void OnAdminSelect(wxCommandEvent& WXUNUSED(event));
   void OnExitClick(wxCommandEvent& WXUNUSED(event));
   void OnClose(wxCloseEvent& event);
 

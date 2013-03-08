@@ -59,8 +59,8 @@ void FrmGrid::InitIncomingsTable() {
     cols.push_back(Column(model->GetFieldID("ID"), "ID", 150));
     cols.push_back(Column(model->GetFieldID("company_name"), "Компания", 100));
     cols.push_back(Column(model->GetFieldID("contact_name"), "Контактное лицо", 150));
-    cols.push_back(Column(model->GetFieldID("contact_email"), "Контактный e-mail", 150));
-    cols.push_back(Column(model->GetFieldID("contact_phone"), "Контактный телефон", 150));
+    cols.push_back(Column(model->GetFieldID("contact_email"), "E-mail", 150));
+    cols.push_back(Column(model->GetFieldID("contact_phone"), "Телефон", 150));
     cols.push_back(Column(model->GetFieldID("manager_name"), "Адресат", 100));
     cols.push_back(Column(model->GetFieldID("type_in"), "Тип приема", 100));
     cols.push_back(Column(model->GetFieldID("time_in"), "Время приема", 100));
@@ -79,7 +79,7 @@ void FrmGrid::ActivateIncomingsTable() {
                  WStringFromUTF8String("Activating incomings table"));
   
   grid_books_->ResetColPos();
-  grid_books_->SetTable(table_incomings_, wxGrid::wxGridSelectRows, 2500);
+  grid_books_->SetTable(table_incomings_);
   grid_books_->SetOnCellDClick(boost::bind(&FrmGrid::OnIncomingsCellDClick,
 					      this, _1, _2));  
   button_add_in_book_->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED);
