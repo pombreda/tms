@@ -19,6 +19,7 @@
 #include <contraption/contraption_array.hpp>
 #include <contraption/field.hpp>
 #include <contraption/field_type.hpp>
+#include <widget/dlg_check_column.hpp>
 #include "printer.hpp"
 #include "column.hpp"
 #include "contraption_grid_table_base.hpp"
@@ -31,6 +32,17 @@ using namespace contraption;
 
 class ContraptionGrid : public wxGrid {
  public:
+  struct ColumnLayout {
+    int width;
+    int pos;
+    bool enabled;
+    ColumnLayout() :
+        width(-1),
+        pos(-1),
+        enabled(true) {}
+  };
+  typedef std::vector<ColumnLayout> TableLayout;
+
   typedef boost::function<void(ContraptionP contraption,
                                FieldID field_id)> OnClickFunction;
 
@@ -54,9 +66,17 @@ class ContraptionGrid : public wxGrid {
   }
   
   void set_table_choice(wxChoice *table_choice);
+  std::string SerializeLayout();
+  void DeserializeLayout(std::string data);
+  void ShowCol(int col, bool show);
  private:
+  std::vector<TableLayout> layout_;
+  DlgCheckColumn *dlg_check_column_;
   ContraptionGrid(const ContraptionGrid&);
   ContraptionGrid& operator=(const ContraptionGrid&);
+  void OnLabelRightClick(wxGridEvent &event);
+  void SaveLayout();
+  void LoadLayout();
   void ReleaseTable();
   void UpdateChoice();
   wxButton *add_button_;

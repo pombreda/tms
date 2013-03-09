@@ -10,6 +10,7 @@
 #include "options.hpp"
 // frames
 #include "incomings_frame.hpp"
+#include "dlg_incoming.hpp"
 #include "frames_collection.hpp"
 
 namespace tms{
@@ -42,8 +43,8 @@ void FrmGrid::OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event)) {
       dynamic_cast<ContraptionGridTableBase*>(grid_books_->GetTable())->
       contraptions();
     ContraptionP contraption = contraptions->model()->New();
-    FramesCollection::incomings_frame->SetUpValues(contraption, contraptions);
-    FramesCollection::incomings_frame->Show(true);
+    FramesCollection::dlg_incoming->SetUpValues(contraption, contraptions);
+    FramesCollection::dlg_incoming->Show(true);
   } catch (GUIException &e) {
     Report(e);
   }
@@ -101,7 +102,6 @@ void FrmGrid::ActivateIncomingsTable() {
       col_by_pos[column_layout.pos] = col;
     }
   }
-  grid_books_->SetColSize(0, 30);
   for (int col_pos = 0; col_pos < col_number; ++col_pos) {
     int col = col_by_pos[col_pos];
     if (col != - 1) {

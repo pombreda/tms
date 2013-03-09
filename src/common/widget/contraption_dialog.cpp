@@ -1,6 +1,5 @@
 #include "contraption_dialog.hpp"
 // log4cplus
-#include <client/logger.hpp>
 #include <log4cplus/loggingmacros.h>
 // common
 #include <string/string.hpp>

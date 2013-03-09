@@ -11,7 +11,7 @@ add_executable(client_app
                dlg_login
 	       dlg_user
 	       dlg_contact_person
-	       dlg_check_column
+	       dlg_incoming
 	       frm_grid
 	       frm_grid_incomings
 	       frm_grid_companies

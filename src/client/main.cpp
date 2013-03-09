@@ -58,7 +58,6 @@ int ClientApp::OnExit() {
   wxXmlResource::Get()->Unload(_T("xrc/client/dlg_login.xrc"));
   wxXmlResource::Get()->Unload(_T("xrc/client/dlg_user.xrc"));
   wxXmlResource::Get()->Unload(_T("xrc/client/dlg_contact_person.xrc"));
-  wxXmlResource::Get()->Unload(_T("xrc/client/dlg_check_column.xrc"));
   wxXmlResource::Get()->Unload(_T("xrc/client/CompaniesFrame.xrc"));
   wxXmlResource::Get()->Unload(_T("xrc/client/IncomingsFrame.xrc"));
   delete (wxXmlResource::Set(0));
@@ -78,10 +77,9 @@ bool ClientApp::OnInit() {
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/frm_grid.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_login.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_user.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_incoming.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T(
         "xrc/client/dlg_contact_person.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T(
-        "xrc/client/dlg_check_column.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/CompaniesFrame.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/IncomingsFrame.xrc"));
     if (!wxsOK) {

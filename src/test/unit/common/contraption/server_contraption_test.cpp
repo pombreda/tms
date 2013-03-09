@@ -25,6 +25,7 @@
 #include <contraption/field.hpp>
 #include <contraption/field/simple_field.hpp>
 #include <contraption/field/has_many_field.hpp>
+#include <contraption/field/has_one_field.hpp>
 #include <contraption/field/proxy_field.hpp>
 #include <contraption/field_type.hpp>
 #include <contraption/contraption_accessor.hpp>
@@ -86,12 +87,13 @@ class Fixture {
     users.reset();
     
     vector<Field*> fields;
-    fields.push_back(new SimpleFieldT<string>("name"));
-    fields.push_back(new SimpleFieldT<int>("age"));
-    fields.push_back(new SimpleFieldT<int>("password",
-                                           _is_readable = false));
-    fields.push_back(new SimpleFieldT<string>("Surname",
-                                              _backend_name = "surname"));
+    fields.push_back(new StringField("name"));
+    fields.push_back(new IntField("age"));
+    fields.push_back(new IntField("best_friend_id"));
+    fields.push_back(new IntField("password",
+                                  _is_readable = false));
+    fields.push_back(new StringField("Surname",
+                                     _backend_name = "surname"));
     soci_model.reset(new Model(fields, new SOCIModelBackend(scheme, "test")));
     soci_model->InitSchema();
     soci_model.reset();
@@ -108,6 +110,7 @@ class Fixture {
     fields.clear();
     fields.push_back(new StringField("name"));
     fields.push_back(new IntField("age"));
+    fields.push_back(new IntField("best_friend_id"));
     fields.push_back(new IntField("password",
                                   _is_readable = false));
     fields.push_back(new StringField("Surname",
@@ -161,9 +164,17 @@ class Fixture {
                                   _is_readable = false));
     fields.push_back(new StringField("Surname",
                                      _backend_name = "surname"));
+    
+
     HasManyField *friends = new HasManyField("friends",
                                       boost::ref(*model),
                                       boost::ref(*through_model));
+    IntField *best_friend_id = new IntField("best_friend_id");
+    fields.push_back(best_friend_id);
+    HasOneField *best_friend = new HasOneField("best_friend",
+                                          boost::ref(*model),
+                                          best_friend_id);
+    fields.push_back(best_friend);
     fields.push_back(friends);
     fields.push_back(new ProxyField<std::string>("first_friend",
 						 friends,
@@ -225,6 +236,39 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   test_contraption2->Set<string>("Surname", "Ymmud");
   test_contraption2->Save();
   test_contraption->Save();
+  test_contraption->Refresh();
+  BOOST_CHECK(!test_contraption->Get<ContraptionP>("best_friend"));
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>("best_friend_id"), 
+                    Contraption::kNewID);
+  test_contraption->Set<ContraptionP>("best_friend",
+                                      test_contraption2);
+  test_contraption->Save();
+  test_contraption->Refresh();
+  BOOST_CHECK(test_contraption->Get<int>("best_friend_id") != 0);
+
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>("best_friend_id"), 
+                    test_contraption2->Get<int>("id"));
+  BOOST_CHECK(test_contraption->Get<ContraptionP>("best_friend"));
+  BOOST_CHECK_EQUAL(
+      test_contraption->Get<ContraptionP>("best_friend")->Get<int>("id"),
+      test_contraption2->Get<int>("id"));
+  BOOST_CHECK_EQUAL(
+      test_contraption->Get<ContraptionP>("best_friend")->Get<string>("Surname"),
+      "Ymmud");
+
+  test_contraption->Set<ContraptionP>("best_friend",
+                                      test_contraption);
+  test_contraption->Save();
+  test_contraption->Refresh();
+  BOOST_CHECK(test_contraption->Get<int>("best_friend_id") != 0);
+
+  BOOST_CHECK_EQUAL(test_contraption->Get<int>("best_friend_id"), 
+                    test_contraption->Get<int>("id"));
+  BOOST_CHECK(test_contraption->Get<ContraptionP>("best_friend"));
+  BOOST_CHECK_EQUAL(
+      test_contraption->Get<ContraptionP>("best_friend")->Get<int>("id"),
+      test_contraption->Get<int>("id"));
+
   cerr << 1 << endl;
 
   ContraptionArrayP friends

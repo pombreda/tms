@@ -3,6 +3,8 @@ add_library(tms_contraption_grid SHARED
             contraption_grid
             contraption_grid_table_base
 	    contraption_dialog
+	    contraption_choice
+	    dlg_check_column
             printer)
 
 find_package(wxWidgets COMPONENTS base core xrc adv REQUIRED)

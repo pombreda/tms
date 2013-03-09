@@ -17,69 +17,87 @@ namespace validators {
 template<class T>
 class ContraptionGetter {
  public:
-  ContraptionGetter(tms::common::contraption::ContraptionP &ptr, std::string field) :
+  ContraptionGetter(contraption::ContraptionP &ptr, std::string field) :
       ptr_(ptr), field_(field) {
   }
   T operator()() {
     return ptr_->Get<T>(field_);
   }
  private:
-  tms::common::contraption::ContraptionP &ptr_;
+  contraption::ContraptionP &ptr_;
   std::string field_;
 };
 
 template<>
 class ContraptionGetter<bool> {
  public:
-  ContraptionGetter(tms::common::contraption::ContraptionP &ptr, std::string field) :
+  ContraptionGetter(contraption::ContraptionP &ptr, std::string field) :
       ptr_(ptr), field_(field) {
   }
   bool operator()() {
     return ptr_->Get<int>(field_);
   }
  private:
-  tms::common::contraption::ContraptionP &ptr_;
+  contraption::ContraptionP &ptr_;
   std::string field_;
 };
+
+template<>
+class ContraptionGetter<contraption::ContraptionP> {
+ public:
+  ContraptionGetter(contraption::ContraptionP &ptr, std::string field) :
+      ptr_(ptr), field_(field) {
+  }
+  contraption::ContraptionP operator()() {
+    contraption::ContraptionArrayP array =
+        ptr_->Get<contraption::ContraptionArrayP>(field_);
+    if (array->size() > 0) {
+    }
+  }
+ private:
+  contraption::ContraptionP &ptr_;
+  std::string field_;
+};
+
 
 template<class T>
 class ContraptionSetter {
  public:
-  ContraptionSetter(tms::common::contraption::ContraptionP &ptr, std::string field) :
+  ContraptionSetter(contraption::ContraptionP &ptr, std::string field) :
       ptr_(ptr), field_(field) {
   }
   void operator()(T val) {
     ptr_->Set<T>(field_, val);
   }
  private:
-  tms::common::contraption::ContraptionP &ptr_;
+  contraption::ContraptionP &ptr_;
   std::string field_;  
 };
 
 template<>
 class ContraptionSetter<bool> {
  public:
-  ContraptionSetter(tms::common::contraption::ContraptionP &ptr, std::string field) :
+  ContraptionSetter(contraption::ContraptionP &ptr, std::string field) :
       ptr_(ptr), field_(field) {
   }
   void operator()(bool val) {
     ptr_->Set<int>(field_, val);
   }
  private:
-  tms::common::contraption::ContraptionP &ptr_;
+  contraption::ContraptionP &ptr_;
   std::string field_;  
 };
 
 class ContraptionIsNew {
  public:
-  ContraptionIsNew(tms::common::contraption::ContraptionP &ptr) :
+  ContraptionIsNew(contraption::ContraptionP &ptr) :
       ptr_(ptr) {
   }
   bool operator()() {
     return ptr_->IsNew();
   }
  private:
-  tms::common::contraption::ContraptionP &ptr_;
+  contraption::ContraptionP &ptr_;
 };
 
 

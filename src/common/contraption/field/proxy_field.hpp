@@ -28,8 +28,8 @@ public:
   ProxyFieldImpl(ArgPack const &args)
     throw(FieldException) :
     FieldT<T>(args[_name],
-			      args[_is_readable | true],
-			      false),
+              args[_is_readable | true],
+              false),
     field_column_(),
     has_many_column_(0) {
     try {

@@ -3,10 +3,11 @@
 #include <wx/msgdlg.h>
 #include <wx/xrc/xmlres.h>
 // log4cplus
-#include <client/logger.hpp>
 #include <log4cplus/loggingmacros.h>
 // common
 #include <string/string.hpp>
+#include <rtti/typeinfo.hpp>
+#include <widget/contraption_grid.hpp>
 #include <gui_exception/gui_exception.hpp>
 #include <gui_exception/gui_exception_report.hpp>
 // boost
@@ -17,14 +18,17 @@
 #endif //FindWindow
 
 namespace tms {
-namespace client {
+namespace common {
+namespace widget {
 
 using namespace tms::common::string;
+using namespace log4cplus;
 
-BEGIN_EVENT_TABLE(DlgCheckColumn, wxDialog)
-END_EVENT_TABLE()
-
-DlgCheckColumn::DlgCheckColumn(wxWindow *parent) {
+DlgCheckColumn::DlgCheckColumn(wxWindow *parent) :
+    wxDialog(),
+    logger_(Logger::getInstance(WStringFromUTF8String(rtti::TypeID(this).name()))) {
+  wxXmlResource::Get()->Load(_T("xrc/common/widget/dlg_check_column.xrc"));
+    
   wxXmlResource::Get()->LoadDialog(this, parent,
                                    _T("dlgCheckColumn"));
   Init();
@@ -40,21 +44,15 @@ void DlgCheckColumn::Init() {
                        0, this);
   Connect(wxEVT_ACTIVATE, wxActivateEventHandler(DlgCheckColumn::OnActivate));
 
-  LOG4CPLUS_INFO(client_logger, 
+  LOG4CPLUS_INFO(logger_, 
                  WStringFromUTF8String("DlgCheckColumn initalized"));
 }
 
-void DlgCheckColumn::SetUpValues(wxGrid *grid,
-                                 LayoutGetter layout_getter,
-                                 LayoutSetter layout_setter) {
-  LOG4CPLUS_INFO(client_logger, 
+void DlgCheckColumn::SetUpValues(ContraptionGrid *grid) {
+  LOG4CPLUS_INFO(logger_, 
                  WStringFromUTF8String("Setting up values"));
   grid_ = grid;
-  layout_setter_ = layout_setter;
-  layout_getter_ = layout_getter;
   int col_number = grid_->GetNumberCols();
-  LOG4CPLUS_DEBUG(client_logger, 
-                 WStringFromUTF8String("before for"));
   check_list_->Clear();
   for (int pos = 0; pos < col_number; ++pos) {
     check_list_->Append(grid_->GetColLabelValue(pos));
@@ -62,7 +60,7 @@ void DlgCheckColumn::SetUpValues(wxGrid *grid,
   }
   Layout();
   Fit();
-  LOG4CPLUS_INFO(client_logger, 
+  LOG4CPLUS_INFO(logger_, 
                  WStringFromUTF8String("Values set up"));
 }
 
@@ -70,16 +68,11 @@ void DlgCheckColumn::OnItemChecked(wxCommandEvent& event) {
   int col =  event.GetInt();
   bool state = check_list_->IsChecked(col);
   std::string col_name = grid_->GetColLabelValue(col).ToStdString();
-  ColumnLayout layout = layout_getter_(col_name);
   if (!state) {
-    layout.enabled = false;
-    layout.width = grid_->GetColSize(col);
-    grid_->SetColSize(col, 0);
+    grid_->ShowCol(col, false);
   } else {
-    layout.enabled = true;
-    grid_->SetColSize(col, layout.width);
+    grid_->ShowCol(col, true);
   }
-  layout_setter_(col_name, layout);
 }
 
 void DlgCheckColumn::OnActivate(wxActivateEvent &event) {
@@ -88,5 +81,6 @@ void DlgCheckColumn::OnActivate(wxActivateEvent &event) {
   }
 }
 
+}
 }
 }

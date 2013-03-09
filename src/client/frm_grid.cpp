@@ -5,6 +5,7 @@
 // common
 #include <string/string.hpp>
 #include <widget/contraption_grid.hpp>
+#include <widget/dlg_check_column.hpp>
 #include <gui_exception/gui_exception.hpp>
 #include <gui_exception/gui_exception_report.hpp>
 #include <protocol/message/patch_server_request.hpp>
@@ -19,9 +20,9 @@
 #include "options.hpp"
 // frames
 #include "dlg_contact_person.hpp"
-#include "dlg_check_column.hpp"
 #include "companies_frame.hpp"
 #include "dlg_user.hpp"
+#include "dlg_incoming.hpp"
 #include "dlg_login.hpp"
 #include "incomings_frame.hpp"
 #include "frames_collection.hpp"
@@ -73,8 +74,8 @@ void FrmGrid::InitDialogs() {
 
   FramesCollection::dlg_user = new DlgUser(this);
 
-  FramesCollection::dlg_check_column = new DlgCheckColumn(this);
-  
+  FramesCollection::dlg_incoming = new DlgIncoming(this);
+
   FramesCollection::incomings_frame = new IncomingsFrame();
   wxXmlResource::Get()->LoadFrame(FramesCollection::incomings_frame, this,
 				  _T("IncomingsFrame"));
@@ -99,9 +100,6 @@ void FrmGrid::InitBooks() {
   selected_book_id_ = 0;
   ActivateIncomingsTable();
   wxXmlResource::Get()->AttachUnknownControl("cgrBook", (wxWindow *)grid_books_);
-  grid_books_->Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,
-                       (wxObjectEventFunction)&FrmGrid::OnBooksLabelRightClick,
-                       0, this);
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Books initialized"));
 }
@@ -152,8 +150,9 @@ void FrmGrid::InitCatalogs() {
 }
 
 void FrmGrid::Init() {
-  InitDialogs();
   PrepareModels();
+
+  InitDialogs();
   
   wxNotebook* notebook = XRCCTRL(*this, "nbMain", wxNotebook);
 
@@ -337,7 +336,7 @@ void FrmGrid::DeactivateBooks() {
 }
 
 void FrmGrid::OnBooksLabelRightClick(wxGridEvent &e) {
-  FramesCollection::dlg_check_column->SetUpValues(grid_books_, Options::incoming_column_layout, Options::set_incoming_column_layout);
+  /*  FramesCollection::dlg_check_column->SetUpValues(grid_books_, Options::incoming_column_layout, Options::set_incoming_column_layout);
   wxPoint position = e.GetPosition();
   wxWindow *win= grid_books_;
   while (win) {
@@ -345,7 +344,7 @@ void FrmGrid::OnBooksLabelRightClick(wxGridEvent &e) {
     win = win->GetParent();
   }
   FramesCollection::dlg_check_column->Move(position);
-  FramesCollection::dlg_check_column->Show(true);
+  FramesCollection::dlg_check_column->Show(true);*/
 }
 
 void FrmGrid::DeactivateAdmin() {
