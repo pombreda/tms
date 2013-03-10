@@ -13,13 +13,13 @@ class DlgContactPerson;
 class CompaniesFrame;
 class DlgUser;
 class DlgIncoming;
-class IncomingsFrame;
+class DlgCompany ;
 class FrmGrid;
 class FramesCollection {
 public:
-  static DlgContactPerson *contact_persons_frame;
+  static DlgContactPerson *dlg_contact_person;
   static DlgUser *dlg_user;
-  static IncomingsFrame *incomings_frame;
+  static DlgCompany *dlg_company;
   static DlgIncoming *dlg_incoming;
   static CompaniesFrame *companies_frame;
   static FrmGrid *frm_grid;

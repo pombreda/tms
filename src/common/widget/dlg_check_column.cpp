@@ -25,12 +25,13 @@ using namespace tms::common::string;
 using namespace log4cplus;
 
 DlgCheckColumn::DlgCheckColumn(wxWindow *parent) :
-    wxDialog(),
+    wxPopupTransientWindow(parent),
     logger_(Logger::getInstance(WStringFromUTF8String(rtti::TypeID(this).name()))) {
+  panel_ = new wxPanel();
   wxXmlResource::Get()->Load(_T("xrc/common/widget/dlg_check_column.xrc"));
-    
-  wxXmlResource::Get()->LoadDialog(this, parent,
-                                   _T("dlgCheckColumn"));
+  
+  wxXmlResource::Get()->LoadPanel(panel_, this,
+                                  _T("pnlCheckColumn"));
   Init();
 }
 
@@ -38,12 +39,10 @@ DlgCheckColumn::~DlgCheckColumn() {
 }
 
 void DlgCheckColumn::Init() {
-  check_list_ = XRCCTRL(*this, "chlColumns", wxCheckListBox);
+  check_list_ = XRCCTRL(*panel_, "chlColumns", wxCheckListBox);
   check_list_->Connect(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,
                        wxCommandEventHandler( DlgCheckColumn::OnItemChecked ),
                        0, this);
-  Connect(wxEVT_ACTIVATE, wxActivateEventHandler(DlgCheckColumn::OnActivate));
-
   LOG4CPLUS_INFO(logger_, 
                  WStringFromUTF8String("DlgCheckColumn initalized"));
 }
@@ -58,6 +57,8 @@ void DlgCheckColumn::SetUpValues(ContraptionGrid *grid) {
     check_list_->Append(grid_->GetColLabelValue(pos));
     check_list_->Check(pos, grid_->GetColSize(pos) != 0);
   }
+  panel_->Layout();
+  panel_->Fit();
   Layout();
   Fit();
   LOG4CPLUS_INFO(logger_, 
@@ -72,12 +73,6 @@ void DlgCheckColumn::OnItemChecked(wxCommandEvent& event) {
     grid_->ShowCol(col, false);
   } else {
     grid_->ShowCol(col, true);
-  }
-}
-
-void DlgCheckColumn::OnActivate(wxActivateEvent &event) {
-  if (!event.GetActive()) {
-    Close();
   }
 }
 

@@ -4,6 +4,7 @@ add_library(tms_validators SHARED
   bool_validator
   hide_if_validator
   has_one_validator
+  has_many_validator
 )
 
 find_package(wxWidgets COMPONENTS base core REQUIRED)

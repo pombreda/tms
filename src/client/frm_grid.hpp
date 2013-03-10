@@ -46,68 +46,29 @@ class FrmGrid : public wxFrame {
   void InitBooks();
   void InitCatalogs();
   void InitAdmin();
-  void DeactivateBooks();
-  void DeactivateAdmin();
-  void DeactivateCatalogs();
   FrmGrid(const FrmGrid&);
   FrmGrid& operator=(const FrmGrid&);
 
   tms::common::widget::ContraptionGrid *grid_books_;
-  wxChoice *choice_book_;
-  wxButton *button_add_in_book_;
-  int selected_book_id_;
   tms::common::widget::ContraptionGridTableBase *table_incomings_;
 
   tms::common::widget::ContraptionGrid *grid_admin_;
-  wxChoice *choice_admin_;
-  wxButton *button_add_in_admin_;
-  int selected_admin_id_;
   tms::common::widget::ContraptionGridTableBase *table_users_;
  
   tms::common::widget::ContraptionGrid *grid_catalogs_;
-  wxChoice *choice_catalog_;
-  wxButton *button_add_in_catalog_;
-  int selected_catalog_id_;
   tms::common::widget::ContraptionGridTableBase *table_contact_persons_;
   tms::common::widget::ContraptionGridTableBase *table_companies_;
 
 
   void InitContactPersonsTable();
-  void ActivateContactPersonsTable();
-  void DeactivateContactPersonsTable();
   void InitCompaniesTable();
-  void ActivateCompaniesTable();
-  void DeactivateCompaniesTable();
   void InitUsersTable();
-  void DeactivateUsersTable();
   void InitIncomingsTable();
-  void ActivateIncomingsTable();
-  void DeactivateIncomingsTable();
   void PrepareModels();
 
-
-  void OnBooksLabelRightClick(wxGridEvent &e);
-  void OnContactPersonsCellDClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
-
-  void OnCompaniesCellDClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
-
-  void OnIncomingsCellDClick(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::FieldID field_id);
-
-  void OnAddInIncomingClick(wxCommandEvent& WXUNUSED(event));
-
-  void OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event));
-  void OnAddInCompanyClick(wxCommandEvent& WXUNUSED(event));
-
   void OnPatchClick(wxCommandEvent& WXUNUSED(event));
-  void OnCatalogSelect(wxCommandEvent& WXUNUSED(event));
-  void OnBookSelect(wxCommandEvent& WXUNUSED(event));
-  void OnExitClick(wxCommandEvent& WXUNUSED(event));
   void OnClose(wxCloseEvent& event);
-
-  DECLARE_EVENT_TABLE()
+  void OnExitClick(wxCommandEvent& WXUNUSED(event));
 };
 
 }

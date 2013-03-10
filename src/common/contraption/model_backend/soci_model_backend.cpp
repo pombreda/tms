@@ -287,20 +287,24 @@ void SOCIModelBackend::InitSchema(
   } catch (const ModelBackendException &e) {
     throw;
   } catch (const exception &e) {
-    throw ModelBackendException(&e, "Exception in SOCIModelBackend::InitSchema");
+    throw ModelBackendException(&e, "Exception in SOCIModelBackend::InitSchema"
+                                " in table " + table_name_);
   } catch (...) {
-    throw ModelBackendException("Unsupported exception type in "
-                                "SOCIModelBackend::InitSchema.");
+    throw ModelBackendException("Unsupported exception type in"
+                                "SOCIModelBackend::InitSchema in table " + 
+                                table_name_);
   }
   try {
     CloseSession();
   } catch (const ModelBackendException &e) {
     throw;
   } catch (const exception &e) {
-    throw ModelBackendException(&e, "Exception in SOCIModelBackend::InitSchema");
+    throw ModelBackendException(&e, "Exception in SOCIModelBackend::InitSchema"
+                                " in table " + table_name_);
   } catch (...) {
     throw ModelBackendException("Unsupported exception type in "
-                                "SOCIModelBackend::InitSchema.");
+                                "SOCIModelBackend::InitSchema"
+                                " in table " + table_name_);
   }
 }
 

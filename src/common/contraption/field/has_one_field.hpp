@@ -38,9 +38,11 @@ class HasOneFieldImpl : public FieldT<ContraptionP> {
   }
   
   virtual bool CheckType(const FieldType *type) const {
-    const FieldTypeT<ContraptionP>* array
+    const FieldTypeT<ContraptionP>* contraption
         = dynamic_cast<const FieldTypeT<ContraptionP>*>(type);
-    return array && &*array->data()->model() == &model_;
+    return contraption && 
+        (!contraption->data() ||
+         &*contraption->data()->model() == &model_);
   }
 
 
@@ -64,8 +66,16 @@ class HasOneFieldImpl : public FieldT<ContraptionP> {
             new FieldTypeT<int>(Contraption::kNewID));
       } else {
         assert(contraption->model() == &model_);
-        values[static_cast<int>(other_id_column_->field_id())].reset(
-            new FieldTypeT<int>(contraption->Get<int>("id")));
+        if (values[static_cast<int>(other_id_column_->field_id())]) {
+          FieldTypeT<int>* type
+              = dynamic_cast<FieldTypeT<int>*>(
+                  &*values[static_cast<int>(other_id_column_->field_id())]);
+          assert(type);        
+          type->set_data(contraption->Get<int>("id"));
+        } else {
+          values[static_cast<int>(other_id_column_->field_id())].reset(
+              new FieldTypeT<int>(contraption->Get<int>("id")));
+        }
       }
     }
     other_id_column_->GetWriteRecords(values, id, out);

@@ -64,7 +64,12 @@ class ContraptionGrid : public wxGrid {
                      boost::bind(&ContraptionGrid::AddContraption,
                                  this));
   }
-  
+  ContraptionGridTableBase* table_base() {
+    if (static_cast<size_t>(id_) >= bases_.size()) {
+      return 0;
+    }
+    return bases_[id_];
+  }  
   void set_table_choice(wxChoice *table_choice);
   std::string SerializeLayout();
   void DeserializeLayout(std::string data);

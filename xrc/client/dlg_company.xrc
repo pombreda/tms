@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
-	<object class="wxDialog" name="dlgIncoming">
+	<object class="wxDialog" name="dlgCompany">
 		<style>wxDEFAULT_DIALOG_STYLE</style>
+		<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 		<title>Редактирование элемента</title>
 		<centered>1</centered>
 		<object class="wxBoxSizer">
@@ -17,18 +18,20 @@
 						<flag>wxEXPAND | wxALL</flag>
 						<border>5</border>
 						<object class="wxNotebook" name="m_notebook1">
+							<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 							<object class="notebookpage">
 								<label>Общеe</label>
-								<selected>0</selected>
+								<selected>1</selected>
 								<object class="wxPanel" name="pnlCommon">
 									<style>wxTAB_TRAVERSAL</style>
+									<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 									<object class="wxFlexGridSizer">
 										<rows>6</rows>
 										<cols>2</cols>
 										<vgap>0</vgap>
 										<hgap>0</hgap>
 										<growablecols>1</growablecols>
-										<growablerows></growablerows>
+										<growablerows>1,2,3,4,5,0</growablerows>
 										<object class="sizeritem">
 											<option>0</option>
 											<flag>wxALL|wxEXPAND</flag>
@@ -133,9 +136,8 @@
 											<option>0</option>
 											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
-											<object class="wxTextCtrl" name="lblPSRN">
+											<object class="wxTextCtrl" name="txtPSRN">
 												<value></value>
-												<maxlength>0</maxlength>
 											</object>
 										</object>
 									</object>
@@ -146,13 +148,14 @@
 								<selected>0</selected>
 								<object class="wxPanel" name="pnlBank">
 									<style>wxTAB_TRAVERSAL</style>
+									<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 									<object class="wxFlexGridSizer">
 										<rows>6</rows>
 										<cols>2</cols>
 										<vgap>0</vgap>
 										<hgap>0</hgap>
 										<growablecols>1</growablecols>
-										<growablerows></growablerows>
+										<growablerows>1,2,3,4,5,0</growablerows>
 										<object class="sizeritem">
 											<option>0</option>
 											<flag>wxALL</flag>
@@ -213,13 +216,13 @@
 											<border>5</border>
 											<object class="wxStaticText" name="lblCorrespondentAccount">
 												<size>130,-1</size>
-												<label>Корреспондентский счёт</label>
+												<label>Корр. счёт</label>
 												<wrap>-1</wrap>
 											</object>
 										</object>
 										<object class="sizeritem">
 											<option>0</option>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND|wxALL</flag>
 											<border>5</border>
 											<object class="wxTextCtrl" name="txtCorrespondentAccount">
 												<value></value>
@@ -270,6 +273,7 @@
 								<selected>0</selected>
 								<object class="wxPanel" name="pnlStaff">
 									<style>wxTAB_TRAVERSAL</style>
+									<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 									<object class="wxBoxSizer">
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
@@ -330,9 +334,10 @@
 							</object>
 							<object class="notebookpage">
 								<label>Контакты</label>
-								<selected>1</selected>
+								<selected>0</selected>
 								<object class="wxPanel" name="pnlContact">
 									<style>wxTAB_TRAVERSAL</style>
+									<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 									<object class="wxBoxSizer">
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
@@ -345,13 +350,13 @@
 											</object>
 										</object>
 										<object class="sizeritem">
-											<option>1</option>
+											<option>0</option>
 											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<object class="wxTextCtrl" name="txtRegisteredOffice">
 												<style>wxTE_MULTILINE|wxTE_NO_VSCROLL</style>
+												<size>-1,50</size>
 												<value></value>
-												<maxlength>0</maxlength>
 											</object>
 										</object>
 										<object class="sizeritem">
@@ -364,13 +369,13 @@
 											</object>
 										</object>
 										<object class="sizeritem">
-											<option>1</option>
+											<option>0</option>
 											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<object class="wxTextCtrl" name="txtAddress">
 												<style>wxTE_MULTILINE|wxTE_NO_VSCROLL</style>
+												<size>-1,50</size>
 												<value></value>
-												<maxlength>0</maxlength>
 											</object>
 										</object>
 										<object class="sizeritem">
@@ -399,6 +404,7 @@
 													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
 													<object class="wxTextCtrl" name="txtEmail">
+														<enabled>0</enabled>
 														<value></value>
 														<maxlength>0</maxlength>
 													</object>
@@ -417,6 +423,7 @@
 													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
 													<object class="wxTextCtrl" name="txtPhone">
+														<enabled>0</enabled>
 														<value></value>
 														<maxlength>0</maxlength>
 													</object>
@@ -431,6 +438,7 @@
 								<selected>0</selected>
 								<object class="wxPanel" name="pnlOther">
 									<style>wxTAB_TRAVERSAL</style>
+									<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 									<object class="wxBoxSizer">
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
@@ -449,7 +457,6 @@
 											<object class="wxTextCtrl" name="txtNote">
 												<style>wxTE_MULTILINE|wxTE_NO_VSCROLL</style>
 												<value></value>
-												<maxlength>0</maxlength>
 											</object>
 										</object>
 									</object>

@@ -58,7 +58,7 @@ void HasManyFieldContraptionArray::Save() {
     try {
       ContraptionArrayP links = through_model_->Filter(And(
           Compare(id_column_, kEqual, static_cast<int>(id_)),
-          Compare(id_column_, 
+          Compare(other_id_column_, 
                   kEqual, 
                   static_cast<int>(
                       ContraptionAccessor(&*to_remove_.at(pos)).id()))));      

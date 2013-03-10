@@ -42,6 +42,7 @@ bool ContraptionGrid::ChooseTable(int id) {
     id_ = id;
     bool res = wxGrid::SetTable(bases_[id_], false, selmode_);
     bases_[id_]->RefreshViewColumns();
+    bases_[id_]->Refresh();
     bases_[id_]->StartTimer(interval_);
     UpdateChoice();
     LoadLayout();
@@ -134,7 +135,9 @@ void ContraptionGrid::AddContraption() {
   if (id_ >= 0) {
     ContraptionDialog *dialog = bases_[id_]->contraption_dialog();
     if (dialog) {
-      dialog->SetUpValues(bases_[id_]->contraptions()->model()->New(),
+      ContraptionP contraption = bases_[id_]->contraption_factory()();
+      assert(bases_[id_]->contraptions()->model() == contraption->model());
+      dialog->SetUpValues(contraption,
                           bases_[id_]->contraptions());
       dialog->ShowModal();   
     }
@@ -161,7 +164,7 @@ void ContraptionGrid::OnLabelRightClick(wxGridEvent &event) {
     win = win->GetParent();
   }
   dlg_check_column_->Move(position);
-  dlg_check_column_->Show(true);
+  dlg_check_column_->Popup();
 }
 
 void ContraptionGrid::OnCellDClick(wxGridEvent &event) {

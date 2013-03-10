@@ -56,6 +56,9 @@ class Model {
   ContraptionArrayP All()
       throw(ModelBackendException);
 
+  ContraptionArrayP Empty()
+      throw(ModelBackendException);
+
   ContraptionArrayP Filter(FilterCP filter)
       throw(ModelBackendException);
 

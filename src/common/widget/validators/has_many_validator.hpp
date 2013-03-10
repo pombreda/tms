@@ -13,10 +13,9 @@ namespace validators {
 
 class HasManyValidator : public wxValidator {
  public:
-  typedef boost::function<ContraptionArrayP ()> GetterFunction;
-  typedef boost::function<void (ContraptionArrayP)> SetterFunction;
-  HasManyValidator(GetterFunction getter, SetterFunction setter, 
-                   contraption::ContraptionArrayP contraptions);
+  typedef boost::function<contraption::ContraptionP ()> ContraptionFactory;
+  typedef boost::function<contraption::ContraptionArrayP ()> GetterFunction;
+  HasManyValidator(GetterFunction getter, ContraptionFactory contraption_factory);
   HasManyValidator(const HasManyValidator &validator);
   bool TransferToWindow();
   bool TransferFromWindow();
@@ -24,9 +23,8 @@ class HasManyValidator : public wxValidator {
   wxObject* Clone() const;
  protected:
   GetterFunction getter_;
-  SetterFunction setter_;
-  contraption::ContraptionArrayP contraptions_;
-}
+  ContraptionFactory contraption_factory_;
+};
 
 }
 }

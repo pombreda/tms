@@ -17,6 +17,7 @@ include_directories( "${LOG4CPLUS_INCLUDE_DIR}" )
 
 target_link_libraries(tms_contraption_grid
   tms_contraption
+  tms_validators
   tms_string
   ${wxWidgets_LIBRARIES}
   ${LOG4CPLUS_LIBRARIES}

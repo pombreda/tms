@@ -2,9 +2,10 @@
 #define _TMS_COMMON_WIDGET__DLG_CHECK_COLUMN_HPP_
 
 // wxWidgets
-#include <wx/dialog.h>
+#include <wx/popupwin.h>
 #include <wx/grid.h>
 #include <wx/checklst.h>
+#include <wx/panel.h>
 // boost
 #include <boost/function.hpp>
 // std
@@ -19,7 +20,7 @@ namespace widget {
 
 class ContraptionGrid;
 
-class DlgCheckColumn : public wxDialog {
+class DlgCheckColumn : public wxPopupTransientWindow {
  public:
   DlgCheckColumn(wxWindow *parent);
   virtual ~DlgCheckColumn();
@@ -29,9 +30,9 @@ class DlgCheckColumn : public wxDialog {
   DlgCheckColumn& operator=(const DlgCheckColumn&);
   log4cplus::Logger logger_;
   ContraptionGrid *grid_;
-  wxCheckListBox *check_list_;  
+  wxCheckListBox *check_list_;
+  wxPanel *panel_;
   void OnItemChecked(wxCommandEvent& event);
-  void OnActivate(wxActivateEvent& event);
 };
 
 }

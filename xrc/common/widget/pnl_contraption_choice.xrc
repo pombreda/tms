@@ -2,6 +2,7 @@
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
 	<object class="wxPanel" name="pnlContraptionChoice">
 		<style>wxTAB_TRAVERSAL</style>
+		<exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
 		<object class="wxBoxSizer">
 			<orient>wxHORIZONTAL</orient>
 			<object class="sizeritem">

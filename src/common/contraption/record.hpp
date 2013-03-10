@@ -17,7 +17,10 @@ namespace contraption {
 //------------------------------------------------------------
 class Record {
  public:
+  Record(const std::string &field) :
+      field(field) {}
   virtual ~Record() {}
+  const std::string &field;
 };
 
 //------------------------------------------------------------
@@ -27,9 +30,8 @@ template<typename T>
 class RecordT : public Record {
  public:
   RecordT(const std::string &field, T *data) :
-      field(field),
+      Record(field),
       data(data) {}
-  const std::string &field;
   T *data;
  private:
   RecordT(const RecordT<T> &other);

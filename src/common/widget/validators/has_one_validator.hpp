@@ -15,8 +15,15 @@ class HasOneValidator : public wxValidator {
  public:
   typedef boost::function<contraption::ContraptionP()> GetterFunction;
   typedef boost::function<void (contraption::ContraptionP)> SetterFunction;
+  typedef boost::function<contraption::ContraptionArrayP()> 
+                                                  ContraptionArrayGenerator;
+  typedef boost::function<contraption::ContraptionP()> 
+                                                  ContraptionFactory;
+
+
   HasOneValidator(GetterFunction getter, SetterFunction setter, 
-                   contraption::ContraptionArrayP contraptions);
+                  ContraptionArrayGenerator generator,
+                  ContraptionFactory contraption_factory_);
   HasOneValidator(const HasOneValidator &validator);
   bool TransferToWindow();
   bool TransferFromWindow();
@@ -25,7 +32,8 @@ class HasOneValidator : public wxValidator {
  protected:
   GetterFunction getter_;
   SetterFunction setter_;
-  contraption::ContraptionArrayP contraptions_;
+  ContraptionArrayGenerator generator_;
+  ContraptionFactory contraption_factory_;
 };
 
 }

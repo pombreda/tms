@@ -20,6 +20,9 @@ class ContraptionDialog : public wxDialog {
   void SetUpValues(tms::common::contraption::ContraptionP contraption,
                    tms::common::contraption::ContraptionArrayP contraptions);
  protected:
+  virtual void SetSaveButton(wxButton *btn_save);
+  virtual void SetCancelButton(wxButton *btn_cancel);
+  virtual void SetDeleteButton(wxButton *btn_delete);
   virtual void Init() = 0;
   virtual void Save();
   virtual void Delete();
@@ -27,6 +30,7 @@ class ContraptionDialog : public wxDialog {
   log4cplus::Logger logger_;
   tms::common::contraption::ContraptionP contraption_;
   tms::common::contraption::ContraptionArrayP contraptions_;
+  bool is_new_;
  private:
   ContraptionDialog(const ContraptionDialog&);
   ContraptionDialog& operator=(const ContraptionDialog&);

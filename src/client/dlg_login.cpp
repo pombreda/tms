@@ -87,10 +87,11 @@ void DlgLogin::Init() {
               0,
               this);
   Options::Init();
+  Layout();
+  GetSizer()->Fit(this);
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("DlgLogin initialized"));
   
-  TransferDataToWindow();
   Bind(wxEVT_CLOSE_WINDOW, &DlgLogin::OnClose, this);  
 }
 

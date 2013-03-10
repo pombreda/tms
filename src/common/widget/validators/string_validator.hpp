@@ -5,14 +5,14 @@
 // boost
 #include <boost/function.hpp>
 // wx
-#include <wx/valtext.h>
+#include <wx/validate.h>
 
 namespace tms {
 namespace common {
 namespace widget {
 namespace validators {
 
-class StringValidator : public wxTextValidator {
+class StringValidator : public wxValidator {
  public:
   typedef boost::function<std::string ()> GetterFunction;
   typedef boost::function<void (std::string)> SetterFunction;
@@ -20,6 +20,7 @@ class StringValidator : public wxTextValidator {
   StringValidator(const StringValidator &validator);
   bool TransferToWindow();
   bool TransferFromWindow();
+  bool Validate(wxWindow* /*window*/);
   wxObject* Clone() const;
  protected:
   GetterFunction getter_;

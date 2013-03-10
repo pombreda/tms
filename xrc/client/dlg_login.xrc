@@ -15,11 +15,11 @@
 					<cols>2</cols>
 					<vgap>0</vgap>
 					<hgap>0</hgap>
-					<growablecols></growablecols>
-					<growablerows></growablerows>
+					<growablecols>1</growablecols>
+					<growablerows>0,1,2,3</growablerows>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxStaticText" name="lblLogin">
 							<label>Логин</label>
@@ -28,7 +28,7 @@
 					</object>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxTextCtrl" name="txtLogin">
 							<value></value>
@@ -37,7 +37,7 @@
 					</object>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxStaticText" name="lblPassword">
 							<label>Пароль</label>
@@ -46,7 +46,7 @@
 					</object>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxTextCtrl" name="txtPassword">
 							<style>wxTE_PASSWORD</style>
@@ -56,7 +56,7 @@
 					</object>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxStaticText" name="lblIP">
 							<label>IP</label>
@@ -65,7 +65,7 @@
 					</object>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxTextCtrl" name="txtIP">
 							<value></value>
@@ -74,7 +74,7 @@
 					</object>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxStaticText" name="lblPort">
 							<label>Порт</label>
@@ -83,7 +83,7 @@
 					</object>
 					<object class="sizeritem">
 						<option>0</option>
-						<flag>wxALL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<object class="wxTextCtrl" name="txtPort">
 							<value></value>
@@ -94,11 +94,19 @@
 			</object>
 			<object class="sizeritem">
 				<option>0</option>
-				<flag>wxALL|wxALIGN_RIGHT</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
-				<object class="wxButton" name="btnLogin">
-					<label>Вход</label>
-					<default>0</default>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxALIGN_RIGHT</flag>
+						<border>5</border>
+						<object class="wxButton" name="btnLogin">
+							<label>Вход</label>
+							<default>0</default>
+						</object>
+					</object>
 				</object>
 			</object>
 		</object>

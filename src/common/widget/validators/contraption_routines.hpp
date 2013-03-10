@@ -42,23 +42,26 @@ class ContraptionGetter<bool> {
   std::string field_;
 };
 
-template<>
-class ContraptionGetter<contraption::ContraptionP> {
+
+template<class T>
+class DefaultGetter {
  public:
-  ContraptionGetter(contraption::ContraptionP &ptr, std::string field) :
-      ptr_(ptr), field_(field) {
+  DefaultGetter(boost::function<T()> getter, boost::function<T()> def) :
+      getter_(getter),
+      def_(def) {    
   }
-  contraption::ContraptionP operator()() {
-    contraption::ContraptionArrayP array =
-        ptr_->Get<contraption::ContraptionArrayP>(field_);
-    if (array->size() > 0) {
+  T operator()() {
+    T val = getter_();
+    if (val == T()) {
+      return def_();
+    } else {
+      return val;
     }
   }
  private:
-  contraption::ContraptionP &ptr_;
-  std::string field_;
+  boost::function<T()> getter_;
+  boost::function<T()> def_;
 };
-
 
 template<class T>
 class ContraptionSetter {
@@ -67,6 +70,7 @@ class ContraptionSetter {
       ptr_(ptr), field_(field) {
   }
   void operator()(T val) {
+    assert(ptr_);
     ptr_->Set<T>(field_, val);
   }
  private:

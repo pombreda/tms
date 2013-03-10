@@ -1,35 +1,76 @@
 #include "string_validator.hpp"
 #include "wx/textctrl.h"
+#include "wx/choice.h"
+#include <iostream>
 namespace tms {
 namespace common {
 namespace widget {
 namespace validators {
 StringValidator::StringValidator(GetterFunction getter, SetterFunction setter) :
+    wxValidator(),
     getter_(getter),
     setter_(setter) {}
 
 StringValidator::StringValidator(const StringValidator &validator) :
-    wxTextValidator(validator),
+    wxValidator(),
     getter_(validator.getter_),
     setter_(validator.setter_) {}
 
 
 bool StringValidator::TransferToWindow() {
-  std::string value = getter_();
-  wxTextEntry * const text = GetTextEntry();
-  if ( !text )
+  wxString value = wxString::FromUTF8(getter_().c_str());
+  wxWindow *validator_window = GetWindow();
+  
+  if (!validator_window )
     return false;
-  text->SetValue(wxString::FromUTF8(value.c_str()));
+  
+  {
+    wxTextCtrl *control = dynamic_cast<wxTextCtrl*>(validator_window);
+    if (control) {
+      control->SetValue(value);
+      return true;
+    }
+  }
+
+  {
+    wxChoice *control = dynamic_cast<wxChoice*>(validator_window);
+    if (control) {
+      int pos = control->FindString(value);
+      control->SetSelection(pos);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool StringValidator::Validate(wxWindow* /*window*/) {
   return true;
 }
 
 bool StringValidator::TransferFromWindow() {
-  wxTextEntry * const text = GetTextEntry();
-  if ( !text )
+  wxWindow *validator_window = GetWindow();
+  
+  if (!validator_window )
     return false;
   
-  setter_(text->GetValue().utf8_str().data());
-  return true;
+  {
+    wxTextCtrl *control = dynamic_cast<wxTextCtrl*>(validator_window);
+    if (control) {
+      setter_(control->GetValue().utf8_str().data());
+      return true;
+    }
+  }
+
+  {
+    wxChoice *control = dynamic_cast<wxChoice*>(validator_window);
+    if (control) {
+      int pos = control->GetSelection();
+      setter_(control->GetString(pos).utf8_str().data());
+      return true;
+    }
+  }
+  return false;
 }
 
 wxObject* StringValidator::Clone() const {

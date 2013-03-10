@@ -20,11 +20,12 @@
 #include "options.hpp"
 // frames
 #include "dlg_contact_person.hpp"
-#include "companies_frame.hpp"
+//#include "companies_frame.hpp"
 #include "dlg_user.hpp"
 #include "dlg_incoming.hpp"
 #include "dlg_login.hpp"
-#include "incomings_frame.hpp"
+#include "dlg_company.hpp"
+//#include "incomings_frame.hpp"
 #include "frames_collection.hpp"
 
 #ifdef FindWindow // MSW workaround
@@ -43,15 +44,8 @@ using namespace tms::common;
 using namespace tms::common::protocol;
 using namespace tms::common::protocol::message;
 
-BEGIN_EVENT_TABLE(FrmGrid,wxFrame)
-END_EVENT_TABLE()
-
-
 FrmGrid::FrmGrid() :
-    wxFrame(),
-    grid_books_(), choice_book_(), selected_book_id_(0),
-    grid_catalogs_(), choice_catalog_(), selected_catalog_id_(0),
-    table_contact_persons_() {
+    wxFrame() {
   wxXmlResource::Get()->LoadFrame(this, 
                                   NULL, 
                                   WStringFromUTF8String("frmGrid"));
@@ -65,44 +59,41 @@ FrmGrid::~FrmGrid() {
 void FrmGrid::InitDialogs() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing dialogs"));
-  FramesCollection::contact_persons_frame = new DlgContactPerson(this);
-
-  FramesCollection::companies_frame = new CompaniesFrame();
-  wxXmlResource::Get()->LoadFrame(FramesCollection::companies_frame, this,
-				  _T("CompaniesFrame"));
-  FramesCollection::companies_frame->Init();
-
+  FramesCollection::dlg_contact_person = new DlgContactPerson(this);
   FramesCollection::dlg_user = new DlgUser(this);
-
+  FramesCollection::dlg_company = new DlgCompany(this);
   FramesCollection::dlg_incoming = new DlgIncoming(this);
-
-  FramesCollection::incomings_frame = new IncomingsFrame();
-  wxXmlResource::Get()->LoadFrame(FramesCollection::incomings_frame, this,
-				  _T("IncomingsFrame"));
-  FramesCollection::incomings_frame->Init();
-
   FramesCollection::frm_grid = this;  
 }
 
 void FrmGrid::InitBooks() {
   grid_books_ = new ContraptionGrid(this, wxID_ANY);
-  choice_book_ = XRCCTRL(*this, "chcBook", wxChoice);
-  LOG4CPLUS_DEBUG(client_logger, 
-                  WStringFromUTF8String("chcBook binded"));
-  choice_book_->Connect(wxEVT_COMMAND_CHOICE_SELECTED,
-                        (wxObjectEventFunction)&FrmGrid::OnBookSelect,
-                        0, this);
-  button_add_in_book_ = XRCCTRL(*this, "btnBookAdd", wxButton);    
-  LOG4CPLUS_DEBUG(client_logger, 
-                  WStringFromUTF8String("btnBookAdd binded"));
-  
+  grid_books_->set_table_choice(XRCCTRL(*this, "chcBook", wxChoice));
+  grid_books_->set_add_button(XRCCTRL(*this, "btnBookAdd", wxButton));    
   InitIncomingsTable();
-  selected_book_id_ = 0;
-  ActivateIncomingsTable();
+  grid_books_->AddTable(table_incomings_);
+  grid_books_->ChooseTable(0);
   wxXmlResource::Get()->AttachUnknownControl("cgrBook", (wxWindow *)grid_books_);
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Books initialized"));
 }
+
+
+void FrmGrid::InitCatalogs() {
+  grid_catalogs_ = new ContraptionGrid(this, wxID_ANY);
+  grid_catalogs_->set_table_choice(XRCCTRL(*this, "chcCatalog", wxChoice));
+  grid_catalogs_->set_add_button(XRCCTRL(*this, "btnCatalogAdd", wxButton));
+  InitContactPersonsTable();
+  InitCompaniesTable();
+  grid_catalogs_->AddTable(table_contact_persons_);
+  grid_catalogs_->AddTable(table_companies_);
+  grid_catalogs_->ChooseTable(0);
+  wxXmlResource::Get()->AttachUnknownControl("cgrCatalog", (wxWindow *)grid_catalogs_);
+  LOG4CPLUS_INFO(client_logger, 
+                 WStringFromUTF8String("Catalogs initialized"));
+  
+}
+
 
 void FrmGrid::InitAdmin() {
   LOG4CPLUS_INFO(client_logger, 
@@ -124,7 +115,6 @@ void FrmGrid::InitAdmin() {
                   WStringFromUTF8String("btnAdminUpdate binded"));
 
   InitUsersTable();
-  selected_admin_id_ = 0;
   grid_admin_->AddTable(table_users_);
   grid_admin_->ChooseTable(0);
   wxXmlResource::Get()->AttachUnknownControl("cgrAdmin", (wxWindow *)grid_admin_);
@@ -132,22 +122,6 @@ void FrmGrid::InitAdmin() {
                  WStringFromUTF8String("Admin initialized"));
 }
 
-void FrmGrid::InitCatalogs() {
-  grid_catalogs_ = new ContraptionGrid(this, wxID_ANY);
-  choice_catalog_ = XRCCTRL(*this, "chcCatalog", wxChoice);
-  button_add_in_catalog_ = XRCCTRL(*this, "btnCatalogAdd", wxButton);
-  wxXmlResource::Get()->AttachUnknownControl("cgrCatalog", (wxWindow *)grid_catalogs_);
-  choice_catalog_->Connect(wxEVT_COMMAND_CHOICE_SELECTED,
-                           (wxObjectEventFunction)&FrmGrid::OnCatalogSelect,
-                           0, this);
-  InitContactPersonsTable();
-  InitCompaniesTable();
-  selected_catalog_id_ = 0;
-  ActivateContactPersonsTable();
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Catalogs initialized"));
-  
-}
 
 void FrmGrid::Init() {
   PrepareModels();
@@ -197,59 +171,20 @@ void FrmGrid::InitContactPersonsTable() {
     ModelP model = ContactPerson::GetModel();
     cols.push_back(Column(model->GetFieldID("name"), "Имя", 150));
     cols.push_back(Column(model->GetFieldID("company_name"), "Компания", 100));
-    cols.push_back(Column(model->GetFieldID("role"), "Должность", 100));
+    cols.push_back(Column(model->GetFieldID("position"), "Должность", 100));
     cols.push_back(Column(model->GetFieldID("email"), "Email", 100));
-    cols.push_back(Column(model->GetFieldID("code"), "Код", 50));
+    cols.push_back(Column(model->GetFieldID("city_code"), "Код", 50));
     cols.push_back(Column(model->GetFieldID("phone"), "Телефон", 100));
     cols.push_back(Column(model->GetFieldID("fax"), "Факс", 100));
     cols.push_back(Column(model->GetFieldID("note"), "Заметки", 200));
     table_contact_persons_ =
-      new ContraptionGridTableBase(model->All(), cols);
-    
+        new ContraptionGridTableBase(model->All(), "Контактные лица", cols);
+    table_contact_persons_->set_contraption_dialog(FramesCollection::dlg_contact_person);
   } catch (GUIException &e) {
     Report(e);
   }
 }
 
-void FrmGrid::ActivateContactPersonsTable() {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Activating contact persons table"));  
-  button_add_in_catalog_->Show(false);
-  grid_catalogs_->ResetColPos();
-  grid_catalogs_->SetTable(table_contact_persons_);
-  grid_catalogs_->SetOnCellDClick(boost::bind(&FrmGrid::OnContactPersonsCellDClick,
-					      this, _1, _2));  
-  button_add_in_catalog_->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED);
-  button_add_in_catalog_->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
-                                  (wxObjectEventFunction)&FrmGrid::OnAddInContactPersonClick,
-                                  0, this);
-  Layout();
-}
-
-void FrmGrid::OnContactPersonsCellDClick(ContraptionP contraption, FieldID /*field_id*/) {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("OnContactPersonsCellDClick"));
-  ContraptionArrayP contraptions =
-    dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
-    contraptions();
-  FramesCollection::contact_persons_frame->SetUpValues(contraption, contraptions, false);
-  FramesCollection::contact_persons_frame->ShowModal();  
-}
-
-void FrmGrid::OnAddInContactPersonClick(wxCommandEvent& WXUNUSED(event)) {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("OnAddInContactPersonClick"));
-  try {
-    ContraptionArrayP contraptions =
-      dynamic_cast<ContraptionGridTableBase*>(grid_catalogs_->GetTable())->
-      contraptions();
-    ContraptionP contraption = contraptions->model()->New();
-    FramesCollection::contact_persons_frame->SetUpValues(contraption, contraptions, false);
-    FramesCollection::contact_persons_frame->ShowModal();
-  } catch (GUIException &e) {
-    Report(e);
-  }
-}
 
 void FrmGrid::OnPatchClick(wxCommandEvent& event) {
   wxFileDialog *fd = new wxFileDialog(this, "Select a patch to install", "", "", "*.patch");
@@ -282,81 +217,11 @@ void FrmGrid::OnPatchClick(wxCommandEvent& event) {
   }
 }
 
-
-void FrmGrid::OnCatalogSelect(wxCommandEvent& event) {
-  DeactivateCatalogs();
-  switch (event.GetSelection()) {
-    case 0:
-      selected_catalog_id_ = event.GetSelection();
-      ActivateContactPersonsTable();
-      break;
-    case 1:
-      selected_catalog_id_ = event.GetSelection();
-      ActivateCompaniesTable();
-      break;
-    default:
-      wxMessageDialog mes(this,
-                          _T("Данный каталог не поддерживается.\n"
-                             "Пожалуйста, обратитесь к разработчику."));
-      mes.ShowModal();
-      choice_catalog_->SetSelection(selected_catalog_id_);
-      break;
-  }
-}
-
-void FrmGrid::OnBookSelect(wxCommandEvent& event) {
-  DeactivateBooks();
-  switch (event.GetSelection()) {
-    case 0:
-      selected_book_id_ = event.GetSelection();
-      ActivateIncomingsTable();
-      break;
-    default:
-      wxMessageDialog mes(this,
-                          _T("Данный журнал не поддерживается.\n"
-                             "Пожалуйста, обратитесь к разработчику."));
-      mes.ShowModal();
-      choice_book_->SetSelection(selected_book_id_);
-      break;
-  }
-}
-
 void FrmGrid::OnExitClick(wxCommandEvent& WXUNUSED(event)) {
   Close();
 }
 
-void FrmGrid::DeactivateBooks() {
-  switch (selected_book_id_) {
-    case 0:
-      DeactivateIncomingsTable();
-      break;
-    default:
-      break;
-  }
-}
-
-void FrmGrid::OnBooksLabelRightClick(wxGridEvent &e) {
-  /*  FramesCollection::dlg_check_column->SetUpValues(grid_books_, Options::incoming_column_layout, Options::set_incoming_column_layout);
-  wxPoint position = e.GetPosition();
-  wxWindow *win= grid_books_;
-  while (win) {
-    position += win->GetPosition();
-    win = win->GetParent();
-  }
-  FramesCollection::dlg_check_column->Move(position);
-  FramesCollection::dlg_check_column->Show(true);*/
-}
-
-void FrmGrid::DeactivateAdmin() {
-}
-
-void FrmGrid::DeactivateCatalogs() {
-}
-
 void FrmGrid::OnClose(wxCloseEvent& event) {
-  DeactivateBooks();
-  DeactivateAdmin();
-  DeactivateCatalogs();
   Options::Save();
   event.Skip();
 }

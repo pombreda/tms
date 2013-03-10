@@ -15,55 +15,45 @@ using namespace std;
 
 void Incoming::Initialize() {
   vector<Field*> ret;
-  ret.push_back(new SimpleFieldT<string>("ID"));
-  ret.push_back(new SimpleFieldT<string>("time_in"));
-  ret.push_back(new SimpleFieldT<string>("type_in"));
-  ret.push_back(new SimpleFieldT<string>("time_out"));
-  ret.push_back(new SimpleFieldT<string>("topic"));
+  ret.push_back(new StringField("ID"));
+  ret.push_back(new StringField("received_at"));
+  ret.push_back(new StringField("reception_type"));
+  ret.push_back(new StringField("passed_at"));
+  ret.push_back(new StringField("subject"));
   
 
-  ret.push_back(new SimpleFieldT<int>("company_id"));
-  HasManyField* company_field 
-    = new HasManyField("company", 
+  IntField *company_id = new IntField("company_id");
+  ret.push_back(company_id);
+
+  HasOneField* company
+    = new HasOneField("company", 
 		       boost::ref(*Company::GetModel()),
-		       boost::ref(*Incoming::GetModel()),
-		       _id_column = "id",
-		       _other_id_column = "company_id");
-  ret.push_back(company_field);
+		       company_id);
+
+  ret.push_back(company);
   ret.push_back(new ProxyField<std::string>("company_name",
-					    company_field,
+					    company,
 					    "short_name"));
 
-  ret.push_back(new SimpleFieldT<int>("contact_person_id"));
-  HasManyField* contact_person_field 
-    = new HasManyField("contact_person", 
-		       boost::ref(*ContactPerson::GetModel()),
-		       boost::ref(*Incoming::GetModel()),
-		       _id_column = "id",
-		       _other_id_column = "contact_person_id");
-  ret.push_back(contact_person_field);
+  IntField *contact_person_id = new IntField("contact_person_id");
+  ret.push_back(contact_person_id);
+  HasOneField* contact_person 
+      = new HasOneField("contact_person", 
+                         boost::ref(*ContactPerson::GetModel()),
+                         contact_person_id);
+
+  ret.push_back(contact_person);
   ret.push_back(new ProxyField<std::string>("contact_name",
-					    contact_person_field,
+					    contact_person,
 					    "name"));
-  ret.push_back(new ProxyField<std::string>("contact_email",
-					    contact_person_field,
+  ret.push_back(new ProxyField<std::string>("email",
+					    contact_person,
 					    "email"));
-  ret.push_back(new ProxyField<std::string>("contact_phone",
-					    contact_person_field,
+  ret.push_back(new ProxyField<std::string>("phone",
+					    contact_person,
 					    "phone"));
 
-  ret.push_back(new IntField("manager_id"));
-  HasManyField* manager_field 
-    = new HasManyField("mamager", 
-		       boost::ref(*User::GetModel()),
-		       boost::ref(*Incoming::GetModel()),
-		       _id_column = "id",
-		       _other_id_column = "manager_id");
-  ret.push_back(manager_field);
-  ret.push_back(new ProxyField<std::string>("manager_name",
-					    manager_field,
-					    "name"));
-
+  ret.push_back(new StringField("addressee"));
   InitFields(ret);
 }
 

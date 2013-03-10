@@ -1,36 +1,42 @@
 #include <protocol/crypto.hpp>
 #include "password_validator.hpp"
+// wx
 #include "wx/textctrl.h"
+// boost
+#include <boost/bind.hpp>
+#include <iostream>
 using namespace tms::common::protocol;
 namespace tms {
 namespace common {
 namespace widget {
 namespace validators {
-PasswordValidator::PasswordValidator(SetterFunction setter) :
-    StringValidator(GetterFunction(), setter) {}
 
-PasswordValidator::PasswordValidator(const PasswordValidator &validator) :
-    StringValidator(validator) {}
-
-
-bool PasswordValidator::TransferToWindow() {
-  std::string value = "*****";
-  wxTextEntry * const text = GetTextEntry();
-  if ( !text )
-    return false;
-  text->SetValue(value);
-  return true;
+std::string PasswordValidator::Getter() {
+  return "*****";
 }
 
+void PasswordValidator::Setter(std::string val) {
+  val_ = val;
+}
+
+PasswordValidator::PasswordValidator(SetterFunction setter) :
+    StringValidator(boost::bind(&PasswordValidator::Getter, this), 
+                    boost::bind(&PasswordValidator::Setter, this, _1)),
+    setter_(setter) {}
+
+PasswordValidator::PasswordValidator(const PasswordValidator &validator) :
+    StringValidator(boost::bind(&PasswordValidator::Getter, this), 
+                    boost::bind(&PasswordValidator::Setter, this, _1)),
+    setter_(validator.setter_) {}
+
 bool PasswordValidator::TransferFromWindow() {
-  wxTextEntry * const text = GetTextEntry();
-  if ( !text )
-    return false;
-  std::string val = text->GetValue().ToStdString();
-  if (val != "*****") {
-    setter_(sha256(val));
+  if (StringValidator::TransferFromWindow()) {
+    if (val_ != "*****") {
+      setter_(sha256(val_));
+    }
+    return true;
   }
-  return true;
+  return false;
 }
 
 wxObject* PasswordValidator::Clone() const {

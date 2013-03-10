@@ -9,6 +9,7 @@ using namespace contraption;
 ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraptions,
                                                    std::string name,
                                                    std::vector<Column> &cols) :
+    contraption_factory_(boost::bind(&ContraptionGridTableBase::DefaultFactory, this)),
     contraptions_(contraptions), model_(), cols_(cols),
     printer_(), old_size_(0), timer_(new wxTimer()),
     contraption_dialog_(0), name_(name) {
@@ -17,6 +18,7 @@ ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraption
 
 ContraptionGridTableBase::ContraptionGridTableBase(ContraptionArrayP contraptions,
                                                    std::vector<Column> &cols) :
+    contraption_factory_(boost::bind(&ContraptionGridTableBase::DefaultFactory, this)),
     contraptions_(contraptions), model_(), cols_(cols),
     printer_(), old_size_(0), timer_(new wxTimer()),
     contraption_dialog_(0), name_("") {
@@ -34,13 +36,19 @@ void ContraptionGridTableBase::Init() {
       printer_.push_back(boost::shared_ptr<Printer>(new PrinterT<std::string>()));
     }
   }
+  InitContraptions();
+}
+
+void ContraptionGridTableBase::InitContraptions() {
   contraptions_->SetOnChange(boost::bind
 			     (&ContraptionGridTableBase::OnChange, this));
 }
 
+
 wxString ContraptionGridTableBase::GetValue(int row, int col) {
   if (model_->GetField(
           cols_[static_cast<long unsigned>(col)].field_id)->IsReadable()) {
+    assert(static_cast<size_t>(row) < contraptions_->size());
     return wxString::FromUTF8(
         printer_[col]->ToString(*(contraptions_->at(row)->
                                   GetFieldValue(cols_[col].field_id))).c_str());
@@ -108,10 +116,14 @@ void ContraptionGridTableBase::OnChange() {
   GetView()->Refresh();
 }
 
-void ContraptionGridTableBase::OnTimer(wxTimerEvent &WXUNUSED(event)) {
-  if (GetView() != NULL) {
+void ContraptionGridTableBase::Refresh() {
+  if (GetView() != NULL && GetView()->IsShownOnScreen()) {
     contraptions_->Refresh();
   }
+}
+
+void ContraptionGridTableBase::OnTimer(wxTimerEvent &WXUNUSED(event)) {
+  Refresh();
 }
 
 }

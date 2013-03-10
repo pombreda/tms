@@ -8,10 +8,9 @@
 #include <boost/parameter.hpp>
 // common
 #include <contraption/field.hpp>
-#include <contraption/field/has_many_field.hpp>
+#include <contraption/field/has_one_field.hpp>
 #include <contraption/field/simple_field.hpp>
 #include <contraption/model.hpp>
-#include <contraption/has_many_field_contraption_array.hpp>
 #include <contraption/model_backend_exception.hpp>
 #include <iostream>
 using namespace std; // oops
@@ -20,7 +19,7 @@ namespace common {
 namespace contraption {
 
 BOOST_PARAMETER_NAME(field_column)
-BOOST_PARAMETER_NAME(has_many_column)
+BOOST_PARAMETER_NAME(has_one_column)
 template<class T>
 class ProxyFieldImpl : public FieldT<T> {
 public:
@@ -31,9 +30,9 @@ public:
               args[_is_readable | true],
               false),
     field_column_(),
-    has_many_column_(0) {
+    has_one_column_(0) {
     try {
-      has_many_column_ = args[_has_many_column];
+      has_one_column_ = args[_has_one_column];
       field_column_ = args[_field_column];
     } catch (FieldException &e) {
       throw ModelBackendException(&e);
@@ -46,23 +45,26 @@ public:
     return array;
   }
   
+  virtual void GetReadRecords(FieldTypeArray &values,
+                              ContraptionID id,
+                              std::vector<RecordP> &out) const {
+    has_one_column_->GetReadRecords(values, id, out);
+  }
+
   virtual void FinalizeGet(FieldTypeArray &values, ContraptionID id) const {
     if (!values[static_cast<int>(this->field_id_)]) {
+      has_one_column_->FinalizeGet(values, id);
       T val;
-
-      has_many_column_->FinalizeGet(values, id);
-      const FieldTypeT<ContraptionArrayP>* type
-	= dynamic_cast<const FieldTypeT<ContraptionArrayP>*>(
-							     &*values[static_cast<int>(has_many_column_->field_id())]);
+      const FieldTypeT<ContraptionP>* type
+          = dynamic_cast<const FieldTypeT<ContraptionP>*>(
+              &*values[static_cast<int>(has_one_column_->field_id())]);
       assert(type);
-      HasManyFieldContraptionArray* array
-	= dynamic_cast<HasManyFieldContraptionArray*>(&*type->data());      
-      assert(array);
-      if (array->size() > 0) {
-	val = array->at(0)->Get<T>(field_column_);
+      ContraptionP contraption = type->data();
+      if (contraption) {
+	val = contraption->Get<T>(field_column_);
       }
       values[static_cast<int>(this->field_id_)].reset(
-						    new FieldTypeT<T>(val));
+          new FieldTypeT<T>(val));
     }
   }
   
@@ -70,7 +72,7 @@ public:
   }
  private:
   std::string field_column_;
-  const HasManyField *has_many_column_;
+  const HasOneField *has_one_column_;
 };
 
 // for boost parameter
@@ -82,7 +84,7 @@ class ProxyField : public ProxyFieldImpl<T> {
     tag,
     (required
       (name, (std::string))
-      (has_many_column, (HasManyField*))
+      (has_one_column, (HasOneField*))
       (field_column, (std::string))
     )
     (optional

@@ -11,6 +11,7 @@ namespace common {
 namespace widget {
 namespace validators {
 BoolValidator::BoolValidator(GetterFunction getter, SetterFunction setter) :
+    wxValidator(),
     getter_(getter),
     setter_(setter) {}
 

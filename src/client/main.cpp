@@ -33,10 +33,12 @@
 #include <soci/sqlite3/soci-sqlite3.h>
 // common
 #include <gui_exception/gui_exception.hpp>
+#include <gui_exception/gui_exception_report.hpp>
 // frames
 #include <client/frm_grid.hpp>
 #include <client/dlg_login.hpp>
-
+// gcc
+#include <execinfo.h>
 using namespace tms::client;
 using namespace tms::common::string;
 using namespace log4cplus;
@@ -45,6 +47,7 @@ class ClientApp : public wxApp {
  public:
   ClientApp() {}
   virtual bool OnInit();
+  virtual bool OnExceptionInMainLoop();
   virtual int OnExit();
  private:
   ClientApp(const ClientApp&);
@@ -52,6 +55,49 @@ class ClientApp : public wxApp {
 };
 
 IMPLEMENT_APP(ClientApp)
+
+bool ClientApp::OnExceptionInMainLoop() {
+  const size_t nest = 20;
+  try {
+    throw;
+  } catch (const tms::common::GUIException &e) {
+    void *array[nest];
+    size_t size;
+    char **strings;
+    size_t i;
+    
+    size = backtrace (array, nest);
+    strings = backtrace_symbols (array, size);
+    LOG4CPLUS_ERROR(client_logger,
+                    WStringFromUTF8String(e.what()));     
+    for (i = 0; i < nest; ++i) {
+      LOG4CPLUS_ERROR(client_logger,
+                      WStringFromUTF8String(strings[i]));     
+    }
+    free(strings);
+    Report(e);
+  } catch (std::exception &e) {
+    void *array[nest];
+    size_t size;
+    char **strings;
+    size_t i;
+    
+    size = backtrace (array, nest);
+    strings = backtrace_symbols (array, size);
+    LOG4CPLUS_ERROR(client_logger,
+                    WStringFromUTF8String(e.what()));     
+    for (i = 0; i < nest; ++i) {
+      LOG4CPLUS_ERROR(client_logger,
+                      WStringFromUTF8String(strings[i]));     
+    }
+    free(strings);
+    wxMessageDialog(0,
+                  WStringFromUTF8String("Произошла критическая ошибка.")
+                    ).ShowModal();    
+    throw;
+  }
+  return true;
+}
 
 int ClientApp::OnExit() {
   wxXmlResource::Get()->Unload(_T("xrc/client/frm_grid.xrc"));
@@ -78,10 +124,9 @@ bool ClientApp::OnInit() {
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_login.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_user.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_incoming.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_company.xrc"));
     wxsOK = wxsOK && wxXmlResource::Get()->Load(_T(
         "xrc/client/dlg_contact_person.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/CompaniesFrame.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/IncomingsFrame.xrc"));
     if (!wxsOK) {
       LOG4CPLUS_ERROR(client_logger,
                       WStringFromUTF8String("Error while loading xrc resources"));

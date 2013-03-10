@@ -30,12 +30,15 @@ using namespace contraption;
 
 class ContraptionGridTableBase : public wxGridTableBase {
  public:
+  typedef boost::function<ContraptionP()> ContraptionFactory;
   ContraptionGridTableBase(ContraptionArrayP contraptions,
                            std::string name,
                            std::vector<Column> &cols);
   ContraptionGridTableBase(ContraptionArrayP contraptions,
                            std::vector<Column> &cols);
-  ~ContraptionGridTableBase() {}
+  ~ContraptionGridTableBase() {
+    std::cerr << "UNSTOPABLE DESTRUCTION!!!!!" << std::endl;
+  }
 
   wxString GetValue(int row, int col);
   void SetValue(int row, int col, const wxString &value);
@@ -59,6 +62,14 @@ class ContraptionGridTableBase : public wxGridTableBase {
     return contraptions_;
   }
 
+  void set_contraptions(ContraptionArrayP contraptions) {
+    assert(contraptions->model() == contraptions_->model());
+    contraptions_ = contraptions;
+    InitContraptions();
+    Refresh();
+  }
+
+
   const ModelP model() {
     return model_;
   }
@@ -71,7 +82,17 @@ class ContraptionGridTableBase : public wxGridTableBase {
     return cols_;
   }
 
+  ContraptionFactory contraption_factory() {
+    return contraption_factory_;
+  }
+
+  void set_contraption_factory(ContraptionFactory contraption_factory) {
+    contraption_factory_ = contraption_factory;
+  }
+
+  void Refresh();
  private:
+  ContraptionFactory contraption_factory_;
   ContraptionArrayP contraptions_;
   ModelP model_;
   std::vector<Column> cols_;
@@ -80,7 +101,11 @@ class ContraptionGridTableBase : public wxGridTableBase {
   wxTimer* timer_;
   ContraptionDialog *contraption_dialog_;
   std::string name_;
+  ContraptionP DefaultFactory() {
+    return model_->New();
+  }
   void Init();
+  void InitContraptions();
   void OnChange();
   void OnTimer(wxTimerEvent &event);
 

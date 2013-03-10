@@ -12,20 +12,19 @@ using namespace std;
 
 void ContactPerson::Initialize() {
   vector<Field*> ret;
-  ret.push_back(new SimpleFieldT<string>("name"));
-  ret.push_back(new SimpleFieldT<string>("role"));
-  ret.push_back(new SimpleFieldT<string>("code"));
-  ret.push_back(new SimpleFieldT<string>("email"));
-  ret.push_back(new SimpleFieldT<string>("note"));
-  ret.push_back(new SimpleFieldT<string>("phone"));
-  ret.push_back(new SimpleFieldT<string>("fax"));
-  ret.push_back(new SimpleFieldT<int>("company_id"));
-  HasManyField* company_field 
-    = new HasManyField("company", 
-		       boost::ref(*Company::GetModel()),
-		       boost::ref(*ContactPerson::GetModel()),
-		       _id_column = "id",
-		       _other_id_column = "company_id");
+  ret.push_back(new StringField("name"));
+  ret.push_back(new StringField("position"));
+  ret.push_back(new StringField("city_code"));
+  ret.push_back(new StringField("email"));
+  ret.push_back(new StringField("note"));
+  ret.push_back(new StringField("phone"));
+  ret.push_back(new StringField("fax"));
+  IntField *company_id = new SimpleFieldT<int>("company_id");
+  ret.push_back(company_id);
+  HasOneField *company_field 
+    = new HasOneField("company", 
+                      boost::ref(*Company::GetModel()),
+                      company_id);
   ret.push_back(company_field);
   ret.push_back(new ProxyField<std::string>("company_name",
 					    company_field,

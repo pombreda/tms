@@ -3,7 +3,11 @@
 #include <log4cplus/loggingmacros.h>
 // common
 #include <string/string.hpp>
+#include <widget/validators/contraption_routines.hpp>
+#include <widget/validators/hide_if_validator.hpp>
 #include <rtti/typeinfo.hpp>
+// wx
+#include <wx/button.h>
 
 namespace tms {
 namespace common {
@@ -12,10 +16,13 @@ namespace widget {
 using namespace contraption;
 using namespace string;
 using namespace log4cplus;
+using namespace validators;
 
 ContraptionDialog::ContraptionDialog() :
     wxDialog(),
-    logger_(Logger::getInstance(WStringFromUTF8String(rtti::TypeID(this).name()))) {}
+    logger_(Logger::getInstance(WStringFromUTF8String(rtti::TypeID(this).name()))) {
+  Bind(wxEVT_CLOSE_WINDOW, boost::bind(&ContraptionDialog::Exit, this));
+}
 
 ContraptionDialog::~ContraptionDialog() {}
 
@@ -31,7 +38,14 @@ void ContraptionDialog::SetUpValues(ContraptionP contraption,
   Fit();
   Layout();
   LOG4CPLUS_INFO(logger_, 
-                 WStringFromUTF8String("Contraption loaded"));  
+                 WStringFromUTF8String("Contraption loaded"));
+  if (static_cast<size_t>(contraption_->Get<int>("id")) == Contraption::kNewID) {
+    TransferDataFromWindow();
+    is_new_ = true;
+    contraption_->Save();
+    contraption_->Refresh();
+    TransferDataToWindow();
+  }
 }
 
 void ContraptionDialog::Save() {
@@ -62,9 +76,30 @@ void ContraptionDialog::Delete() {
 }
 
 void ContraptionDialog::Exit() {
+  if (is_new_) {
+    Delete();
+  }
   LOG4CPLUS_INFO(logger_, 
                  WStringFromUTF8String("Closing"));
   EndModal(wxCANCEL);  
+}
+
+
+void ContraptionDialog::SetSaveButton(wxButton *btn_save) {
+  btn_save->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+                 boost::bind(&ContraptionDialog::Save, this));
+}
+
+void ContraptionDialog::SetCancelButton(wxButton *btn_cancel) {
+  btn_cancel->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+                   boost::bind(&ContraptionDialog::Exit, this));
+}
+
+void ContraptionDialog::SetDeleteButton(wxButton *btn_delete) {
+  btn_delete->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+                   boost::bind(&ContraptionDialog::Delete, this));
+  btn_delete->SetValidator(
+      HideIfValidator(ContraptionIsNew(contraption_)));
 }
 
 }

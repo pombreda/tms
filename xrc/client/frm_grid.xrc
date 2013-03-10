@@ -5,10 +5,11 @@
 		<size>502,322</size>
 		<title>TMS</title>
 		<centered>1</centered>
+		<aui_managed>0</aui_managed>
 		<object class="wxNotebook" name="nbMain">
 			<object class="notebookpage">
 				<label>Журналы</label>
-				<selected>0</selected>
+				<selected>1</selected>
 				<object class="wxPanel" name="pnlBook">
 					<style>wxTAB_TRAVERSAL</style>
 					<object class="wxBoxSizer">
@@ -27,10 +28,7 @@
 									<object class="wxChoice" name="chcBook">
 										<size>130,-1</size>
 										<selection>0</selection>
-										<content>
-											<item>Входящие</item>
-											<item>КП</item>
-										</content>
+										<content />
 									</object>
 								</object>
 								<object class="sizeritem">
@@ -55,7 +53,7 @@
 			</object>
 			<object class="notebookpage">
 				<label>Каталоги</label>
-				<selected>1</selected>
+				<selected>0</selected>
 				<object class="wxPanel" name="pnlCatalog">
 					<style>wxTAB_TRAVERSAL</style>
 					<object class="wxBoxSizer">
@@ -122,9 +120,7 @@
 									<object class="wxChoice" name="chcAdmin">
 										<size>130,-1</size>
 										<selection>0</selection>
-										<content>
-											<item>Пользователи</item>
-										</content>
+										<content />
 									</object>
 								</object>
 								<object class="sizeritem">

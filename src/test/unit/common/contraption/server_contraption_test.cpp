@@ -176,8 +176,8 @@ class Fixture {
                                           best_friend_id);
     fields.push_back(best_friend);
     fields.push_back(friends);
-    fields.push_back(new ProxyField<std::string>("first_friend",
-						 friends,
+    fields.push_back(new ProxyField<std::string>("best_friend_name",
+						 best_friend,
 						 "Surname"));
 
     model->InitFields(fields);
@@ -253,7 +253,7 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
       test_contraption->Get<ContraptionP>("best_friend")->Get<int>("id"),
       test_contraption2->Get<int>("id"));
   BOOST_CHECK_EQUAL(
-      test_contraption->Get<ContraptionP>("best_friend")->Get<string>("Surname"),
+      test_contraption->Get<string>("best_friend_name"),
       "Ymmud");
 
   test_contraption->Set<ContraptionP>("best_friend",
@@ -268,7 +268,9 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   BOOST_CHECK_EQUAL(
       test_contraption->Get<ContraptionP>("best_friend")->Get<int>("id"),
       test_contraption->Get<int>("id"));
-
+  BOOST_CHECK_EQUAL(
+      test_contraption->Get<string>("best_friend_name"),
+      "Du'\"\\mmy");
   cerr << 1 << endl;
 
   ContraptionArrayP friends
@@ -279,9 +281,6 @@ BOOST_FIXTURE_TEST_CASE(testUseCase, Fixture) {
   cerr << 3 << endl;
   test_contraption2->Save();
   contraptions->Refresh();
-  BOOST_CHECK_EQUAL(test_contraption2->Get<std::string>("first_friend"),
-		    "Ymmud");
-
 
   BOOST_CHECK_EQUAL(contraptions->size(),
                     2);

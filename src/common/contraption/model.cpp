@@ -1,3 +1,4 @@
+#include "model.hpp"
 // boost
 #include <boost/bind.hpp>
 // common
@@ -8,10 +9,27 @@
 #include <contraption/model_contraption_array.hpp>
 #include <contraption/contraption_accessor.hpp>
 #include <contraption/filter/all_filter.hpp>
-#include "model.hpp"
+// std
+#include <algorithm>
 
 using namespace tms::common::contraption;
 using namespace std;
+
+
+class CompareRecordsGr {
+ public:
+  bool operator()(RecordP a, RecordP b) {
+    return a->field > b->field;
+  }
+};
+
+class CompareRecordsEq {
+ public:
+  bool operator()(RecordP a, RecordP b) {
+    return a->field == b->field;
+  }
+};
+
 
 size_t Model::GetFieldNumber() const
     throw() {
@@ -31,6 +49,8 @@ FieldTypeP Model::GetFieldValue(FieldID field_id,
   vector<RecordP> out(0);
   fields_[field_id]->GetReadRecords(values, id, out);
   if (!out.empty()) {
+    sort(out.begin(), out.end(), CompareRecordsGr());
+    out.resize(unique(out.begin(), out.end(), CompareRecordsEq()) - out.begin());
     backend_->ReadRecords(out, id);
   }
   fields_[field_id]->FinalizeGet(values, id);
@@ -94,6 +114,8 @@ void Model::InitSchema()
        field_id < end; ++field_id) {
     fields_[field_id]->GetWriteRecords(values, Contraption::kNewID, out);
   }
+  sort(out.begin(), out.end(), CompareRecordsGr());
+  out.resize(unique(out.begin(), out.end(), CompareRecordsEq()) - out.begin());
   backend_->InitSchema(out);
 }
 
@@ -106,6 +128,8 @@ void Model::Save(FieldTypeArray &values,
        field_id < end; ++field_id) {
     fields_[field_id]->GetWriteRecords(values, id, out);
   }
+  sort(out.begin(), out.end(), CompareRecordsGr());
+  out.resize(unique(out.begin(), out.end(), CompareRecordsEq()) - out.begin());
   backend_->WriteRecords(out, id);
   for (FieldID field_id = 0, end = fields_.size() - 1;
        field_id < end; ++field_id) {
@@ -141,6 +165,12 @@ ContraptionArrayP Model::Filter(FilterCP filter)
 ContraptionArrayP Model::All()
     throw(ModelBackendException) {
   return Filter(tms::common::contraption::All());
+}
+
+ContraptionArrayP Model::Empty()
+    throw(ModelBackendException) {
+  return ContraptionArrayP(
+      new ModelContraptionArray(vector<ContraptionP>(0), ModelP(this)));
 }
 
 Model::Model(const vector<Field*> &fields,

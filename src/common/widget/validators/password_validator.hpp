@@ -16,9 +16,13 @@ class PasswordValidator : public StringValidator {
  public:
   PasswordValidator(SetterFunction setter);
   PasswordValidator(const PasswordValidator &validator);
-  bool TransferToWindow();
   bool TransferFromWindow();
   wxObject* Clone() const;
+ private:
+  std::string Getter();
+  void Setter(std::string val);
+  std::string val_;
+  SetterFunction setter_;
 };
 
 }

@@ -12,12 +12,12 @@ add_executable(client_app
 	       dlg_user
 	       dlg_contact_person
 	       dlg_incoming
+	       dlg_company
 	       frm_grid
 	       frm_grid_incomings
 	       frm_grid_companies
 	       frm_grid_users	
-	       incomings_frame
-	       companies_frame
+#	       companies_frame
                options_model
 	       logger
                options)

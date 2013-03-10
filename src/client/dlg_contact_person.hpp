@@ -1,5 +1,5 @@
-#ifndef _TMS_CLIENT__TEST_FRAME_HPP_
-#define _TMS_CLIENT__TEST_FRAME_HPP_
+#ifndef _TMS_CLIENT__CONTACT_PERSON_FRAME_HPP_
+#define _TMS_CLIENT__CONTACT_PERSON_FRAME_HPP_
 
 // wxWidgets
 #include <wx/frame.h>
@@ -12,39 +12,23 @@
 // std
 #include <string>
 // common
-#include <contraption/contraption.hpp>
-#include <contraption/contraption_array.hpp>
+#include <widget/contraption_dialog.hpp>
 
 namespace tms {
 namespace client {
 
-class DlgContactPerson : public wxDialog {
+class DlgContactPerson : public tms::common::widget::ContraptionDialog {
  public:
   DlgContactPerson(wxWindow *parent);
   virtual ~DlgContactPerson();
   
   void Init();
-  void SetUpValues(tms::common::contraption::ContraptionP contraption,
-                   tms::common::contraption::ContraptionArrayP contraptions, bool editable);
-
  private:
   DlgContactPerson& operator=(const DlgContactPerson&);
- 
-  wxButton *button_remove_;
-  wxButton *button_save_;
-  wxButton *button_cancel_;
-  tms::common::contraption::ContraptionP contraption_;
-  tms::common::contraption::ContraptionArrayP contraptions_;
-  
-  void OnSaveClick(wxCommandEvent& WXUNUSED(event));
-  void OnDeleteClick(wxCommandEvent& WXUNUSED(event));
-  void OnExitClick(wxCommandEvent& WXUNUSED(event));
-  void OnTryClose(wxCloseEvent& event);
-  
-  DECLARE_EVENT_TABLE()
+  DlgContactPerson(const DlgContactPerson&);
 };
 
 }
 }
 
-#endif // _TMS_CLIENT__TEST_FRAME_HPP_
+#endif // _TMS_CLIENT__CONTACT_PERSON_FRAME_HPP_
