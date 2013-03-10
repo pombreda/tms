@@ -38,7 +38,9 @@
 #include <client/frm_grid.hpp>
 #include <client/dlg_login.hpp>
 // gcc
+#ifndef WINDOWS32
 #include <execinfo.h>
+#endif
 using namespace tms::client;
 using namespace tms::common::string;
 using namespace log4cplus;
@@ -61,6 +63,7 @@ bool ClientApp::OnExceptionInMainLoop() {
   try {
     throw;
   } catch (const tms::common::GUIException &e) {
+    #ifndef WINDOWS32
     void *array[nest];
     size_t size;
     char **strings;
@@ -75,8 +78,10 @@ bool ClientApp::OnExceptionInMainLoop() {
                       WStringFromUTF8String(strings[i]));     
     }
     free(strings);
+    #endif
     Report(e);
   } catch (std::exception &e) {
+    #ifndef WINDOWS32
     void *array[nest];
     size_t size;
     char **strings;
@@ -91,6 +96,7 @@ bool ClientApp::OnExceptionInMainLoop() {
                       WStringFromUTF8String(strings[i]));     
     }
     free(strings);
+    #endif        
     wxMessageDialog(0,
                   WStringFromUTF8String("Произошла критическая ошибка.")
                     ).ShowModal();    

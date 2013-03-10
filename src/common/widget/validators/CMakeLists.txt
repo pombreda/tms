@@ -1,4 +1,4 @@
-add_library(tms_validators SHARED
+add_library(tms_validators STATIC
   string_validator
   password_validator
   bool_validator
@@ -16,5 +16,6 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${wxWidget_INCLUDE_DIR})
 target_link_libraries(tms_validators
   tms_protocol
   tms_contraption
+  tms_contraption_grid
   ${wxWidgets_LIBRARIES}
   )

@@ -6,6 +6,10 @@
 #include <wx/grid.h>
 #include <wx/checklst.h>
 #include <wx/panel.h>
+#include <wx/scrolwin.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+
 // boost
 #include <boost/function.hpp>
 // std
@@ -30,9 +34,11 @@ class DlgCheckColumn : public wxPopupTransientWindow {
   DlgCheckColumn& operator=(const DlgCheckColumn&);
   log4cplus::Logger logger_;
   ContraptionGrid *grid_;
-  wxCheckListBox *check_list_;
+  //wxCheckListBox *check_list_;
+  std::vector<wxCheckBox*> check_list_;
   wxPanel *panel_;
-  void OnItemChecked(wxCommandEvent& event);
+  wxBoxSizer *top_sizer_; 
+  void OnItemChecked(int id);
 };
 
 }

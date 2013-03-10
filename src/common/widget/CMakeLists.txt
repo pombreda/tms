@@ -1,5 +1,5 @@
 add_subdirectory(validators)
-add_library(tms_contraption_grid SHARED
+add_library(tms_contraption_grid STATIC
             contraption_grid
             contraption_grid_table_base
 	    contraption_dialog
