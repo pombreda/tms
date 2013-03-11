@@ -100,7 +100,9 @@ void ContraptionDialog::SetDeleteButton(wxButton *btn_delete) {
   btn_delete->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
                    boost::bind(&ContraptionDialog::Delete, this));
   btn_delete->SetValidator(
-      HideIfValidator(ContraptionIsNew(contraption_)));
+      HideIfValidator(DefaultGetter<bool>(
+          ContraptionIsNew(contraption_),
+          VarRefGetter<bool>(is_new_))));
 }
 
 }

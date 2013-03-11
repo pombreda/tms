@@ -63,6 +63,20 @@ class DefaultGetter {
   boost::function<T()> def_;
 };
 
+
+template<class T>
+class VarRefGetter {
+ public:
+  VarRefGetter(const T &val) :
+      val_(val) {
+  }
+  T operator()() {
+    return val_;
+  }
+ private:
+  const T &val_;
+};
+
 template<class T>
 class ContraptionSetter {
  public:
@@ -77,6 +91,7 @@ class ContraptionSetter {
   contraption::ContraptionP &ptr_;
   std::string field_;  
 };
+
 
 template<>
 class ContraptionSetter<bool> {
