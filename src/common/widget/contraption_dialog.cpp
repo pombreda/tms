@@ -78,10 +78,11 @@ void ContraptionDialog::Delete() {
 void ContraptionDialog::Exit() {
   if (is_new_) {
     Delete();
+  } else {
+    LOG4CPLUS_INFO(logger_, 
+                   WStringFromUTF8String("Closing"));
+    EndModal(wxCANCEL);  
   }
-  LOG4CPLUS_INFO(logger_, 
-                 WStringFromUTF8String("Closing"));
-  EndModal(wxCANCEL);  
 }
 
 
