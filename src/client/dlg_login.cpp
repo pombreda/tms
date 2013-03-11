@@ -29,9 +29,10 @@
 #include <wx/app.h>
 // boost
 #include <boost/filesystem.hpp>
+#include <boost/system/system_error.hpp>
 
 #ifdef FindWindow // MSW workaround
-  #include <wx/msw/winundef.h>
+#include <wx/msw/winundef.h>
 #endif //FindWindow
 
 namespace tms {
@@ -51,7 +52,7 @@ BEGIN_EVENT_TABLE(DlgLogin,wxDialog)
 END_EVENT_TABLE()
 
 DlgLogin::DlgLogin() :
-  wxDialog(), grid_frame() {
+wxDialog(), grid_frame() {
   wxXmlResource::Get()->LoadDialog(this, 0, _T("dlgLogin"));
   Init();
 }
@@ -160,7 +161,6 @@ void DlgLogin::TryLogin() {
   login->set_password_hash(Options::password_hash());
   LOG4CPLUS_INFO(client_logger,
                  WStringFromUTF8String("Trying to log in"));
-    
   MessageP ret = client->EvalRequest(*login);
     
   if (LoginResponseP resp = boost::dynamic_pointer_cast<LoginResponse>(ret)) {
@@ -187,8 +187,17 @@ void DlgLogin::OnOKButtonClick(wxCommandEvent& WXUNUSED(event)) {
   if (Validate() && TransferDataFromWindow()) {
     LOG4CPLUS_INFO(client_logger,
                    WStringFromUTF8String("Options saved"));
-    
-    ClientP client = CreateClient(Options::server(), Options::port());
+    ClientP client;
+    try {
+      client = CreateClient(Options::server(), Options::port());
+    } catch (boost::system::system_error const& e) {
+      wxMessageDialog(0,
+                      WStringFromUTF8String("Не удалось подключиться к серверу."),
+                      WStringFromUTF8String("Ошибка"),
+                      wxOK | wxICON_ERROR
+                      ).ShowModal();    
+      return;
+    }
     Options::set_client(client);
 
     TryLogin();
