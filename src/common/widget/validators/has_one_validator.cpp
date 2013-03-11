@@ -29,6 +29,7 @@ HasOneValidator::HasOneValidator(const HasOneValidator &validator) :
 }
 
 bool HasOneValidator::TransferToWindow() {
+  int halt;
   wxWindow *validator_window = GetWindow();
   {
     ContraptionChoice *control = dynamic_cast<ContraptionChoice*>(validator_window);

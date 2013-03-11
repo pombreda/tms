@@ -65,8 +65,7 @@ bool StringValidator::TransferFromWindow() {
   {
     wxChoice *control = dynamic_cast<wxChoice*>(validator_window);
     if (control) {
-      int pos = control->GetSelection();
-      setter_(control->GetString(pos).utf8_str().data());
+      setter_(control->GetStringSelection().utf8_str().data());
       return true;
     }
   }

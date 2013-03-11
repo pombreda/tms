@@ -72,10 +72,8 @@ void ContraptionChoice::ClearOnChoiceBinds() {
 }
 
 void ContraptionChoice::RefreshList() {
-  wxString selection;
-  if (choice_->GetSelection() != wxNOT_FOUND) {
-    selection = choice_->GetString(choice_->GetSelection());
-  }
+  wxString selection = choice_->GetStringSelection();
+
   choice_->Clear();
 
   for (size_t i = 0; i < contraptions_->size(); ++i) {

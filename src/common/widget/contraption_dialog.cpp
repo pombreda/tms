@@ -34,7 +34,6 @@ void ContraptionDialog::SetUpValues(ContraptionP contraption,
   
   contraptions_ = contraptions;
   TransferDataToWindow();
-  
   Fit();
   Layout();
   LOG4CPLUS_INFO(logger_, 
