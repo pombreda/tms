@@ -35,7 +35,7 @@ void FrmGrid::InitIncomingsTable() {
   cols.push_back(Column(model->GetFieldID("contact_name"), "Контактное лицо", 150));
   cols.push_back(Column(model->GetFieldID("email"), "E-mail", 150));
   cols.push_back(Column(model->GetFieldID("phone"), "Телефон", 150));
-  cols.push_back(Column(model->GetFieldID("suject"), "Тема", 150));
+  cols.push_back(Column(model->GetFieldID("subject"), "Тема", 150));
   cols.push_back(Column(model->GetFieldID("addressee"), "Адресат", 100));
   cols.push_back(Column(model->GetFieldID("reception_type"), "Тип приема", 100));
   cols.push_back(Column(model->GetFieldID("received_at"), "Время приема", 100));
