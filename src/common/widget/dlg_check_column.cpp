@@ -59,7 +59,6 @@ void DlgCheckColumn::SetUpValues(ContraptionGrid *grid) {
   //  check_list_ = new wxCheckListBox(panel_, wxID_ANY);
   //  topSizer->Add(check_list_);
   panel_->SetBackgroundColour(*wxWHITE);
-  panel_->SetBackgroundStyle(wxBG_STYLE_COLOUR);
   grid_ = grid;
   int col_number = grid_->GetNumberCols();
   check_list_.resize(col_number);
