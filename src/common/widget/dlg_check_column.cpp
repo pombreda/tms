@@ -56,7 +56,9 @@ void DlgCheckColumn::SetUpValues(ContraptionGrid *grid) {
     panel_->Destroy();
   }
   panel_ = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER);
-  top_sizer_ = new wxBoxSizer( wxVERTICAL );
+  wxBoxSizer *top_sizer = new wxBoxSizer(wxVERTICAL);
+  wxBoxSizer *panel_sizer = new wxBoxSizer(wxVERTICAL);
+
   //  check_list_ = new wxCheckListBox(panel_, wxID_ANY);
   //  topSizer->Add(check_list_);
   panel_->SetBackgroundColour(*wxWHITE);
@@ -71,12 +73,11 @@ void DlgCheckColumn::SetUpValues(ContraptionGrid *grid) {
     check_list_[pos]->SetValue(grid_->GetColSize(pos));
     check_list_[pos]->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED,
                            boost::bind(&DlgCheckColumn::OnItemChecked, this, pos));
-    top_sizer_->Add(check_list_[pos]);
+    panel_sizer->Add(check_list_[pos]);
   }
-  panel_->SetSizer(top_sizer_);
-  panel_->Layout();
-  panel_->Fit();
-  Layout();
+  panel_->SetSizer(panel_sizer);
+  top_sizer->Add(panel_);
+  SetSizer(top_sizer);
   Fit();
   LOG4CPLUS_INFO(logger_, 
                  WStringFromUTF8String("Values set up"));

@@ -61,21 +61,20 @@ class HasOneFieldImpl : public FieldT<ContraptionP> {
               &*values[static_cast<int>(this->field_id_)]);
       assert(type);
       ContraptionP contraption = type->data();      
-      if (!contraption) {
-        values[static_cast<int>(other_id_column_->field_id())].reset(
-            new FieldTypeT<int>(Contraption::kNewID));
-      } else {
+      int ans = Contraption::kNewID;
+      if (contraption) {
         assert(contraption->model() == &model_);
-        if (values[static_cast<int>(other_id_column_->field_id())]) {
-          FieldTypeT<int>* type
-              = dynamic_cast<FieldTypeT<int>*>(
-                  &*values[static_cast<int>(other_id_column_->field_id())]);
-          assert(type);        
-          type->set_data(contraption->Get<int>("id"));
-        } else {
-          values[static_cast<int>(other_id_column_->field_id())].reset(
-              new FieldTypeT<int>(contraption->Get<int>("id")));
-        }
+        ans = contraption->Get<int>("id");
+      }
+      if (values[static_cast<int>(other_id_column_->field_id())]) {
+        FieldTypeT<int>* type
+            = dynamic_cast<FieldTypeT<int>*>(
+                &*values[static_cast<int>(other_id_column_->field_id())]);
+        assert(type);        
+        type->set_data(ans);
+      } else {
+        values[static_cast<int>(other_id_column_->field_id())].reset(
+            new FieldTypeT<int>(ans));
       }
     }
     other_id_column_->GetWriteRecords(values, id, out);
