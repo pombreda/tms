@@ -131,13 +131,8 @@ bool ClientApp::OnInit() {
   try {
     wxXmlResource::Get()->InitAllHandlers();
     wxInitAllImageHandlers();
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/frm_grid.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_login.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_user.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_incoming.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T("xrc/client/dlg_company.xrc"));
-    wxsOK = wxsOK && wxXmlResource::Get()->Load(_T(
-        "xrc/client/dlg_contact_person.xrc"));
+    wxsOK = wxsOK && wxXmlResource::Get()->LoadAllFiles(
+        WStringFromUTF8String("xrc/client"));
     if (!wxsOK) {
       LOG4CPLUS_ERROR(client_logger,
                       WStringFromUTF8String("Error while loading xrc resources"));
