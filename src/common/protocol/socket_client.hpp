@@ -14,16 +14,14 @@ namespace protocol {
 
 class SocketClient : public Client {
  public:
-  SocketClient(SocketP socket, ProtocolP protocol) 
-      throw():
+  SocketClient(SocketP socket, ProtocolP protocol) :
       ip_(),
       socket_(socket), 
       protocol_(protocol) {
     socket_->lowest_layer().set_option(boost::asio::ip::tcp::no_delay(true));
   }
 
-  SocketClient(std::string server, std::string port, ProtocolP protocol) 
-      throw():
+  SocketClient(std::string server, std::string port, ProtocolP protocol) :
       ip_(),
       socket_(), 
       protocol_(protocol) {
