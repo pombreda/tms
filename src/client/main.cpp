@@ -43,48 +43,36 @@ class ClientApp : public wxApp {
 };
 
 IMPLEMENT_APP(ClientApp)
-
-bool ClientApp::OnExceptionInMainLoop() {
+static void LogBacktrace() {
 #ifndef WINDOWS32
   const size_t nest = 20;
+  void *array[nest];
+  size_t size;
+  char **strings;
+  size_t i;
+    
+  size = backtrace (array, nest);
+  strings = backtrace_symbols (array, size);
+  for (i = 0; i < nest; ++i) {
+    LOG4CPLUS_ERROR(client_logger,
+        WStringFromUTF8String(strings[i]));     
+  }
+  free(strings);
 #endif
+}
+
+bool ClientApp::OnExceptionInMainLoop() {
   try {
     throw;
   } catch (const tms::common::GUIException &e) {
     LOG4CPLUS_ERROR(client_logger,
                     WStringFromUTF8String(e.what()));     
-#ifndef WINDOWS32
-    void *array[nest];
-    size_t size;
-    char **strings;
-    size_t i;
-    
-    size = backtrace (array, nest);
-    strings = backtrace_symbols (array, size);
-    for (i = 0; i < nest; ++i) {
-      LOG4CPLUS_ERROR(client_logger,
-                      WStringFromUTF8String(strings[i]));     
-    }
-    free(strings);
-#endif
+    LogBacktrace();
     Report(e);
   } catch (std::exception &e) {
     LOG4CPLUS_ERROR(client_logger,
                     WStringFromUTF8String(e.what()));     
-#ifndef WINDOWS32
-    void *array[nest];
-    size_t size;
-    char **strings;
-    size_t i;
-    
-    size = backtrace (array, nest);
-    strings = backtrace_symbols (array, size);
-    for (i = 0; i < nest; ++i) {
-      LOG4CPLUS_ERROR(client_logger,
-                      WStringFromUTF8String(strings[i]));     
-    }
-    free(strings);
-#endif        
+    LogBacktrace();
     wxMessageDialog(0,
                     WStringFromUTF8String("Произошла критическая ошибка."),
                     WStringFromUTF8String("Ошибка"),
