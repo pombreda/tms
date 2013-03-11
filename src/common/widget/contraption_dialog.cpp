@@ -34,10 +34,6 @@ void ContraptionDialog::SetUpValues(ContraptionP contraption,
   
   contraptions_ = contraptions;
   TransferDataToWindow();
-  Fit();
-  Layout();
-  LOG4CPLUS_INFO(logger_, 
-                 WStringFromUTF8String("Contraption loaded"));
   if (static_cast<size_t>(contraption_->Get<int>("id")) == Contraption::kNewID) {
     TransferDataFromWindow();
     is_new_ = true;
@@ -45,6 +41,10 @@ void ContraptionDialog::SetUpValues(ContraptionP contraption,
     contraption_->Refresh();
     TransferDataToWindow();
   }
+  Fit();
+  Layout();
+  LOG4CPLUS_INFO(logger_, 
+                 WStringFromUTF8String("Contraption loaded"));
 }
 
 void ContraptionDialog::Save() {
