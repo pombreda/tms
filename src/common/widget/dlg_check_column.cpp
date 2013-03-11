@@ -27,7 +27,9 @@ using namespace log4cplus;
 
 DlgCheckColumn::DlgCheckColumn(wxWindow *parent) :
     wxPopupTransientWindow(parent),
-    logger_(Logger::getInstance(WStringFromUTF8String(rtti::TypeID(this).name()))) {
+    logger_(Logger::getInstance(
+        WStringFromUTF8String(rtti::TypeID(this).name()))),
+    panel_(0) {
       /*  wxXmlResource::Get()->Load(_T("xrc/common/widget/dlg_check_column.xrc"));
   
   wxXmlResource::Get()->LoadPanel(panel_, this,
@@ -52,7 +54,6 @@ void DlgCheckColumn::SetUpValues(ContraptionGrid *grid) {
                  WStringFromUTF8String("Setting up values"));
   if (panel_) {
     panel_->Destroy();
-    delete top_sizer_;
   }
   panel_ = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER);
   top_sizer_ = new wxBoxSizer( wxVERTICAL );
