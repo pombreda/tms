@@ -79,6 +79,7 @@ void DlgCheckColumn::SetUpValues(ContraptionGrid *grid) {
   top_sizer->Add(panel_);
   SetSizer(top_sizer);
   Fit();
+  Layout();
   LOG4CPLUS_INFO(logger_, 
                  WStringFromUTF8String("Values set up"));
 }

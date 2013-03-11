@@ -33,8 +33,8 @@ void ContraptionDialog::SetUpValues(ContraptionP contraption,
   contraption_ = contraption;
   
   contraptions_ = contraptions;
-  TransferDataToWindow();
   is_new_ = false;
+  TransferDataToWindow();
   if (static_cast<size_t>(contraption_->Get<int>("id")) == Contraption::kNewID) {
     TransferDataFromWindow();
     is_new_ = true;
