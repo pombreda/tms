@@ -72,8 +72,12 @@ void ContraptionChoice::ClearOnChoiceBinds() {
 }
 
 void ContraptionChoice::RefreshList() {
-  wxString selection = choice_->GetString(choice_->GetSelection());
+  wxString selection;
+  if (choice_->GetSelection() != wxNOT_FOUND) {
+    selection = choice_->GetString(choice_->GetSelection());
+  }
   choice_->Clear();
+
   for (size_t i = 0; i < contraptions_->size(); ++i) {
     choice_->Append(wxString::FromUTF8(display_(contraptions_->at(i)).c_str()));
   }
