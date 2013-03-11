@@ -118,7 +118,7 @@ ContraptionArrayP DlgIncoming::ContactPersons() {
   if (!company) {
     return ContraptionArrayP();
   }
-  assert(company->model() == Company::GetModel());
+  wxASSERT(company->model() == Company::GetModel());
   return company->Get<ContraptionArrayP>("contact_persons");
 }
 
@@ -129,8 +129,8 @@ ContraptionArrayP DlgIncoming::Companies() {
 ContraptionP DlgIncoming::ContactPersonFactory() {
   ContraptionP contact_person = ContactPerson::GetModel()->New();
   ContraptionP company = choice_company_->GetSelection();
-  assert(company);
-  assert(company->model() == Company::GetModel());
+  wxASSERT(company);
+  wxASSERT(company->model() == Company::GetModel());
   contact_person->Set<int>("company_id", company->Get<int>("id"));
   return contact_person;
 }
