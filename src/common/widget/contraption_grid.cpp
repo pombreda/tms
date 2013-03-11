@@ -136,7 +136,7 @@ void ContraptionGrid::AddContraption() {
     ContraptionDialog *dialog = bases_[id_]->contraption_dialog();
     if (dialog) {
       ContraptionP contraption = bases_[id_]->contraption_factory()();
-      assert(bases_[id_]->contraptions()->model() == contraption->model());
+      wxASSERT(bases_[id_]->contraptions()->model() == contraption->model());
       dialog->SetUpValues(contraption,
                           bases_[id_]->contraptions());
       dialog->ShowModal();   

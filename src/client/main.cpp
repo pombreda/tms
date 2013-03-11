@@ -1,26 +1,10 @@
-
-//-----------------------------------------------------------------------------
-// Standard wxWidgets headers
-//-----------------------------------------------------------------------------
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#define TMS_GUI
-#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
+// the application icon (under Windows and OS/2 it is in resources)
+#ifndef wxHAS_IMAGES_IN_RESOURCES
+    #include "icon.xpm"
 #endif
 
-// for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWidgets headers)
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-//-----------------------------------------------------------------------------
-// Headers of this .cpp file
-//-----------------------------------------------------------------------------
 // log4cplus
+#define TMS_GUI
 #include <client/logger.hpp>
 // log4cplus
 #include <log4cplus/configurator.h>
@@ -28,6 +12,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/grid.h>
 #include <wx/image.h>
+#include <wx/app.h>
 
 // soci
 #include <soci/sqlite3/soci-sqlite3.h>
@@ -50,6 +35,7 @@ class ClientApp : public wxApp {
   ClientApp() {}
   virtual bool OnInit();
   virtual bool OnExceptionInMainLoop();
+  virtual void OnFatalException();
   virtual int OnExit();
  private:
   ClientApp(const ClientApp&);
@@ -59,11 +45,15 @@ class ClientApp : public wxApp {
 IMPLEMENT_APP(ClientApp)
 
 bool ClientApp::OnExceptionInMainLoop() {
+#ifndef WINDOWS32
   const size_t nest = 20;
+#endif
   try {
     throw;
   } catch (const tms::common::GUIException &e) {
-    #ifndef WINDOWS32
+    LOG4CPLUS_ERROR(client_logger,
+                    WStringFromUTF8String(e.what()));     
+#ifndef WINDOWS32
     void *array[nest];
     size_t size;
     char **strings;
@@ -71,17 +61,17 @@ bool ClientApp::OnExceptionInMainLoop() {
     
     size = backtrace (array, nest);
     strings = backtrace_symbols (array, size);
-    LOG4CPLUS_ERROR(client_logger,
-                    WStringFromUTF8String(e.what()));     
     for (i = 0; i < nest; ++i) {
       LOG4CPLUS_ERROR(client_logger,
                       WStringFromUTF8String(strings[i]));     
     }
     free(strings);
-    #endif
+#endif
     Report(e);
   } catch (std::exception &e) {
-    #ifndef WINDOWS32
+    LOG4CPLUS_ERROR(client_logger,
+                    WStringFromUTF8String(e.what()));     
+#ifndef WINDOWS32
     void *array[nest];
     size_t size;
     char **strings;
@@ -89,20 +79,28 @@ bool ClientApp::OnExceptionInMainLoop() {
     
     size = backtrace (array, nest);
     strings = backtrace_symbols (array, size);
-    LOG4CPLUS_ERROR(client_logger,
-                    WStringFromUTF8String(e.what()));     
     for (i = 0; i < nest; ++i) {
       LOG4CPLUS_ERROR(client_logger,
                       WStringFromUTF8String(strings[i]));     
     }
     free(strings);
-    #endif        
+#endif        
     wxMessageDialog(0,
-                  WStringFromUTF8String("Произошла критическая ошибка.")
+                    WStringFromUTF8String("Произошла критическая ошибка."),
+                    WStringFromUTF8String("Ошибка"),
+                    wxOK | wxICON_ERROR
                     ).ShowModal();    
     throw;
   }
   return true;
+}
+
+void ClientApp::OnFatalException() {
+   wxMessageDialog(0,
+                   WStringFromUTF8String("Произошла критическая ошибка."),
+                   WStringFromUTF8String("Ошибка"),
+                   wxOK | wxICON_ERROR
+                   ).ShowModal();    
 }
 
 int ClientApp::OnExit() {
@@ -121,8 +119,15 @@ bool ClientApp::OnInit() {
   config.configure();
   LOG4CPLUS_INFO(client_logger,
                  WStringFromUTF8String("Client started"));
+  if (!wxApp::OnInit()) {
+    LOG4CPLUS_ERROR(client_logger,
+                    WStringFromUTF8String(
+                        "Error during application initialization"));     
+    return false;
+  }
+
   bool wxsOK = true;
-  wxTheApp->SetExitOnFrameDelete(true);
+  SetExitOnFrameDelete(true);
   try {
     wxXmlResource::Get()->InitAllHandlers();
     wxInitAllImageHandlers();
@@ -136,12 +141,6 @@ bool ClientApp::OnInit() {
     if (!wxsOK) {
       LOG4CPLUS_ERROR(client_logger,
                       WStringFromUTF8String("Error while loading xrc resources"));
-      return false;
-    }
-    if (!wxApp::OnInit()) {
-      LOG4CPLUS_ERROR(client_logger,
-                      WStringFromUTF8String(
-                          "Error during application initialization"));     
       return false;
     }
     if (DlgLogin().ShowModal() == wxOK) {

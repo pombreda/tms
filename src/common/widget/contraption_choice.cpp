@@ -17,8 +17,8 @@ ContraptionChoice::ContraptionChoice(wxWindow *parent,
     contraption_factory_(boost::bind(
         &ContraptionChoice::DefaultContraptionFactory, this)) {
   wxXmlResource::Get()->Load(_T("xrc/common/widget/pnl_contraption_choice.xrc"));    
-  assert(wxXmlResource::Get()->LoadPanel(this, parent,
-                                         _T("pnlContraptionChoice")));
+  wxASSERT(wxXmlResource::Get()->LoadPanel(this, parent,
+                                           _T("pnlContraptionChoice")));
   Init();
 }
 

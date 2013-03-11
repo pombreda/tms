@@ -70,7 +70,7 @@ class ContraptionSetter {
       ptr_(ptr), field_(field) {
   }
   void operator()(T val) {
-    assert(ptr_);
+    wxASSERT(ptr_);
     ptr_->Set<T>(field_, val);
   }
  private:

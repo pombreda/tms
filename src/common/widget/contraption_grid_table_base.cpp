@@ -48,7 +48,7 @@ void ContraptionGridTableBase::InitContraptions() {
 wxString ContraptionGridTableBase::GetValue(int row, int col) {
   if (model_->GetField(
           cols_[static_cast<long unsigned>(col)].field_id)->IsReadable()) {
-    assert(static_cast<size_t>(row) < contraptions_->size());
+    wxASSERT(static_cast<size_t>(row) < contraptions_->size());
     return wxString::FromUTF8(
         printer_[col]->ToString(*(contraptions_->at(row)->
                                   GetFieldValue(cols_[col].field_id))).c_str());

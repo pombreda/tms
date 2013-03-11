@@ -63,7 +63,7 @@ class ContraptionGridTableBase : public wxGridTableBase {
   }
 
   void set_contraptions(ContraptionArrayP contraptions) {
-    assert(contraptions->model() == contraptions_->model());
+    wxASSERT(contraptions->model() == contraptions_->model());
     contraptions_ = contraptions;
     InitContraptions();
     Refresh();
