@@ -50,7 +50,6 @@ using namespace common::protocol;
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 using namespace boost;
-
 DlgIncoming::~DlgIncoming() {
 }
 
@@ -71,37 +70,6 @@ std::string DlgIncoming::CurTime() {
   sout.imbue(locale(cout.getloc(), facet));
   sout << now;
   return sout.str();
-}
-
-std::string DlgIncoming::GetID() {
-  ptime now = second_clock::local_time();
-  contraptions_->Refresh();
-  time_facet *facet = new time_facet("%y");
-  ostringstream sout;
-  sout.imbue(locale(cout.getloc(), facet));
-  sout << now;
-  std::string year = sout.str();
-  
-  std::string id ="0";
-  if (contraptions_->size() > 0) {
-    int p = contraptions_->size() - 1;
-    while (p >= 0 && contraptions_->at(p)->Get<std::string>("ID") == "") {
-      --p;
-    }
-      if (p >= 0) {
-	ContraptionP last = contraptions_->at(p);
-	std::string last_id = last->Get<std::string>("ID");
-	size_t found = last_id.find("/Вх-");
-	if (found != std::string::npos) {
-	  try {
-	    id = lexical_cast<std::string>(1 + lexical_cast<int>(last_id.substr(0, found)));
-	  } catch (...) {
-	  }
-	}
-      }
-  }
-  
-  return id + "/Вх-" + year;    
 }
 
 bool DlgIncoming::Passed() {
@@ -147,7 +115,7 @@ void DlgIncoming::Init() {
   XRCCTRL(*this, "txtID", wxTextCtrl)->SetValidator(
       StringValidator(DefaultGetter<std::string>(
           ContraptionGetter<std::string>(contraption_, "ID"), 
-          boost::bind(&DlgIncoming::GetID, this)),
+          Incoming::GenerateID),
                       ContraptionSetter<std::string>(contraption_, "ID")));
   XRCCTRL(*this, "txtRecievedAt", wxTextCtrl)->SetValidator(
       StringValidator(DefaultGetter<std::string>(

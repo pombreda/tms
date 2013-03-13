@@ -7,11 +7,49 @@
 #include <project/model/company.hpp>
 #include <project/model/contact_person.hpp>
 #include <model/user.hpp>
+// boost 
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/posix_time/posix_time_io.hpp>
+#include <boost/lexical_cast.hpp>
 
 using namespace tms::project::model;
 using namespace tms::common::contraption;
 using namespace tms::common::model;
 using namespace std;
+using namespace boost::gregorian;
+using namespace boost::posix_time;
+using namespace boost;
+
+string Incoming::GenerateID() {
+  ptime now = second_clock::local_time();
+  ContraptionArrayP contraptions = Incoming::GetModel()->All();
+  time_facet *facet = new time_facet("%y");
+  ostringstream sout;
+  sout.imbue(locale(cout.getloc(), facet));
+  sout << now;
+  std::string year = sout.str();
+  
+  std::string id ="0";
+  if (contraptions->size() > 0) {
+    int p = contraptions->size() - 1;
+    while (p >= 0 && contraptions->at(p)->Get<std::string>("ID") == "") {
+      --p;
+    }
+    if (p >= 0) {
+      ContraptionP last = contraptions->at(p);
+      std::string last_id = last->Get<std::string>("ID");
+      size_t found = last_id.find("/Вх-");
+      if (found != std::string::npos) {
+        try {
+          id = lexical_cast<std::string>(1 + lexical_cast<int>(last_id.substr(0, found)));
+        } catch (...) {
+        }
+      }
+    }
+  }
+  
+  return id + "/Вх-" + year;    
+}
 
 void Incoming::Initialize() {
   vector<Field*> ret;
