@@ -15,7 +15,6 @@ class DlgCompany : public tms::common::widget::ContraptionDialog {
   virtual ~DlgCompany();
  private:
   void Delete();
-  std::string GetID();
   void Init();
   common::contraption::ContraptionArrayP ContactPersons();
   common::contraption::ContraptionP ContactPersonFactory();

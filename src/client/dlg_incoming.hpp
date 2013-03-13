@@ -29,7 +29,6 @@ class DlgIncoming : public tms::common::widget::ContraptionDialog {
   common::widget::ContraptionChoice *choice_company_;
   common::widget::ContraptionChoice *choice_contact_person_;
   void Init();
-  std::string GetID();
   std::string CurTime();
   common::contraption::ContraptionArrayP Companies();
   common::contraption::ContraptionArrayP ContactPersons();

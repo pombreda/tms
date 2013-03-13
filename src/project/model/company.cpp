@@ -9,10 +9,34 @@
 #include <project/model/contact_person.hpp>
 // oops
 #include <iostream>
+// boost
+#include <boost/lexical_cast.hpp>
+
 using namespace tms::project::model;
 using namespace tms::common::model;
 using namespace tms::common::contraption;
 using namespace std;
+using namespace boost;
+
+string Company::GenerateID () {
+  ContraptionArrayP contraptions = Company::GetModel()->All();
+  std::string id = "0";
+  if (contraptions->size() > 0) {
+    int p = contraptions->size() - 1;
+      while (p >= 0 && contraptions->at(p)->Get<std::string>("ID") == "") {
+	--p;
+      }
+      if (p >= 0) {
+	ContraptionP last = contraptions->at(p);
+	std::string last_id = last->Get<std::string>("ID");
+        try {
+          id = lexical_cast<std::string>(1 + lexical_cast<int>(last_id));
+        } catch (...) {
+        }
+      }
+  }
+  return id;
+}
 
 void Company::Initialize() {
   vector<Field*> ret;

@@ -60,25 +60,6 @@ DlgCompany::DlgCompany(wxWindow *parent) :
   Init();
 }
 
-std::string DlgCompany::GetID() {
-  std::string id = "0";
-  if (contraptions_->size() > 0) {
-    int p = contraptions_->size() - 1;
-      while (p >= 0 && contraptions_->at(p)->Get<std::string>("ID") == "") {
-	--p;
-      }
-      if (p >= 0) {
-	ContraptionP last = contraptions_->at(p);
-	std::string last_id = last->Get<std::string>("ID");
-        try {
-          id = lexical_cast<std::string>(1 + lexical_cast<int>(last_id));
-        } catch (...) {
-        }
-      }
-  }
-  return id; 
-}
-
 ContraptionArrayP DlgCompany::ContactPersons() {
   return contraption_->Get<ContraptionArrayP>("contact_persons");
 }
@@ -95,7 +76,7 @@ void DlgCompany::Init() {
   XRCCTRL(*this, "txtID", wxTextCtrl)->SetValidator(
       StringValidator(DefaultGetter<std::string>(
           ContraptionGetter<std::string>(contraption_, "ID"), 
-          boost::bind(&DlgCompany::GetID, this)),
+          Company::GenerateID),
                       ContraptionSetter<std::string>(contraption_, "ID")));
   XRCCTRL(*this, "txtShortName", wxTextCtrl)->SetValidator(
       StringValidator(ContraptionGetter<std::string>(contraption_, "short_name"),
