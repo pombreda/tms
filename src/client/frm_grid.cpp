@@ -20,12 +20,11 @@
 #include "options.hpp"
 // frames
 #include "dlg_contact_person.hpp"
-//#include "companies_frame.hpp"
 #include "dlg_user.hpp"
 #include "dlg_incoming.hpp"
 #include "dlg_login.hpp"
 #include "dlg_company.hpp"
-//#include "incomings_frame.hpp"
+#include "dlg_subject.hpp"
 #include "frames_collection.hpp"
 
 #ifdef FindWindow // MSW workaround
@@ -63,6 +62,7 @@ void FrmGrid::InitDialogs() {
   FramesCollection::dlg_user = new DlgUser(this);
   FramesCollection::dlg_company = new DlgCompany(this);
   FramesCollection::dlg_incoming = new DlgIncoming(this);
+  FramesCollection::dlg_subject = new DlgSubject(this);
   FramesCollection::frm_grid = this;  
 }
 
@@ -115,7 +115,9 @@ void FrmGrid::InitAdmin() {
                   WStringFromUTF8String("btnAdminUpdate binded"));
 
   InitUsersTable();
+  InitSubjectsTable();
   grid_admin_->AddTable(table_users_);
+  grid_admin_->AddTable(table_subjects_);
   grid_admin_->ChooseTable(0);
   wxXmlResource::Get()->AttachUnknownControl("cgrAdmin", (wxWindow *)grid_admin_);
   LOG4CPLUS_INFO(client_logger, 
@@ -152,13 +154,15 @@ void FrmGrid::PrepareModels() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Preparing models"));  
   User::PrepareModel(ModelBackendP(
-    new ServerModelBackend(Options::client(), "users")));
+      new ServerModelBackend(Options::client(), "users")));
   ContactPerson::PrepareModel(ModelBackendP(
-    new ServerModelBackend(Options::client(), "contact_persons")));
+      new ServerModelBackend(Options::client(), "contact_persons")));
   Company::PrepareModel(ModelBackendP(
-    new ServerModelBackend(Options::client(), "companies")));
+      new ServerModelBackend(Options::client(), "companies")));
   Incoming::PrepareModel(ModelBackendP(
-    new ServerModelBackend(Options::client(), "incomings")));
+      new ServerModelBackend(Options::client(), "incomings")));
+  Subject::PrepareModel(ModelBackendP(
+      new ServerModelBackend(Options::client(), "subjects")));
 
 }
 

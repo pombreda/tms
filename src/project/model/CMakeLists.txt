@@ -3,6 +3,7 @@ add_library (tms_project_model STATIC
   scheme
   incoming	
   company
+  subject
   )
 target_link_libraries(tms_project_model 
   tms_contraption 

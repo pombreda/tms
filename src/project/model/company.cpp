@@ -1,4 +1,3 @@
-
 #include "company.hpp"
 // common
 #include <contraption/field/simple_field.hpp>

@@ -49,8 +49,6 @@ DlgUser::DlgUser(wxWindow *parent) :
 }
 
 void DlgUser::Init() {
-  LOG4CPLUS_INFO(client_logger, 
-                 WStringFromUTF8String("Initializing DlgUsers"));
 
   XRCCTRL(*this, "txtName", wxTextCtrl)->SetValidator(
       StringValidator(ContraptionGetter<std::string>(contraption_, "name"),

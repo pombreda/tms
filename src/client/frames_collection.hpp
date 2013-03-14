@@ -1,3 +1,4 @@
+
 #ifndef _TMS_CLIENT__FRAMES_COLLECTION_HPP_
 #define _TMS_CLIENT__FRAMES_COLLECTION_HPP_
 namespace tms {
@@ -12,12 +13,14 @@ namespace client {
 class DlgContactPerson;
 class CompaniesFrame;
 class DlgUser;
+class DlgSubject;
 class DlgIncoming;
 class DlgCompany ;
 class FrmGrid;
 class FramesCollection {
 public:
   static DlgContactPerson *dlg_contact_person;
+  static DlgSubject *dlg_subject;
   static DlgUser *dlg_user;
   static DlgCompany *dlg_company;
   static DlgIncoming *dlg_incoming;

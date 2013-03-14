@@ -1,10 +1,6 @@
 #ifndef _TMS_PROJECT_MODEL__COMPANY_HPP_
 #define _TMS_PROJECT_MODEL__COMPANY_HPP_
-// std
-#include <vector>
-// boost
-#include <boost/unordered_map.hpp>
-// commone
+// common
 #include <contraption/model_wrapper.hpp>
 
 namespace tms {
@@ -17,8 +13,10 @@ class Company : public common::contraption::ModelWrapper<Company> {
   static std::string GenerateID();
  protected:
   virtual void Initialize();
-  Company(common::contraption::ModelBackendP backend) : ModelWrapper<Company>(backend) {}
-  Company(common::contraption::ModelBackend *backend) : ModelWrapper<Company>(backend) {}
+  Company(common::contraption::ModelBackendP backend) :
+      ModelWrapper<Company>(backend) {}
+  Company(common::contraption::ModelBackend *backend) :
+      ModelWrapper<Company>(backend) {}
 };
 
 }
