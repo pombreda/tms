@@ -2,7 +2,7 @@
 // wx
 #include <wx/msgdlg.h>
 #include <wx/xrc/xmlres.h>
-
+#include <wx/combobox.h>
 // log4cplus
 #include <client/logger.hpp>
 #include <log4cplus/loggingmacros.h>
@@ -23,6 +23,7 @@
 #include <widget/validators/has_one_validator.hpp>
 #include <widget/validators/password_validator.hpp>
 #include <widget/validators/hide_if_validator.hpp>
+#include <widget/validators/suggest_validator.hpp>
 #include <widget/contraption_choice.hpp>
 // project
 #include <project/model/company.hpp>
@@ -111,7 +112,7 @@ ContraptionP DlgIncoming::CompanyFactory() {
 void DlgIncoming::Init() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing DlgIncoming"));
-  
+  subjects_ = Subject::GetModel()->All();
   XRCCTRL(*this, "txtID", wxTextCtrl)->SetValidator(
       StringValidator(DefaultGetter<std::string>(
           ContraptionGetter<std::string>(contraption_, "ID"), 
@@ -126,9 +127,11 @@ void DlgIncoming::Init() {
       StringValidator(ContraptionGetter<std::string>(contraption_, "reception_type"),
                       ContraptionSetter<std::string>(contraption_, 
                                                      "reception_type")));
-  XRCCTRL(*this, "txtSubject", wxTextCtrl)->SetValidator(
-      StringValidator(ContraptionGetter<std::string>(contraption_, "subject"),
-                      ContraptionSetter<std::string>(contraption_, "subject")));  
+  XRCCTRL(*this, "cmbSubject", wxComboBox)->SetValidator(
+      SuggestValidator(
+          ContraptionSuggestProvider(subjects_, "subject"),
+              StringValidator(ContraptionGetter<std::string>(contraption_, "subject"),
+                              ContraptionSetter<std::string>(contraption_, "subject"))));  
   txt_passed_at_ = XRCCTRL(*this, "txtPassedAt", wxTextCtrl);
   txt_passed_at_->SetValidator(
       StringValidator(ContraptionGetter<std::string>(contraption_, "passed_at"),

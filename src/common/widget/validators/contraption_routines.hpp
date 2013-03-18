@@ -120,6 +120,25 @@ class ContraptionIsNew {
 };
 
 
+class ContraptionSuggestProvider {
+ public:
+  ContraptionSuggestProvider (contraption::ContraptionArrayP &ptr, std::string field) :
+      ptr_(ptr),
+      field_(field) {      
+  }
+
+  std::vector<std::string> operator()() {
+    std::vector<std::string> ret;
+    for (size_t i = 0; i < ptr_->size(); ++i) {
+      ret.push_back(ptr_->at(i)->Get<std::string>(field_));
+    }
+    return ret;
+  }
+ private:
+  contraption::ContraptionArrayP &ptr_;
+  std::string field_;
+};
+
 }
 }
 }

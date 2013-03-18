@@ -1,6 +1,9 @@
 #include "string_validator.hpp"
-#include "wx/textctrl.h"
-#include "wx/choice.h"
+// wx
+#include <wx/textctrl.h>
+#include <wx/choice.h>
+#include <wx/combobox.h>
+// std
 #include <iostream>
 namespace tms {
 namespace common {
@@ -20,12 +23,19 @@ StringValidator::StringValidator(const StringValidator &validator) :
 bool StringValidator::TransferToWindow() {
   wxString value = wxString::FromUTF8(getter_().c_str());
   wxWindow *validator_window = GetWindow();
-  
   if (!validator_window )
     return false;
   
   {
     wxTextCtrl *control = dynamic_cast<wxTextCtrl*>(validator_window);
+    if (control) {
+      control->SetValue(value);
+      return true;
+    }
+  }
+
+  {
+    wxComboBox *control = dynamic_cast<wxComboBox*>(validator_window);
     if (control) {
       control->SetValue(value);
       return true;
@@ -56,6 +66,14 @@ bool StringValidator::TransferFromWindow() {
   
   {
     wxTextCtrl *control = dynamic_cast<wxTextCtrl*>(validator_window);
+    if (control) {
+      setter_(control->GetValue().utf8_str().data());
+      return true;
+    }
+  }
+
+  {
+    wxComboBox *control = dynamic_cast<wxComboBox*>(validator_window);
     if (control) {
       setter_(control->GetValue().utf8_str().data());
       return true;

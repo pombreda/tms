@@ -39,6 +39,7 @@ class DlgIncoming : public tms::common::widget::ContraptionDialog {
   bool Passed();
   DlgIncoming(const DlgIncoming&);
   DlgIncoming& operator=(const DlgIncoming&);
+  common::contraption::ContraptionArrayP subjects_;
 };
 
 }

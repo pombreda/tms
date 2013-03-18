@@ -2,6 +2,7 @@ add_library(tms_validators STATIC
   string_validator
   password_validator
   bool_validator
+  suggest_validator
   hide_if_validator
   has_one_validator
   has_many_validator
