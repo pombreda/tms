@@ -14,11 +14,14 @@ add_executable(client_app
 	       dlg_incoming
 	       dlg_company
 	       dlg_subject
+	       dlg_addressee
 	       frm_grid
 	       frm_grid_incomings
 	       frm_grid_companies
 	       frm_grid_users	
 	       frm_grid_subjects
+	       frm_grid_addressees
+	       frm_grid_import_incoming
                options_model
 	       logger
                options)

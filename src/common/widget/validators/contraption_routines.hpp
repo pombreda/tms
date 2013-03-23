@@ -129,6 +129,7 @@ class ContraptionSuggestProvider {
 
   std::vector<std::string> operator()() {
     std::vector<std::string> ret;
+    ptr_->Refresh();
     for (size_t i = 0; i < ptr_->size(); ++i) {
       ret.push_back(ptr_->at(i)->Get<std::string>(field_));
     }

@@ -15,12 +15,14 @@ class CompaniesFrame;
 class DlgUser;
 class DlgSubject;
 class DlgIncoming;
+class DlgAddressee;
 class DlgCompany ;
 class FrmGrid;
 class FramesCollection {
 public:
   static DlgContactPerson *dlg_contact_person;
   static DlgSubject *dlg_subject;
+  static DlgAddressee *dlg_addressee;
   static DlgUser *dlg_user;
   static DlgCompany *dlg_company;
   static DlgIncoming *dlg_incoming;

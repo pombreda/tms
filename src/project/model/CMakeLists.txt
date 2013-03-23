@@ -4,6 +4,7 @@ add_library (tms_project_model STATIC
   incoming	
   company
   subject
+  addressee
   )
 target_link_libraries(tms_project_model 
   tms_contraption 

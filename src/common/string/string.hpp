@@ -6,9 +6,11 @@ namespace tms {
 namespace common {
 namespace string {
 
-  std::string UTF8StingFromWString(std::wstring str);
+  std::string UTF8StringFromWString(std::wstring str);
 
   std::wstring WStringFromUTF8String(std::string str);
+
+  std::wstring WStringFromCP1251String(std::string str);
 
 }
 }

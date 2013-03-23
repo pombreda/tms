@@ -14,6 +14,7 @@
 #include <project/model/scheme.hpp>
 #include <project/model/incoming.hpp>
 #include <project/model/subject.hpp>
+#include <project/model/addressee.hpp>
 #include <contraption/model_backend/soci_model_backend.hpp>
 #include <project/protocol.hpp>
 #include <config.hpp>
@@ -59,6 +60,10 @@ void InitSchema(const std::string &db) {
                                                              "companies")));
     Subject::PrepareModel(ModelBackendP(new SOCIModelBackend(scheme,
                                                              "subjects")));
+
+    Addressee::PrepareModel(ModelBackendP(new SOCIModelBackend(scheme,
+							       "addressees")));
+
     
     User::GetModel()->InitSchema();
 
@@ -71,6 +76,9 @@ void InitSchema(const std::string &db) {
     Company::GetModel()->InitSchema();
 
     Subject::GetModel()->InitSchema();
+
+    Addressee::GetModel()->InitSchema();
+
   }
   {
     SOCIDBScheme scheme(soci::sqlite3, db);

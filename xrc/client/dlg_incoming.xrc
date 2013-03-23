@@ -128,9 +128,9 @@
 								<option>0</option>
 								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
-								<object class="wxTextCtrl" name="txtSubject">
+								<object class="wxComboBox" name="cmbSubject">
 									<value></value>
-									<maxlength>0</maxlength>
+									<content />
 								</object>
 							</object>
 							<object class="sizeritem">
@@ -146,9 +146,9 @@
 								<option>0</option>
 								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
-								<object class="wxTextCtrl" name="txtAddressee">
+								<object class="wxComboBox" name="cmbAddressee">
 									<value></value>
-									<maxlength>0</maxlength>
+									<content />
 								</object>
 							</object>
 							<object class="sizeritem">

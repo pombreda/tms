@@ -33,6 +33,7 @@
 #include <project/model/company.hpp>
 #include <project/model/incoming.hpp>
 #include <project/model/subject.hpp>
+#include <project/model/addressee.hpp>
 
 namespace tms {
 namespace client {
@@ -56,6 +57,7 @@ class FrmGrid : public wxFrame {
   tms::common::widget::ContraptionGrid *grid_admin_;
   tms::common::widget::ContraptionGridTableBase *table_users_;
   tms::common::widget::ContraptionGridTableBase *table_subjects_;
+  tms::common::widget::ContraptionGridTableBase *table_addressees_;
  
   tms::common::widget::ContraptionGrid *grid_catalogs_;
   tms::common::widget::ContraptionGridTableBase *table_contact_persons_;
@@ -66,9 +68,11 @@ class FrmGrid : public wxFrame {
   void InitCompaniesTable();
   void InitUsersTable();
   void InitSubjectsTable();
+  void InitAddresseesTable();
   void InitIncomingsTable();
   void PrepareModels();
 
+  void OnImportIncomingClick();
   void OnPatchClick(wxCommandEvent& WXUNUSED(event));
   void OnClose(wxCloseEvent& event);
   void OnExitClick(wxCommandEvent& WXUNUSED(event));

@@ -14,6 +14,7 @@
 #include <wx/filedlg.h>
 #include <wx/button.h>
 #include <wx/app.h>
+#include <wx/menu.h>
 // std
 #include <fstream>
 #include <sstream>
@@ -25,6 +26,7 @@
 #include "dlg_login.hpp"
 #include "dlg_company.hpp"
 #include "dlg_subject.hpp"
+#include "dlg_addressee.hpp"
 #include "frames_collection.hpp"
 
 #ifdef FindWindow // MSW workaround
@@ -63,6 +65,7 @@ void FrmGrid::InitDialogs() {
   FramesCollection::dlg_company = new DlgCompany(this);
   FramesCollection::dlg_incoming = new DlgIncoming(this);
   FramesCollection::dlg_subject = new DlgSubject(this);
+  FramesCollection::dlg_addressee = new DlgAddressee(this);
   FramesCollection::frm_grid = this;  
 }
 
@@ -111,13 +114,19 @@ void FrmGrid::InitAdmin() {
       Connect(wxEVT_COMMAND_BUTTON_CLICKED,
               (wxObjectEventFunction)&FrmGrid::OnPatchClick,
               0, this);
+  XRCCTRL(*this, "btnImportIncoming", wxButton)->
+    Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+	 boost::bind(&FrmGrid::OnImportIncomingClick, this));
+
   LOG4CPLUS_DEBUG(client_logger, 
                   WStringFromUTF8String("btnAdminUpdate binded"));
 
   InitUsersTable();
   InitSubjectsTable();
+  InitAddresseesTable();
   grid_admin_->AddTable(table_users_);
   grid_admin_->AddTable(table_subjects_);
+  grid_admin_->AddTable(table_addressees_);
   grid_admin_->ChooseTable(0);
   wxXmlResource::Get()->AttachUnknownControl("cgrAdmin", (wxWindow *)grid_admin_);
   LOG4CPLUS_INFO(client_logger, 
@@ -144,6 +153,10 @@ void FrmGrid::Init() {
   
   Centre();
   Maximize(true);
+  Connect(XRCID("mitExit"),
+	  wxEVT_COMMAND_MENU_SELECTED, 
+	  wxCommandEventHandler(FrmGrid::OnExitClick));
+
   Bind(wxEVT_CLOSE_WINDOW, &FrmGrid::OnClose, this);
   
   LOG4CPLUS_INFO(client_logger, 
@@ -163,6 +176,8 @@ void FrmGrid::PrepareModels() {
       new ServerModelBackend(Options::client(), "incomings")));
   Subject::PrepareModel(ModelBackendP(
       new ServerModelBackend(Options::client(), "subjects")));
+  Addressee::PrepareModel(ModelBackendP(
+      new ServerModelBackend(Options::client(), "addressees")));
 
 }
 

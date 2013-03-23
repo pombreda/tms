@@ -28,6 +28,8 @@
 // project
 #include <project/model/company.hpp>
 #include <project/model/contact_person.hpp>
+#include <project/model/subject.hpp>
+#include <project/model/addressee.hpp>
 // frames
 #include "frames_collection.hpp"
 #include "frm_grid.hpp"
@@ -113,6 +115,7 @@ void DlgIncoming::Init() {
   LOG4CPLUS_INFO(client_logger, 
                  WStringFromUTF8String("Initializing DlgIncoming"));
   subjects_ = Subject::GetModel()->All();
+  addressees_ = Addressee::GetModel()->All();
   XRCCTRL(*this, "txtID", wxTextCtrl)->SetValidator(
       StringValidator(DefaultGetter<std::string>(
           ContraptionGetter<std::string>(contraption_, "ID"), 
@@ -132,14 +135,18 @@ void DlgIncoming::Init() {
           ContraptionSuggestProvider(subjects_, "subject"),
               StringValidator(ContraptionGetter<std::string>(contraption_, "subject"),
                               ContraptionSetter<std::string>(contraption_, "subject"))));  
+
+  XRCCTRL(*this, "cmbAddressee", wxComboBox)->SetValidator(
+      SuggestValidator(
+          ContraptionSuggestProvider(addressees_, "addressee"),
+              StringValidator(ContraptionGetter<std::string>(contraption_, "addressee"),
+                              ContraptionSetter<std::string>(contraption_, "addressee"))));  
+
   txt_passed_at_ = XRCCTRL(*this, "txtPassedAt", wxTextCtrl);
   txt_passed_at_->SetValidator(
       StringValidator(ContraptionGetter<std::string>(contraption_, "passed_at"),
                       ContraptionSetter<std::string>(contraption_, "passed_at")));  
-  XRCCTRL(*this, "txtAddressee", wxTextCtrl)->SetValidator(
-      StringValidator(ContraptionGetter<std::string>(contraption_, "addressee"),
-                      ContraptionSetter<std::string>(contraption_, "addressee")));  
-  
+ 
   choice_company_ = 
       new ContraptionChoice(this, 
                             boost::bind(
