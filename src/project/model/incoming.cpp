@@ -38,7 +38,7 @@ string Incoming::GenerateID() {
     if (p >= 0) {
       ContraptionP last = contraptions->at(p);
       std::string last_id = last->Get<std::string>("ID");
-      size_t found = last_id.find("/Вх-");
+      size_t found = last_id.find(" /Вх-");
       if (found != std::string::npos) {
         try {
           id = lexical_cast<std::string>(1 + lexical_cast<int>(last_id.substr(0, found)));
@@ -48,7 +48,7 @@ string Incoming::GenerateID() {
     }
   }
   
-  return id + "/Вх-" + year;    
+  return id + " /Вх-" + year;    
 }
 
 void Incoming::Initialize() {
